@@ -9,3 +9,5 @@ app.get('/', (_req, res) => {
 app.listen(8080).on('listening', () => {
 	console.log('listening on localhost:8080');
 });
+
+export default app;
