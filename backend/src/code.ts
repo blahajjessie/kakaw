@@ -23,12 +23,3 @@ export function fin(code: string, used: Array<string>) {
     const index = used.indexOf(code);
     used.splice(index, 1);
 }
-
-// testing
-/*
-const used: string[] = [];
-const code = gen(5, used);
-console.log(code);
-console.log(used);
-fin(code, used);
-*/
