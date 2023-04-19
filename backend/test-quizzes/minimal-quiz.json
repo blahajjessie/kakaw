@@ -1,0 +1,19 @@
+{   
+    "Meta":{
+    "Title": "Minimal Quiz",
+        "Author": "Jess Srinivas and the Kakaw team",
+        "PointDefault": 5,
+        "TimeDefault": 15
+    },
+    "Questions":[
+        {
+            "QuestionText": "The Only Question",
+            "AnswerTexts": [
+                    "Only one answer!"
+                ],
+            "CorrectAns": [0],
+            "Ordering": 0
+        }
+    ]
+	
+}

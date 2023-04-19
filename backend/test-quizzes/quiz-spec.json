@@ -1,0 +1,49 @@
+{   
+    "Meta":{
+        "Title": "Quiz specifications",
+        "Author": "Jess Srinivas and the Kakaw team",
+        "PointDefault": 5,
+        "TimeDefault": 15,
+        "Note": "All fields here (except 'note') are optional"
+    },
+    "Questions":[
+        {
+            "QuestionText": "questions can come in any order",
+            "AnswerTexts": [
+                "Order of questions is specified in the `ordering` field", 
+                "Which is required",
+                "So they can appear in any order in the json",
+                "But Please have the questions appear in the correct order in the json",
+                "Ordering starts at zero"
+                ],
+            "CorrectAns": [0],
+            "Ordering": 0
+
+        },
+        {
+            "QuestionText": "Answer choices are only text (for now)",
+                "AnswerTexts": [
+                    "We will probably update the spec later for images and formatting", 
+                    "The correct answers are an array so multiple answers are allowed",
+                    "You can have as many answers as you want",
+                    "The answers are indexed from zero"
+                ],
+            "CorrectAns": [3],
+            "Ordering": 1
+        },
+	    {
+            "QuestionText": "Optional Fields",
+                "AnswerTexts": [
+                    "The `time` and `points` allow a different amount to be specified", 
+                    "But they're optional and will use the meta defaults if not",
+                    "So is the `note` field, which we will ignore"
+                ],
+            "CorrectAns": [0, 1, 2],
+            "Ordering": 1,
+            "Time": 30,
+            "Points": 10,
+            "Note": "Wow!"
+	    }
+    ]
+	
+}
