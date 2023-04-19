@@ -1,45 +1,42 @@
 {   
-    "Meta":{
-        "Title": "Are you a real Knight?",
-        "Author": "Jess Srinivas and the Kakaw team",
-        "PointDefault": 5,
-        "TimeDefault": 15
+    "meta":{
+        "title": "Are you a real Knight?",
+        "author": "Jess Srinivas and the Kakaw team",
+        "point_default": 5,
+        "time_default": 15
     },
-    "Questions":[
+    "questions":[
         {
-            "QuestionText": "What is your name",
-            "AnswerTexts": [
-                "Arthur, King of the Brittons", 
-                "Jess",
-                "Ben",
-                "Cody"
+            "question_text": "What is your name",
+                "answer_texts": [
+                    "Arthur, King of the Brittons", 
+                    "Jess",
+                    "Ben",
+                    "Cody"
                 ],
-            "CorrectAns": [0],
-            "Ordering": 0,
-            "Time": 30,
-            "Points": 10
+            "correct_answers": [0],
+            "time": 30,
+            "points": 10
         },
         {
-            "QuestionText": "What is your quest",
-                "AnswerTexts": [
+            "question_text": "What is your quest",
+                "answer_texts": [
                     "To pass 115a", 
                     "To make a real app",
                     "To have something to put on my github",
                     "To seek the holy grail"
                 ],
-            "CorrectAns": [3],
-            "Ordering": 1
+            "correct_answers": [3]
         },
 	    {
-            "QuestionText": "What is your favorite color",
-                "AnswerTexts": [
+            "question_text": "What is your favorite color",
+                "answer_texts": [
                     "Blue", 
                     "Yellow",
                     "Red",
                     "I don’t know that!"
                 ],
-            "CorrectAns": [0, 1, 2],
-            "Ordering": 1
+            "correct_answers": [0, 1, 2]
 	    }
     ]
 	

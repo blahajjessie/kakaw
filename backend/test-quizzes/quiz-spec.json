@@ -1,48 +1,44 @@
 {   
-    "Meta":{
-        "Title": "Quiz specifications",
-        "Author": "Jess Srinivas and the Kakaw team",
-        "PointDefault": 5,
-        "TimeDefault": 15,
-        "Note": "All fields here (except 'note') are optional"
+    "meta":{
+        "title": "Quiz specifications",
+        "author": "Jess Srinivas and the Kakaw team",
+        "point_default": 5,
+        "time_default": 15,
+        "note": "All fields here (except 'note') are optional"
     },
-    "Questions":[
+    "questions":[
         {
-            "QuestionText": "questions can come in any order",
-            "AnswerTexts": [
+            "question_text": "questions can come in any order",
+            "answer_texts": [
                 "Order of questions is specified in the `ordering` field", 
                 "Which is required",
                 "So they can appear in any order in the json",
                 "But Please have the questions appear in the correct order in the json",
                 "Ordering starts at zero"
                 ],
-            "CorrectAns": [0],
-            "Ordering": 0
-
+            "correct_answers": [0]
         },
         {
-            "QuestionText": "Answer choices are only text (for now)",
-                "AnswerTexts": [
+            "question_text": "Answer choices are only text (for now)",
+                "answer_texts": [
                     "We will probably update the spec later for images and formatting", 
                     "The correct answers are an array so multiple answers are allowed",
                     "You can have as many answers as you want",
                     "The answers are indexed from zero"
                 ],
-            "CorrectAns": [3],
-            "Ordering": 1
+            "correct_answers": [3]
         },
 	    {
-            "QuestionText": "Optional Fields",
-                "AnswerTexts": [
+            "question_text": "Optional Fields",
+                "answer_texts": [
                     "The `time` and `points` allow a different amount to be specified", 
                     "But they're optional and will use the meta defaults if not",
                     "So is the `note` field, which we will ignore"
                 ],
-            "CorrectAns": [0, 1, 2],
-            "Ordering": 1,
-            "Time": 30,
-            "Points": 10,
-            "Note": "Wow!"
+            "correct_answers": [0, 1, 2],
+            "time": 30,
+            "points": 10,
+            "note": "Wow!"
 	    }
     ]
 	
