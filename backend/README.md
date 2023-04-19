@@ -2,7 +2,8 @@
 
 How to run this:
 
-- Install Node.js
+- Install Node.js (ideally version 18)
+- Navigate to the `kakaw/backend` directory
 - Install dependencies: `npm install`
 - Compile the application: `npx tsc`
 - Launch the server: `node .`
