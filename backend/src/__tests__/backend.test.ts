@@ -2,8 +2,8 @@ import app from '../server';
 import supertest from 'supertest';
 import http from 'http';
 
-let server: any;
-let request: any;
+let server: http.Server;
+let request: supertest.SuperTest<supertest.Test>;
 
 beforeAll(() => {
 	server = http.createServer(app);
