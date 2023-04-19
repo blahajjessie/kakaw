@@ -6,16 +6,15 @@ let server: any;
 let request: any;
 
 beforeAll(() => {
-    server = http.createServer(app);
-    server.listen();
-    request = supertest(server);
+	server = http.createServer(app);
+	server.listen();
+	request = supertest(server);
 });
-  
+
 afterAll((done) => {
-    server.close(done);
+	server.close(done);
 });
 
 test('GET Invalid URL', async () => {
-    await request.get('/so-not-a-real-end-point-ba-bip-de-doo-da/')
-      .expect(404);
+	await request.get('/so-not-a-real-end-point-ba-bip-de-doo-da/').expect(404);
 });
