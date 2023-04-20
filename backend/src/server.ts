@@ -53,3 +53,5 @@ httpServer.on('upgrade', (request, socket, head) => {
 		handleConnection(client, gameId, playerId);
 	});
 });
+
+export default app;
