@@ -1,37 +1,36 @@
 import Image from 'next/image'
 import { Inter } from 'next/font/google'
 
+import logo from '../public/logo.png'
+
 const inter = Inter({ subsets: ['latin'] })
 
 export default function Home() {
   return (
-    <main className="bg-indigo-800 flex min-h-screen flex-col items-center justify-center">
-      <div className="w-full max-w-sm">
-        <div className="text-white text-6xl text-center font-bold my-8 select-none">
-          Kakaw
-        </div>
-        <form className="bg-white shadow-md rounded p-8 my-8">
-          <label className="block text-gray-700 text-sm font-bold mb-2">
-            You are...
-          </label>
-          <input className="appearance-none border rounded w-full py-2 px-3 mb-4 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="username" type="text" placeholder="Name" maxLength={30} required />
-          <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-            Play!
+    <main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
+      <div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
+
+        <Image
+          alt="Kakaw logo"
+          src={logo}
+          width={200}
+          style={{
+            maxWidth: '100%',
+            height: 'auto',
+          }}
+        />
+
+        <form className="p-8 mb-2">
+          <input className="bg-gray-100 border-1 border-gray-300 rounded-lg w-full px-4 py-2 mb-4 text-gray-200 text-center text-lg shadow-md" id="code" type="text" placeholder="Code" maxLength={8} required />
+          <input className="bg-gray-100 border-1 border-gray-300 rounded-lg w-full px-4 py-2 mb-4 text-gray-200 text-center text-lg shadow-md" id="username" type="text" placeholder="Username" maxLength={30} required />
+          <button className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-300 rounded-lg w-full px-4 py-2 text-white text-center text-lg shadow-md" type="button">
+            Join
           </button>
         </form>
-        <form className="bg-white shadow-md rounded p-8 my-8">
-          <div className="block text-gray-700 text-sm font-bold mb-2 cursor-default">
-            Or upload a quiz:
-          </div>
-          <div className="flex flex-row items-center">
-            <button className="bg-gray-500 hover:bg-gray-700 text-white font-bold py-2 px-4 mr-2 rounded focus:outline-none focus:shadow-outline" type="button">
-              Upload
-            </button>
-            <button className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="button">
-              Host!
-            </button>
-          </div>
-        </form>
+
+        <a href="/upload" className="text-white cursor-pointer hover:underline">
+          Host your own Quiz!
+        </a>
       </div>
     </main>
   )
