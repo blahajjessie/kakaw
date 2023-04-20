@@ -2,40 +2,40 @@
     "meta":{
         "title": "Quiz specifications",
         "author": "Jess Srinivas and the Kakaw team",
-        "point_default": 5,
-        "time_default": 15,
+        "pointDefault": 5,
+        "timeDefault": 15,
         "note": "All fields here (except 'note') are optional"
     },
     "questions":[
         {
-            "question_text": "questions can come in any order",
-            "answer_texts": [
+            "questionText": "questions can come in any order",
+            "answerTexts": [
                 "Order of questions is specified in the `ordering` field", 
                 "Which is required",
                 "So they can appear in any order in the json",
                 "But Please have the questions appear in the correct order in the json",
                 "Ordering starts at zero"
                 ],
-            "correct_answers": [0]
+            "correctAnswers": [0]
         },
         {
-            "question_text": "Answer choices are only text (for now)",
-                "answer_texts": [
+            "questionText": "Answer choices are only text (for now)",
+                "answerTexts": [
                     "We will probably update the spec later for images and formatting", 
                     "The correct answers are an array so multiple answers are allowed",
                     "You can have as many answers as you want",
                     "The answers are indexed from zero"
                 ],
-            "correct_answers": [3]
+            "correctAnswers": [3]
         },
 	    {
-            "question_text": "Optional Fields",
-                "answer_texts": [
+            "questionText": "Optional Fields",
+                "answerTexts": [
                     "The `time` and `points` allow a different amount to be specified", 
                     "But they're optional and will use the meta defaults if not",
                     "So is the `note` field, which we will ignore"
                 ],
-            "correct_answers": [0, 1, 2],
+            "correctAnswers": [0, 1, 2],
             "time": 30,
             "points": 10,
             "note": "Wow!"

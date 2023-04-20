@@ -2,16 +2,16 @@
     "meta":{
     "title": "Minimal Quiz",
         "author": "Jess Srinivas and the Kakaw team",
-        "point_default": 5,
-        "time_default": 15
+        "pointDefault": 5,
+        "timeDefault": 15
     },
     "questions":[
         {
-            "question_text": "The Only Question",
-            "answer_texts": [
+            "questionText": "The Only Question",
+            "answerTexts": [
                     "Only one answer!"
                 ],
-            "correct_answers": [0]
+            "correctAnswers": [0]
         }
     ]
 	
