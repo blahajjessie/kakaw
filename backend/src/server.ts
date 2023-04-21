@@ -16,8 +16,8 @@ app.get('/code', (_req, res) => {
 	res.send(code.gen(5, used));
 });
 
-app.post('/games/:gameID/players', (_req, res) => {
-	user.userHandle(_req.params.gameID, _req.body, res);
+app.post('/games/:gameId/players', (_req, res) => {
+	user.userHandle(_req.params.gameId, _req.body, res);
 });
 
 // create websocket "server" which really piggybacks on the express server
