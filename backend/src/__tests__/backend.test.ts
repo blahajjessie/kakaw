@@ -1,4 +1,5 @@
 import httpServer from '../server';
+import { games } from '../user';
 import supertest from 'supertest';
 
 let request: supertest.SuperTest<supertest.Test>;
@@ -20,18 +21,24 @@ test('Code Generation', async () => {
 });
 
 test('Bad Request', async () => {
-	await request.post('/games/AAAAA/players')
-		.expect(400);
+	await request.post('/games/AAAAA/players').expect(400);
 });
 
 const player = {
-	'username': 'Jorge'
+	username: 'Jorge',
 };
 
 test('Game does not exist', async () => {
-	await request.post('/games/AAAAA/players')
-		.send(player)
-		.set('Content-Type', 'application/json')
-        .set('Accept', 'application/json')
-		.expect(404);
+	await request.post('/games/AAAAA/players').send(player).expect(404);
+});
+
+const playerMap = new Map();
+
+test('Successful Player Insert', async () => {
+	games.set('AAAAA', playerMap);
+	await request.post('/games/AAAAA/players').send(player).expect(201);
+});
+
+test('Username Already Exists', async () => {
+	await request.post('/games/AAAAA/players').send(player).expect(409);
 });
