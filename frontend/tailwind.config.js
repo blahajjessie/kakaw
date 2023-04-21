@@ -14,15 +14,18 @@ module.exports = {
         orange: {
           100: '#FF801A',
           200: '#FF7200',
-          300: '#AEAEAE',
         },
         gray: {
           100: '#D9D9D9',
-          200: '#4B5563',
+          200: '#AEAEAE',
+          300: '#4B5563',
         },
       },
       boxShadow: {
         'heavy': '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      },
+      fontFamily: {
+        'mono': ['"Roboto Mono"', 'ui-monospace', 'SFMono-Regular', 'Menlo', 'Monaco', 'Consolas', '"Liberation Mono"', '"Courier New"', 'monospace'],
       },
     },
   },

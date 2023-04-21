@@ -20,10 +20,10 @@ export default function Home() {
           }}
         />
 
-        <form className="p-8 mb-2">
-          <input className="bg-gray-100 border-1 border-gray-300 rounded-lg w-full px-4 py-2 mb-4 text-gray-200 text-center text-lg shadow-md" id="code" type="text" placeholder="Code" maxLength={8} required />
-          <input className="bg-gray-100 border-1 border-gray-300 rounded-lg w-full px-4 py-2 mb-4 text-gray-200 text-center text-lg shadow-md" id="username" type="text" placeholder="Username" maxLength={30} required />
-          <button className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-300 rounded-lg w-full px-4 py-2 text-white text-center text-lg shadow-md" type="button">
+        <form className="p-8 mb-2 w-4/5 sm:w-full">
+          <input className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md" id="code" type="text" placeholder="Code" maxLength={8} required />
+          <input className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md" id="username" type="text" placeholder="Username" maxLength={30} required />
+          <button className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 text-white text-center text-lg shadow-md" type="button">
             Join
           </button>
         </form>
