@@ -2,41 +2,41 @@
     "meta":{
         "title": "Are you a real Knight?",
         "author": "Jess Srinivas and the Kakaw team",
-        "point_default": 5,
-        "time_default": 15
+        "pointDefault": 5,
+        "timeDefault": 15
     },
     "questions":[
         {
-            "question_text": "What is your name",
-                "answer_texts": [
+            "questionText": "What is your name",
+                "answerTexts": [
                     "Arthur, King of the Brittons", 
                     "Jess",
                     "Ben",
                     "Cody"
                 ],
-            "correct_answers": [0],
+            "correctAnswers": [0],
             "time": 30,
             "points": 10
         },
         {
-            "question_text": "What is your quest",
-                "answer_texts": [
+            "questionText": "What is your quest",
+                "answerTexts": [
                     "To pass 115a", 
                     "To make a real app",
                     "To have something to put on my github",
                     "To seek the holy grail"
                 ],
-            "correct_answers": [3]
+            "correctAnswers": [3]
         },
 	    {
-            "question_text": "What is your favorite color",
-                "answer_texts": [
+            "questionText": "What is your favorite color",
+                "answerTexts": [
                     "Blue", 
                     "Yellow",
                     "Red",
                     "I don’t know that!"
                 ],
-            "correct_answers": [0, 1, 2]
+            "correctAnswers": [0, 1, 2]
 	    }
     ]
 	
