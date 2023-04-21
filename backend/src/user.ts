@@ -1,4 +1,3 @@
-import express from 'express';
 import { gen } from './code';
 import {Request, Response} from 'express';
 
@@ -25,6 +24,9 @@ export function userHandle(gameId: string, req: Request, res: Response) {
         return
     }
 
+    // Functionally done to make use of code generation
+    // but I don't want to store the id's more than they already are (twice now)
+    // Should consider system specification on data storage and access
     const used: string[] = Array.from(playerSet.values());
     const id = gen(8, used);
 

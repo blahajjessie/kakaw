@@ -20,9 +20,10 @@
 		"node": "^18.13.0"
 	},
 	"scripts": {
-		"test": "jest --detectOpenHandles"
+		"test": "jest --runInBand --coverage --forceExit"
 	},
 	"jest": {
+		"clearMocks": true,
 		"moduleFileExtensions": [
 			"ts",
 			"tsx",
@@ -32,7 +33,7 @@
 			"^.+\\.(ts|tsx)$": "ts-jest"
 		},
 		"testMatch": [
-			"**/__tests__/*.+(ts|tsx|js)"
+			"**/src/__tests__/*.+(ts|tsx|js)"
 		]
 	}
 }

@@ -59,4 +59,4 @@ httpServer.on('upgrade', (request, socket, head) => {
 	});
 });
 
-export default app;
+export default httpServer;

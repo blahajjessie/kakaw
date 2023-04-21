@@ -1,18 +1,14 @@
-import app from '../server';
+import httpServer from '../server';
 import supertest from 'supertest';
-import http from 'http';
 
-let server: http.Server;
 let request: supertest.SuperTest<supertest.Test>;
 
 beforeAll(() => {
-	server = http.createServer(app);
-	server.listen();
-	request = supertest(server);
+	request = supertest(httpServer);
 });
 
 afterAll((done) => {
-	server.close(done);
+	httpServer.close(done);
 });
 
 test('GET Invalid URL', async () => {
