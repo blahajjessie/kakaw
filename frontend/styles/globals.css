@@ -3,9 +3,9 @@
 @tailwind utilities;
 
 :root {
-  --background-rgb: 103, 78, 167;
+	--background-rgb: 103, 78, 167;
 }
 
 body {
-  background: rgb(var(--background-rgb));
+	background: rgb(var(--background-rgb));
 }
