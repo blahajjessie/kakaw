@@ -1,6 +1,5 @@
 import express from 'express';
 import WebSocket from 'ws';
-import * as fs from 'fs';
 
 import * as code from './code';
 import { handleConnection } from './connection';
@@ -9,29 +8,25 @@ const app = express();
 const usedGame: string[] = [];
 // used ids for both players and host
 const usedId: string[] = [];
-// first key is gameId, second key is attributes (data, host)
-const games: Map<string, Map<string, string>> = new Map();
-
+// first key is gameId
+const games: Map<string, any> = new Map();
+let open = -1;
 
 app.get('/', (_req, res) => {
 	res.send('Hello, world!');
 });
 
-app.post('/games', express.json(), (req, res) => {
-	const file = req.body;
+app.post('/games', (req, res) => {
 	try {
-		const data = fs.readFileSync(file, 'utf8');
-		let quizData = JSON.parse(data);
+		let quizData = JSON.parse(req.body);
 		const id = {
 			gameId: code.gen(5, usedGame),
-			hostId: code.gen(8, usedId)
-		}
+			hostId: code.gen(8, usedId),
+		};
 		// associate gameId with data and host
-		const gameMap = new Map();
-		gameMap.set('data', quizData);
-		gameMap.set('host', id.hostId);
-		games.set(id.gameId, gameMap);
-		res.send(id); 
+		const data = { quiz: quizData, host: id.hostId };
+		games.set(id.gameId, data);
+		res.send(id);
 	} catch (e) {
 		// client error
 		console.error('Invalid JSON file:', e);
@@ -39,27 +34,64 @@ app.post('/games', express.json(), (req, res) => {
 	}
 });
 
-app.get('/start', (req, res) => {
+app.get('/games/:id/questions/:index/start', (req, res) => {
 	const gameId = req.query.gameId as string;
 	const hostId = req.query.hostId as string;
-  
-	const gameMap = games.get(gameId);
+	const index = parseInt(req.params.index);
+	const game = games.get(gameId);
+
 	// client-requested game error
-	if (gameMap === undefined) {
-	  res.status(404).send(`Game ${gameId} not found`);
-	  return;
+	if (game === undefined) {
+		res.status(404).send(`Game ${gameId} not found`);
+		return;
 	}
-  
-	const host = gameMap.get('host');
+
+	const host = game.host;
 	// client permission error
 	if (host !== hostId) {
-	  res.status(403).send(`Incorrect host of game ${gameId}`);
-	  return;
+		res.status(403).send(`Incorrect host of game ${gameId}`);
+		return;
 	}
-  
-	// url generated for host to connect to websocket
-	const webSocketUrl = `ws://${req.headers.host}/connect?gameId=${gameId}&playerId=${hostId}`;
-	res.send({ url: webSocketUrl });
+
+	const quiz = game.quiz;
+	// out-of-bounds error
+	if (index >= quiz.questions.length) {
+		res.status(404).send(`Question ${index} not found`);
+		return;
+	}
+
+	// start accepting answers for the question index
+	open = index;
+
+	// show question text and answers on both host and player screens? 
+
+	res.send({ ok: true });
+});
+
+app.post('/games/:id/questions/:index/answer', (req, res) => {
+	const gameId = req.query.gameId as string;
+	const index = parseInt(req.params.index);
+	const game = games.get(gameId);
+
+	// client-requested game error
+	if (game === undefined) {
+		res.status(404).send(`Game ${gameId} not found`);
+		return;
+	}
+
+	const quiz = game.quiz;
+	const question = quiz.questions[index];
+
+	// check if question is open
+	if (open != index) {
+		res.status(400).send(`Question ${index} is not open for answers`);
+		return;
+	}
+
+	// how to process answers? map w/ player ids and answers?
+
+	// not accepting answers
+	open = -1;
 });
 
 // create websocket "server" which really piggybacks on the express server
