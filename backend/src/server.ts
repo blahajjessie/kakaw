@@ -36,14 +36,11 @@ app.post('/games', (req, res) => {
 	}
 });
 
-<<<<<<< HEAD
-app.get('/games/:id/questions/:index/start', (req, res) => {
-=======
 app.post('/games/:gameId/players', (_req, res) => {
 	user.userHandle(_req.params.gameId, _req, res);
 });
-app.get('/start', (req, res) => {
->>>>>>> quiz-grading
+
+app.get('/games/:id/questions/:index/start', (req, res) => {
 	const gameId = req.query.gameId as string;
 	const hostId = req.query.hostId as string;
 	const index = parseInt(req.params.index);
@@ -79,6 +76,7 @@ app.get('/start', (req, res) => {
 
 app.post('/games/:id/questions/:index/answer', (req, res) => {
 	const gameId = req.query.gameId as string;
+	const playerId = req.query.playerId as string;
 	const index = parseInt(req.params.index);
 	const game = games.get(gameId);
 
@@ -97,10 +95,10 @@ app.post('/games/:id/questions/:index/answer', (req, res) => {
 		return;
 	}
 
-	// how to process answers? map w/ player ids and answers?
+	// add map w/ player ids and answers?
+	const answer = req.body.answer;
 
-	// not accepting answers
-	open = -1;
+	// not accepting answers for the question index from the playerId 
 });
 
 // create websocket "server" which really piggybacks on the express server
