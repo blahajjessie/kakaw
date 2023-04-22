@@ -2,8 +2,9 @@
 
 How to run this:
 
-- Install Node.js
-- Navigate to `kakaw/backend`
+- Install Node.js (ideally version 18)
+- Navigate to the `kakaw/backend` directory
+
 - Install dependencies: `npm install`
 - Run the server: `./watch.sh`
 

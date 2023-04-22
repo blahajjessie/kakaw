@@ -2,9 +2,11 @@ import express from 'express';
 import WebSocket from 'ws';
 
 import * as code from './code';
+import * as user from './user';
 import { handleConnection } from './connection';
 
 const app = express();
+app.use(express.json());
 const usedGame: string[] = [];
 // used ids for both players and host
 const usedId: string[] = [];
@@ -34,7 +36,14 @@ app.post('/games', (req, res) => {
 	}
 });
 
+<<<<<<< HEAD
 app.get('/games/:id/questions/:index/start', (req, res) => {
+=======
+app.post('/games/:gameId/players', (_req, res) => {
+	user.userHandle(_req.params.gameId, _req, res);
+});
+app.get('/start', (req, res) => {
+>>>>>>> quiz-grading
 	const gameId = req.query.gameId as string;
 	const hostId = req.query.hostId as string;
 	const index = parseInt(req.params.index);
@@ -132,3 +141,5 @@ httpServer.on('upgrade', (request, socket, head) => {
 		handleConnection(client, gameId, playerId);
 	});
 });
+
+export default httpServer;
