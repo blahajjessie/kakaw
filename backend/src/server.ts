@@ -1,5 +1,6 @@
 import express from 'express';
 import WebSocket from 'ws';
+import * as fs from 'fs';
 
 import * as code from './code';
 import * as user from './user';
@@ -7,18 +8,63 @@ import { handleConnection } from './connection';
 
 const app = express();
 app.use(express.json());
-const used: string[] = [];
+const usedGame: string[] = [];
+// used ids for both players and host
+const usedId: string[] = [];
+// first key is gameId, second key is attributes (data, host)
+const games: Map<string, Map<string, string>> = new Map();
+
 
 app.get('/', (_req, res) => {
 	res.send('Hello, world!');
 });
 
-app.get('/code', (_req, res) => {
-	res.send(code.gen(5, used));
+app.post('/games', express.json(), (req, res) => {
+	const file = req.body;
+	try {
+		const data = fs.readFileSync(file, 'utf8');
+		let quizData = JSON.parse(data);
+		const id = {
+			gameId: code.gen(5, usedGame),
+			hostId: code.gen(8, usedId)
+		}
+		// associate gameId with data and host
+		const gameMap = new Map();
+		gameMap.set('data', quizData);
+		gameMap.set('host', id.hostId);
+		games.set(id.gameId, gameMap);
+		res.send(id); 
+	} catch (e) {
+		// client error
+		console.error('Invalid JSON file:', e);
+		res.status(400).send('Invalid JSON file');
+	}
 });
 
 app.post('/games/:gameId/players', (_req, res) => {
 	user.userHandle(_req.params.gameId, _req, res);
+});
+app.get('/start', (req, res) => {
+	const gameId = req.query.gameId as string;
+	const hostId = req.query.hostId as string;
+  
+	const gameMap = games.get(gameId);
+	// client-requested game error
+	if (gameMap === undefined) {
+	  res.status(404).send(`Game ${gameId} not found`);
+	  return;
+	}
+  
+	const host = gameMap.get('host');
+	// client permission error
+	if (host !== hostId) {
+	  res.status(403).send(`Incorrect host of game ${gameId}`);
+	  return;
+	}
+  
+	// url generated for host to connect to websocket
+	const webSocketUrl = `ws://${req.headers.host}/connect?gameId=${gameId}&playerId=${hostId}`;
+	res.send({ url: webSocketUrl });
 });
 
 // create websocket "server" which really piggybacks on the express server
