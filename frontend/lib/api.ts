@@ -8,7 +8,7 @@ export function apiCall(
 ): Promise<Response> {
 	const options: RequestInit = { method };
 	if (body) {
-		options.body = body;
+		options.body = JSON.stringify(body);
 		options.headers = {
 			'content-type': 'application/json',
 		};
