@@ -5,8 +5,12 @@ import { handleConnection } from './connection';
 const app = express();
 app.use(express.json());
 
-import registerGameRoutes from './game';
+import registerGameRoutes, { Game } from './game';
 registerGameRoutes(app);
+
+app.get('/', (_req, res) => {
+	res.send('Hello, world!');
+});
 
 // create websocket "server" which really piggybacks on the express server
 const webSocketServer = new WebSocket.Server({
