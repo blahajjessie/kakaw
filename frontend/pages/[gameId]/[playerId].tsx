@@ -45,6 +45,7 @@ function ConnectPage() {
   export default ConnectPage;
   
   function MyComponent() {
+    //temp values
     const gameId = '123';
     const playerId = '456';
   
