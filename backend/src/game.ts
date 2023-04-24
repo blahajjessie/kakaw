@@ -56,7 +56,7 @@ const games: Map<GameId, Game> = new Map();
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
-            const quizData: Quiz = JSON.parse(req.body);
+            const quizData: Quiz = req.body;
 			const response = {
 				gameId: code.gen(5, []),
 				hostId: code.gen(8, []),
@@ -73,6 +73,7 @@ export default function registerGameRoutes(app: Express) {
 			res.send(response);
 		} catch (e) {
 			// client upload error
+            console.log(e);
 			res.status(400).send('Invalid JSON file');
 			// Todo: further validation
 		}
@@ -104,8 +105,9 @@ export default function registerGameRoutes(app: Express) {
 
 		// show question text and answers on both host and player screens
 		beginQuestion();
+        game.users.set('123', { name: 'bob', answers: [] });
 
-		res.send({ ok: true });
+		res.status(200).send({ ok: true });
 	});
 
 	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
@@ -144,10 +146,13 @@ export default function registerGameRoutes(app: Express) {
             } else {
                 // if a player has joined late, their previous answers will be undefined
                 user.answers[index] = answer;
+                console.log(user.answers);
             }
+        } else {
+            res.status(400).send({ok: false, err: `User ${userId} does not exist`});
         }
 
-        res.send({ok: true});
+        res.status(200).send({ok: true});
 	});
 
 	app.post('/games/:gameId/players', (req, res) => {
