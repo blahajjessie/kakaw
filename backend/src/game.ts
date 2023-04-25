@@ -10,9 +10,10 @@ type GameId = string;
 // Userid is stored in the map for now
 export interface User {
 	name: string;
-    answers: number[];
+	answers: number[];
+	score: number;
+	socket?: WebSocket;
 }
-const usedGame: GameId[] = [];
 
 // define a quiz and question type
 export interface QuizQuestion {
@@ -39,15 +40,20 @@ export interface Game {
 	users: Map<UserId, User>;
 	hostId: UserId;
 	activeQuestion: number;
+	quizOpen: boolean;
 	quizData: Quiz;
-};
+}
 
 function getUsers(game: Game) {
 	return [...(game.users.keys(), game.hostId)];
 }
 
-function beginQuestion() {
-    return;
+function beginQuestion(game: Game) {
+	return;
+}
+
+function endQuestion(game: Game) {
+	return;
 }
 
 // first key is gameId
@@ -56,7 +62,7 @@ const games: Map<GameId, Game> = new Map();
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
-            const quizData: Quiz = req.body;
+			const quizData: Quiz = req.body;
 			const response = {
 				gameId: code.gen(5, []),
 				hostId: code.gen(8, []),
@@ -67,13 +73,14 @@ export default function registerGameRoutes(app: Express) {
 				quizData,
 				hostId: response.hostId,
 				activeQuestion: -1,
+				quizOpen: false,
 			};
 			games.set(response.gameId, data);
-            console.log(response);
+			console.log(response);
 			res.send(response);
 		} catch (e) {
 			// client upload error
-            console.log(e);
+			console.log(e);
 			res.status(400).send('Invalid JSON file');
 			// Todo: further validation
 		}
@@ -86,7 +93,7 @@ export default function registerGameRoutes(app: Express) {
 
 		// client-requested game error
 		if (game === undefined) {
-			res.status(404).send({ ok: false , err: `Game ${gameId} not found`});
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
 			return;
 		}
 
@@ -96,16 +103,56 @@ export default function registerGameRoutes(app: Express) {
 		const quiz = game.quizData;
 		// out-of-bounds error
 		if (index >= quiz.questions.length) {
-			res.status(404).send({ ok: false , err: `Question ${index} not found`});
+			res.status(404).send({ ok: false, err: `Question ${index} not found` });
 			return;
 		}
 
 		// start accepting answers for the question index
+		if (index != game.activeQuestion + 1) {
+			res.status(400).send({
+				ok: false,
+				err: `Question ${index} is not next`,
+			});
+			return;
+		}
 		game.activeQuestion = index;
+		game.quizOpen = true;
 
 		// show question text and answers on both host and player screens
-		beginQuestion();
-        game.users.set('123', { name: 'bob', answers: [] });
+		beginQuestion(game);
+
+		res.status(200).send({ ok: true });
+	});
+
+	app.post('/games/:gameId/questions/:index/end', (req, res) => {
+		const gameId: GameId = req.params.gameId;
+		const index = parseInt(req.params.index);
+		const game = games.get(gameId);
+
+		// host-requested game error
+		if (game === undefined) {
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
+			return;
+		}
+
+		const quiz = game.quizData;
+		// out-of-bounds error
+		if (index >= quiz.questions.length) {
+			res.status(404).send({ ok: false, err: `Question ${index} not found` });
+			return;
+		}
+
+		// start accepting answers for the question index
+		if (index != game.activeQuestion) {
+			res.status(400).send({
+				ok: false,
+				err: `Question ${index} is not open`,
+			});
+			return;
+		}
+		game.quizOpen = false;
+		// show question text and answers on both host and player screens
+		endQuestion(game);
 
 		res.status(200).send({ ok: true });
 	});
@@ -117,42 +164,47 @@ export default function registerGameRoutes(app: Express) {
 		const game = games.get(gameId);
 
 		let answer: number;
-        try {
-            answer = parseInt(req.body.answer);
-        } catch (e) {
-            answer = -1;
-        }
+		try {
+			answer = parseInt(req.body.answer);
+		} catch (e) {
+			answer = -1;
+		}
 
 		// client-requested game error
 		if (game === undefined) {
-			res.status(404).send({ok: false, err: `Game ${gameId} not found`});
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
 			return;
 		}
 
 		const quiz = game.quizData;
 
 		// check if question is open
-		if (game.activeQuestion != index) {
-			res.status(400).send({ok: false, err: `Question ${index} is not open for answers`});
+		if (game.activeQuestion != index && game.quizOpen) {
+			res
+				.status(400)
+				.send({ ok: false, err: `Question ${index} is not open for answers` });
 			return;
 		}
 
 		// add answer to userId
-        const user = game.users.get(userId);
-        if (user) {
-            if (user.answers[index] !== undefined) {
-                res.status(400).send({ok: false, err: `Answer for Question ${index} already exists`});
-                return;
-            } else {
-                // if a player has joined late, their previous answers will be undefined
-                user.answers[index] = answer;
-                console.log(user.answers);
-            }
-        } else {
-            res.status(400).send({ok: false, err: `User ${userId} does not exist`});
-        }
+		const user = game.users.get(userId);
+		if (user) {
+			if (user.answers[index] !== undefined) {
+				res.status(400).send({
+					ok: false,
+					err: `Answer for Question ${index} already exists`,
+				});
+				return;
+			} else {
+				// if a player has joined late, their previous answers will be undefined
+				user.answers[index] = answer;
+				// console.log(user.answers);
+			}
+		} else {
+			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
+		}
 
-        res.status(200).send({ok: true});
+		res.status(200).send({ ok: true });
 	});
 
 	app.post('/games/:gameId/players', (req, res) => {
@@ -178,8 +230,10 @@ export default function registerGameRoutes(app: Express) {
 		// 	games.set(gameId, playerSet);
 		// }
 
-		const username: UserId = body.username;
-		if (game.users.has(username)) {
+		// TODO This validation might be wrong
+		const username: string = body.username;
+		// EW disgusting.... Gets the usernames from the users list
+		if ([...game.users.values()].map((usr) => usr.name).includes(username)) {
 			res.status(409).send();
 			return;
 		}
@@ -189,7 +243,7 @@ export default function registerGameRoutes(app: Express) {
 
 		const id = code.gen(8, [...(game.users.keys(), game.hostId)]);
 
-		game.users.set(id, { name: username, answers: [] });
+		game.users.set(id, { name: username, answers: [], score: 0 });
 		const r = { id: id };
 		res.status(201).json(r).send();
 		return;
