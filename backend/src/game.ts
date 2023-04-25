@@ -144,12 +144,10 @@ export default function registerGameRoutes(app: Express) {
 		const user = game.users.get(userId);
 		if (user) {
 			if (user.answers[index] !== undefined) {
-				res
-					.status(400)
-					.send({
-						ok: false,
-						err: `Answer for Question ${index} already exists`,
-					});
+				res.status(400).send({
+					ok: false,
+					err: `Answer for Question ${index} already exists`,
+				});
 				return;
 			} else {
 				// if a player has joined late, their previous answers will be undefined
