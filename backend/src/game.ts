@@ -10,7 +10,7 @@ type GameId = string;
 // Userid is stored in the map for now
 export interface User {
 	name: string;
-    answers: number[];
+	answers: number[];
 }
 const usedGame: GameId[] = [];
 
@@ -40,14 +40,14 @@ export interface Game {
 	hostId: UserId;
 	activeQuestion: number;
 	quizData: Quiz;
-};
+}
 
 function getUsers(game: Game) {
-	return [...(game.users.keys(), game.hostId)];
+	return [...game.users.keys(), game.hostId];
 }
 
 function beginQuestion() {
-    return;
+	return;
 }
 
 // first key is gameId
@@ -56,7 +56,7 @@ const games: Map<GameId, Game> = new Map();
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
-            const quizData: Quiz = req.body;
+			const quizData: Quiz = req.body;
 			const response = {
 				gameId: code.gen(5, []),
 				hostId: code.gen(8, []),
@@ -69,11 +69,11 @@ export default function registerGameRoutes(app: Express) {
 				activeQuestion: -1,
 			};
 			games.set(response.gameId, data);
-            console.log(response);
-			res.send(response);
+			console.log(response);
+			res.status(201).json(response);
 		} catch (e) {
 			// client upload error
-            console.log(e);
+			console.log(e);
 			res.status(400).send('Invalid JSON file');
 			// Todo: further validation
 		}
@@ -86,17 +86,17 @@ export default function registerGameRoutes(app: Express) {
 
 		// client-requested game error
 		if (game === undefined) {
-			res.status(404).send({ ok: false , err: `Game ${gameId} not found`});
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
 			return;
 		}
 
-		// we have no way of validating the host yet
+		// TODO: validate this request comes from the host (pending API description)
 		// client permission 403 error
 
 		const quiz = game.quizData;
 		// out-of-bounds error
 		if (index >= quiz.questions.length) {
-			res.status(404).send({ ok: false , err: `Question ${index} not found`});
+			res.status(404).send({ ok: false, err: `Question ${index} not found` });
 			return;
 		}
 
@@ -105,61 +105,68 @@ export default function registerGameRoutes(app: Express) {
 
 		// show question text and answers on both host and player screens
 		beginQuestion();
-        game.users.set('123', { name: 'bob', answers: [] });
 
 		res.status(200).send({ ok: true });
 	});
 
 	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
 		const gameId: GameId = req.params.gameId;
+		// TODO change this to match whatever method we use to authenticate users
 		const userId: UserId = req.body.userId;
 		const index = parseInt(req.params.index);
 		const game = games.get(gameId);
 
-		let answer: number;
-        try {
-            answer = parseInt(req.body.answer);
-        } catch (e) {
-            answer = -1;
-        }
-
 		// client-requested game error
 		if (game === undefined) {
-			res.status(404).send({ok: false, err: `Game ${gameId} not found`});
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
 			return;
 		}
-
-		const quiz = game.quizData;
 
 		// check if question is open
 		if (game.activeQuestion != index) {
-			res.status(400).send({ok: false, err: `Question ${index} is not open for answers`});
+			res
+				.status(400)
+				.send({ ok: false, err: `Question ${index} is not open for answers` });
 			return;
 		}
 
-		// add answer to userId
-        const user = game.users.get(userId);
-        if (user) {
-            if (user.answers[index] !== undefined) {
-                res.status(400).send({ok: false, err: `Answer for Question ${index} already exists`});
-                return;
-            } else {
-                // if a player has joined late, their previous answers will be undefined
-                user.answers[index] = answer;
-                console.log(user.answers);
-            }
-        } else {
-            res.status(400).send({ok: false, err: `User ${userId} does not exist`});
-        }
+		const answer = req.body.answer;
+		if (
+			typeof answer != 'number' ||
+			answer >= game.quizData.questions[game.activeQuestion].answerTexts.length
+		) {
+			res
+				.status(400)
+				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
+		}
 
-        res.status(200).send({ok: true});
+		// add answer to userId
+		const user = game.users.get(userId);
+		if (user) {
+			if (user.answers[index] !== undefined) {
+				res
+					.status(400)
+					.send({
+						ok: false,
+						err: `Answer for Question ${index} already exists`,
+					});
+				return;
+			} else {
+				// if a player has joined late, their previous answers will be undefined
+				user.answers[index] = answer;
+			}
+		} else {
+			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
+		}
+
+		res.status(200).send({ ok: true });
 	});
 
 	app.post('/games/:gameId/players', (req, res) => {
 		const body = req.body;
 		const gameId: GameId = req.params.gameId;
 
-		if (!body.username) {
+		if (typeof body.username != 'string') {
 			res.status(400).send();
 			return;
 		}
@@ -187,11 +194,10 @@ export default function registerGameRoutes(app: Express) {
 		// Functionally done to make use of code generation
 		// but I don't want to store the id's more than they already are (twice now)
 
-		const id = code.gen(8, [...(game.users.keys(), game.hostId)]);
+		const id = code.gen(8, getUsers(game));
 
 		game.users.set(id, { name: username, answers: [] });
-		const r = { id: id };
-		res.status(201).json(r).send();
+		res.status(201).json({ ok: true, id });
 		return;
 	});
 }
