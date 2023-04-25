@@ -1,12 +1,12 @@
 export function gen(len: number, used: Array<string>) {
 	let result = '';
-	const char = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789';
-	const char_len = char.length;
+	const char = '0123456789';
+	const charLen = char.length;
 
 	do {
 		// generate code
 		for (let i = 0; i < len; i++) {
-			result += char.charAt(Math.floor(Math.random() * char_len));
+			result += char.charAt(Math.floor(Math.random() * charLen));
 		}
 
 		// checks for duplicates
