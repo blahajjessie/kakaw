@@ -1,6 +1,8 @@
 import { Express } from 'express';
 import * as code from './code';
 
+import { connections, sendMessage } from './connection';
+
 // for clarity, a gameID is just a string
 type UserId = string;
 // used ids for both players and host
@@ -48,17 +50,35 @@ function getUsers(game: Game) {
 	return [...(game.users.keys(), game.hostId)];
 }
 
-function beginQuestion(game: Game) {
-	return;
-}
-
 function endQuestion(game: Game) {
 	return;
 }
-
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
 
+// Input: Game Object
+// beginQuestion sends each player and host the current active question
+function beginQuestion(gameId: GameId) {
+	const game = games.get(gameId);
+	if (!game) return;
+	const users = getUsers(game);
+	const userSockets = connections.get(gameId);
+	if (userSockets === undefined) {
+		// Player List Not in Connections
+		return;
+	}
+	const question = JSON.stringify(game.quizData.questions[game.activeQuestion]);
+	users.forEach(function (value: string) {
+		let sock = userSockets.get(value);
+		if (sock === undefined) {
+			return;
+		}
+		if (sock.readyState === WebSocket.OPEN) {
+			sendMessage(sock, 'startQuestion', question);
+		}
+	});
+	return;
+}
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
@@ -119,7 +139,7 @@ export default function registerGameRoutes(app: Express) {
 		game.quizOpen = true;
 
 		// show question text and answers on both host and player screens
-		beginQuestion(game);
+		beginQuestion(gameId);
 
 		res.status(200).send({ ok: true });
 	});
