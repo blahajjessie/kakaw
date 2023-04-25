@@ -13,8 +13,8 @@ type GameId = string;
 export interface User {
 	name: string;
 	answers: number[];
-	score: number;
-	socket?: WebSocket;
+	scores: number[];
+	times: number[];
 }
 
 // define a quiz and question type
@@ -36,6 +36,7 @@ export interface Quiz {
 		note?: string;
 	};
 	questions: QuizQuestion[];
+	answers: Map<UserId, { time: number; answer: number }>;
 }
 
 export interface Game {
@@ -46,15 +47,50 @@ export interface Game {
 	quizData: Quiz;
 }
 
+// first key is gameId
+const games: Map<GameId, Game> = new Map();
+
 function getUsers(game: Game) {
 	return [...(game.users.keys(), game.hostId)];
 }
 
-function endQuestion(game: Game) {
+function endQuestion(gameId: GameId) {
+	const game = games.get(gameId);
+	if (!game) return;
+	const users = getUsers(game);
+	const userSockets = connections.get(gameId);
+	if (userSockets === undefined) {
+		// Player List Not in Connections
+		return;
+	}
+
+	users.forEach(function (value: UserId) {
+		let user = game.users.get(value);
+		if (!user) return;
+		let endResp = {
+			correct: game.quizData.questions[
+				game.activeQuestion
+			].correctAnswers.includes(user.answers[game.activeQuestion]),
+
+			correctAnswers:
+				game.quizData.questions[game.activeQuestion].correctAnswers,
+
+			score: user.scores.reduce((a, b) => a + b, 0),
+			scoreChange: user.scores[game.activeQuestion],
+			time: user.times[game.activeQuestion],
+		};
+		let resp = JSON.stringify(endResp);
+
+		let sock = userSockets.get(value);
+		if (sock === undefined) {
+			return;
+		}
+		if (sock.readyState === WebSocket.OPEN) {
+			sendMessage(sock, 'endQuestion', resp);
+		}
+	});
 	return;
 }
-// first key is gameId
-const games: Map<GameId, Game> = new Map();
 
 // Input: Game Object
 // beginQuestion sends each player and host the current active question
@@ -67,6 +103,7 @@ function beginQuestion(gameId: GameId) {
 		// Player List Not in Connections
 		return;
 	}
+	// TODO: only send question data (dont send answers, etc)
 	const question = JSON.stringify(game.quizData.questions[game.activeQuestion]);
 	users.forEach(function (value: string) {
 		let sock = userSockets.get(value);
@@ -172,7 +209,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 		game.quizOpen = false;
 		// show question text and answers on both host and player screens
-		endQuestion(game);
+		endQuestion(gameId);
 
 		res.status(200).send({ ok: true });
 	});
@@ -263,7 +300,7 @@ export default function registerGameRoutes(app: Express) {
 
 		const id = code.gen(8, [...(game.users.keys(), game.hostId)]);
 
-		game.users.set(id, { name: username, answers: [], score: 0 });
+		game.users.set(id, { name: username, answers: [], scores: [], times: [] });
 		const r = { id: id };
 		res.status(201).json(r).send();
 		return;
