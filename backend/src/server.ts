@@ -1,24 +1,15 @@
 import express from 'express';
 import WebSocket from 'ws';
-
-import * as code from './code';
-import * as user from './user';
 import { handleConnection } from './connection';
 
 const app = express();
 app.use(express.json());
-const used: string[] = [];
+
+import registerGameRoutes, { Game } from './game';
+registerGameRoutes(app);
 
 app.get('/', (_req, res) => {
 	res.send('Hello, world!');
-});
-
-app.get('/code', (_req, res) => {
-	res.send(code.gen(5, used));
-});
-
-app.post('/games/:gameId/players', (_req, res) => {
-	user.userHandle(_req.params.gameId, _req, res);
 });
 
 // create websocket "server" which really piggybacks on the express server
@@ -31,7 +22,6 @@ const webSocketServer = new WebSocket.Server({
 	// certain connections from express to ws
 	noServer: true,
 });
-
 const httpServer = app.listen(8080);
 
 httpServer.on('listening', () => {
