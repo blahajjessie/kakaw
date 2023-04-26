@@ -1,7 +1,3 @@
-import Image from 'next/image';
-import { Inter } from 'next/font/google';
-import MatchMediaWrapper from '../components/MatchMediaWrapper';
-
 import { ChangeEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 
