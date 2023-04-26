@@ -25,5 +25,13 @@ test('Wrong Quiz Format', async () => {
 });
 
 test('Correct Quiz Format', async () => {
-	await request.post('/games').send(correct).expect(201);
+	await request.post('/games')
+	.send(correct)
+	.expect(201)
+	.then((data) => {
+		expect(data).toBeDefined();
+		expect(data.body).toBeDefined();
+		expect(data.body.gameId).toBeDefined();
+		expect(data.body.hostId).toBeDefined();
+	  });
 });
