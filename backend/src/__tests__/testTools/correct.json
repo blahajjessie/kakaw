@@ -1,0 +1,32 @@
+{   
+    "meta":{
+        "title": "Are we human? Or are we dancer?",
+        "author": "KAKAW",
+        "pointDefault": 5,
+        "timeDefault": 15
+    },
+    "questions":[
+        {
+            "questionText": "Are we human?",
+                "answerTexts": [
+                    "Yes", 
+                    "No",
+                    "NONONONONOWAITWAITWAIT",
+                    "idunno man I just work here"
+                ],
+            "correctAnswers": [1],
+            "time": 10
+        },
+        {
+            "questionText": "Or are we dancer?",
+                "answerTexts": [
+                    "Why are you like this?  What do you have to gain from this?  Are you sick?", 
+                    "Yea.",
+                    "No.",
+                    "I am so tired."
+                ],
+            "correctAnswers": [0]
+        }
+    ]
+	
+}
