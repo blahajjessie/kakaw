@@ -176,25 +176,17 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		// let playerSet = games.get(gameId);
-
-		// if (playerSet === undefined) {
-		// 	playerSet = new Map();
-		// 	games.set(gameId, playerSet);
-		// }
-
+		// Check if username is unique
 		const username: UserId = body.username;
 		if (game.users.has(username)) {
 			res.status(409).send();
 			return;
 		}
 
-		// Functionally done to make use of code generation
-		// but I don't want to store the id's more than they already are (twice now)
-
+		// Generate Code and Set User Entry
 		const id = code.gen(8, getUsers(game));
-
 		game.users.set(id, { name: username, answers: [] });
+
 		res.status(201).json({ ok: true, id });
 		return;
 	});
