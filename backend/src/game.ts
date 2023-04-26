@@ -79,7 +79,7 @@ function endQuestion(gameId: GameId) {
 			scoreChange: user.scores[game.activeQuestion],
 			time: user.times[game.activeQuestion],
 		};
-		let resp = JSON.stringify(endResp);
+		let resp = endResp;
 
 		let sock = userSockets.get(value);
 		if (sock === undefined) {
@@ -104,7 +104,7 @@ function beginQuestion(gameId: GameId) {
 		return;
 	}
 	// TODO: only send question data (dont send answers, etc)
-	const question = JSON.stringify(game.quizData.questions[game.activeQuestion]);
+	const question = game.quizData.questions[game.activeQuestion];
 	users.forEach(function (value: string) {
 		let sock = userSockets.get(value);
 		if (sock === undefined) {
@@ -116,6 +116,7 @@ function beginQuestion(gameId: GameId) {
 	});
 	return;
 }
+
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
@@ -221,13 +222,6 @@ export default function registerGameRoutes(app: Express) {
 		const index = parseInt(req.params.index);
 		const game = games.get(gameId);
 
-		let answer: number;
-		try {
-			answer = parseInt(req.body.answer);
-		} catch (e) {
-			answer = -1;
-		}
-
 		// client-requested game error
 		if (game === undefined) {
 			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
@@ -242,7 +236,7 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		answer = req.body.answer;
+		const answer = req.body.answer;
 		if (
 			typeof answer != 'number' ||
 			answer >= game.quizData.questions[game.activeQuestion].answerTexts.length
