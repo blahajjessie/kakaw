@@ -15,8 +15,6 @@ enum UploadStatus {
 	Done,
 }
 
-const inter = Inter({ subsets: ['latin'] });
-
 export default function Home() {
 	const mobileContent = (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
