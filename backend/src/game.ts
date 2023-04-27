@@ -282,13 +282,6 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		// let playerSet = games.get(gameId);
-
-		// if (playerSet === undefined) {
-		// 	playerSet = new Map();
-		// 	games.set(gameId, playerSet);
-		// }
-
 		const username: string = body.username;
 		// EW disgusting.... Gets the usernames from the users list
 		if ([...game.users.values()].map((usr) => usr.name).includes(username)) {
