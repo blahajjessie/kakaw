@@ -1,8 +1,7 @@
 import { WEBSOCKET_BASE_URL } from '@/lib/api';
-import { useRouter } from 'next/router'
-import Link from 'next/link';
-import React, { useState, useCallback, useEffect } from 'react';
-import useWebSocket, { ReadyState } from 'react-use-websocket';
+import { useRouter } from 'next/router';
+import React from 'react';
+import useWebSocket from 'react-use-websocket';
 
 function ConnectPage() {
 	const router = useRouter();
