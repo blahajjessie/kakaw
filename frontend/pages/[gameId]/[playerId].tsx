@@ -1,37 +1,26 @@
-import { WEBSOCKET_BASE_URL } from '/Users/gealoro/kakaw/frontend/lib/api';
+import { WEBSOCKET_BASE_URL } from '@/lib/api';
 import { useRouter } from 'next/router'
 import Link from 'next/link';
 import React, { useState, useCallback, useEffect } from 'react';
 import useWebSocket, { ReadyState } from 'react-use-websocket';
 
-//import './App.css';
-const WS_URL = WEBSOCKET_BASE_URL
-
-/*/
-function App() {
-useWebSocket(WS_URL, {
-    onOpen: () => {
-      console.log('WebSocket connection established.');
-    }
-  });
-
-  return (
-    <div>Hello WebSockets!</div>
-  );
-}
-/*/
-
 function ConnectPage() {
+	const router = useRouter();
+	const { gameId, playerId } = router.query as {
+		gameId: string;
+		playerId: string;
+	};
 
-  useWebSocket(WS_URL, {
+	const url = new URL('/connect', WEBSOCKET_BASE_URL);
+	url.searchParams.set('gameId', gameId);
+	url.searchParams.set('playerId', playerId);
+
+	useWebSocket(url.href, {
     onOpen: () => {
       console.log('WebSocket connection established.');
     }
   });
 
-    const router = useRouter();
-    const { gameId, playerId } = router.query;
-  
     // render the page component with the query parameters
     return (
       <div>
@@ -44,14 +33,3 @@ function ConnectPage() {
   
   export default ConnectPage;
   
-  function MyComponent() {
-    //temp values
-    const gameId = '123';
-    const playerId = '456';
-  
-    return (
-      <Link href={`/connect?gameId=${gameId}&playerId=${playerId}`}>
-        <a>Connect</a>
-      </Link>
-    );
-  }
