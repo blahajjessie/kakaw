@@ -3,7 +3,7 @@ import { WebSocket } from 'ws';
 // first key is game ID, second key is player ID
 export const connections: Map<string, Map<string, WebSocket>> = new Map();
 
-function sendMessage(client: WebSocket, type: string, data: any) {
+export function sendMessage(client: WebSocket, type: string, data: any) {
 	client.send(JSON.stringify({ type, ...data }));
 }
 

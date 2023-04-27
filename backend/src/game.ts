@@ -1,6 +1,8 @@
 import { Express } from 'express';
 import * as code from './code';
 
+import { connections, sendMessage } from './connection';
+
 // for clarity, a gameID is just a string
 type UserId = string;
 // used ids for both players and host
@@ -11,8 +13,9 @@ type GameId = string;
 export interface User {
 	name: string;
 	answers: number[];
+	scores: number[];
+	times: number[];
 }
-const usedGame: GameId[] = [];
 
 // define a quiz and question type
 export interface QuizQuestion {
@@ -33,25 +36,86 @@ export interface Quiz {
 		note?: string;
 	};
 	questions: QuizQuestion[];
+	answers: Map<UserId, { time: number; answer: number }>;
 }
 
 export interface Game {
 	users: Map<UserId, User>;
 	hostId: UserId;
 	activeQuestion: number;
+	quizOpen: boolean;
 	quizData: Quiz;
 }
+
+// first key is gameId
+const games: Map<GameId, Game> = new Map();
 
 function getUsers(game: Game) {
 	return [...game.users.keys(), game.hostId];
 }
 
-function beginQuestion() {
+function endQuestion(gameId: GameId) {
+	const game = games.get(gameId);
+	if (!game) return;
+	const users = getUsers(game);
+	const userSockets = connections.get(gameId);
+	if (userSockets === undefined) {
+		// Player List Not in Connections
+		return;
+	}
+
+	users.forEach(function (value: UserId) {
+		let user = game.users.get(value);
+		if (!user) return;
+		let endResp = {
+			correct: game.quizData.questions[
+				game.activeQuestion
+			].correctAnswers.includes(user.answers[game.activeQuestion]),
+
+			correctAnswers:
+				game.quizData.questions[game.activeQuestion].correctAnswers,
+
+			score: user.scores.reduce((a, b) => a + b, 0),
+			scoreChange: user.scores[game.activeQuestion],
+			time: user.times[game.activeQuestion],
+		};
+		let resp = endResp;
+
+		let sock = userSockets.get(value);
+		if (sock === undefined) {
+			return;
+		}
+		if (sock.readyState === WebSocket.OPEN) {
+			sendMessage(sock, 'endQuestion', resp);
+		}
+	});
 	return;
 }
 
-// first key is gameId
-const games: Map<GameId, Game> = new Map();
+// Input: Game Object
+// beginQuestion sends each player and host the current active question
+function beginQuestion(gameId: GameId) {
+	const game = games.get(gameId);
+	if (!game) return;
+	const users = getUsers(game);
+	const userSockets = connections.get(gameId);
+	if (userSockets === undefined) {
+		// Player List Not in Connections
+		return;
+	}
+	// TODO: only send question data (dont send answers, etc)
+	const question = game.quizData.questions[game.activeQuestion];
+	users.forEach(function (value: string) {
+		let sock = userSockets.get(value);
+		if (sock === undefined) {
+			return;
+		}
+		if (sock.readyState === WebSocket.OPEN) {
+			sendMessage(sock, 'startQuestion', question);
+		}
+	});
+	return;
+}
 
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
@@ -67,6 +131,7 @@ export default function registerGameRoutes(app: Express) {
 				quizData,
 				hostId: response.hostId,
 				activeQuestion: -1,
+				quizOpen: false,
 			};
 			games.set(response.gameId, data);
 			console.log(response);
@@ -101,10 +166,51 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		// start accepting answers for the question index
+		if (index != game.activeQuestion + 1) {
+			res.status(400).send({
+				ok: false,
+				err: `Question ${index} is not next`,
+			});
+			return;
+		}
 		game.activeQuestion = index;
+		game.quizOpen = true;
 
 		// show question text and answers on both host and player screens
-		beginQuestion();
+		beginQuestion(gameId);
+
+		res.status(200).send({ ok: true });
+	});
+
+	app.post('/games/:gameId/questions/:index/end', (req, res) => {
+		const gameId: GameId = req.params.gameId;
+		const index = parseInt(req.params.index);
+		const game = games.get(gameId);
+
+		// host-requested game error
+		if (game === undefined) {
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
+			return;
+		}
+
+		const quiz = game.quizData;
+		// out-of-bounds error
+		if (index >= quiz.questions.length) {
+			res.status(404).send({ ok: false, err: `Question ${index} not found` });
+			return;
+		}
+
+		// start accepting answers for the question index
+		if (index != game.activeQuestion) {
+			res.status(400).send({
+				ok: false,
+				err: `Question ${index} is not open`,
+			});
+			return;
+		}
+		game.quizOpen = false;
+		// show question text and answers on both host and player screens
+		endQuestion(gameId);
 
 		res.status(200).send({ ok: true });
 	});
@@ -123,7 +229,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		// check if question is open
-		if (game.activeQuestion != index) {
+		if (game.activeQuestion != index && game.quizOpen) {
 			res
 				.status(400)
 				.send({ ok: false, err: `Question ${index} is not open for answers` });
@@ -176,17 +282,17 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		// Check if username is unique
-		const username: UserId = body.username;
-		if (game.users.has(username)) {
+		const username: string = body.username;
+		// EW disgusting.... Gets the usernames from the users list
+		if ([...game.users.values()].map((usr) => usr.name).includes(username)) {
 			res.status(409).send();
 			return;
 		}
 
 		// Generate Code and Set User Entry
 		const id = code.gen(8, getUsers(game));
-		game.users.set(id, { name: username, answers: [] });
 
+		game.users.set(id, { name: username, answers: [], scores: [], times: [] });
 		res.status(201).json({ ok: true, id });
 		return;
 	});
