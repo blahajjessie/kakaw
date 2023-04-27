@@ -264,7 +264,6 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		res.status(200).send({ ok: true });
-		res.status(200).send({ ok: true });
 	});
 
 	app.post('/games/:gameId/players', (req, res) => {
@@ -290,7 +289,6 @@ export default function registerGameRoutes(app: Express) {
 		// 	games.set(gameId, playerSet);
 		// }
 
-		// TODO This validation might be wrong
 		const username: string = body.username;
 		// EW disgusting.... Gets the usernames from the users list
 		if ([...game.users.values()].map((usr) => usr.name).includes(username)) {
