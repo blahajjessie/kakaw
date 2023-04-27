@@ -15,20 +15,19 @@ function ConnectPage() {
 	url.searchParams.set('playerId', playerId);
 
 	useWebSocket(url.href, {
-    onOpen: () => {
-      console.log('WebSocket connection established.');
-    }
-  });
+		onOpen: () => {
+			console.log('WebSocket connection established.');
+		},
+	});
 
-    // render the page component with the query parameters
-    return (
-      <div>
-        <h1>Connect Page</h1>
-        <p>Game ID: {gameId}</p>
-        <p>Player ID: {playerId}</p>
-      </div>
-    );
-  }
-  
-  export default ConnectPage;
-  
+	// render the page component with the query parameters
+	return (
+		<div>
+			<h1>Connect Page</h1>
+			<p>Game ID: {gameId}</p>
+			<p>Player ID: {playerId}</p>
+		</div>
+	);
+}
+
+export default ConnectPage;
