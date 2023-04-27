@@ -16,22 +16,35 @@ test('GET Invalid URL', async () => {
 	await request.get('/so-not-a-real-end-point-ba-bip-de-doo-da/').expect(404);
 });
 
-const bad_format = {
+// Quiz Endpoint Tests
+test('Correct Quiz Format', async () => {
+	await request
+		.post('/games')
+		.send(correct)
+		.expect(201)
+		.then((data) => {
+			expect(data).toBeDefined();
+			expect(data.body).toBeDefined();
+			expect(data.body.gameId).toBeDefined();
+			expect(data.body.hostId).toBeDefined();
+		});
+});
+
+test('Bad Request / No Data Sent', async () => {
+	await request.post('/games').expect(400);
+});
+
+// Quiz Format Tests
+const badFormat = {
 	ooga: 'booga',
 };
 
-test('Wrong Quiz Format', async () => {
-	await request.post('/games').send(bad_format).expect(400);
+test('Wrong Quiz Format / Incorrect JSON', async () => {
+	await request.post('/games').send(badFormat).expect(400);
 });
 
-test('Correct Quiz Format', async () => {
-	await request.post('/games')
-	.send(correct)
-	.expect(201)
-	.then((data) => {
-		expect(data).toBeDefined();
-		expect(data.body).toBeDefined();
-		expect(data.body.gameId).toBeDefined();
-		expect(data.body.hostId).toBeDefined();
-	  });
+const reallyBadFormat = '1001';
+
+test('Wrong Quiz Format / String', async () => {
+	await request.post('/games').send(reallyBadFormat).expect(400);
 });
