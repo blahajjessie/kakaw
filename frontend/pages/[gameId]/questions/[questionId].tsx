@@ -3,13 +3,18 @@ import { Inter } from 'next/font/google';
 import QuestionTop from '@/components/QuestionTop';
 import QuestionAnswers from '@/components/QuestionAnswers';
 import HostQuestionBottom from '@/components/HostQuestionBottom';
+// import PlayerQuestionBottom from '@/components/PlayerQuestionBottom';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export default function Home() {
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
-			<QuestionTop qNum={1} qText={'What is your quest?'}></QuestionTop>
+			<QuestionTop
+				qNum={1}
+				qText={'What is your quest?'}
+				qTime={75}
+			></QuestionTop>
 			<QuestionAnswers
 				answers={[
 					'To pass 115a',
@@ -19,6 +24,10 @@ export default function Home() {
 				]}
 			></QuestionAnswers>
 			<HostQuestionBottom numAnswered={2} numPlayers={5}></HostQuestionBottom>
+			{/* <PlayerQuestionBottom
+				name={'Student'}
+				score={5000}
+			></PlayerQuestionBottom> */}
 		</main>
 	);
 }
