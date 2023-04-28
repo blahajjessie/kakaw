@@ -20,19 +20,20 @@ afterAll((done) => {
 
 // Quiz Upload for the Purposes of Testing User Handling
 test('Quiz Upload', async () => {
-	await request.post('/games')
-	.send(correct)
-	.expect(201)
-	.then((data) => {
-		expect(data).toBeDefined();
-		expect(data.body).toBeDefined();
-		expect(data.body.gameId).toBeDefined();
-		expect(data.body.hostId).toBeDefined();
-		createRes = data.body;
-	  });
+	await request
+		.post('/games')
+		.send(correct)
+		.expect(201)
+		.then((data) => {
+			expect(data).toBeDefined();
+			expect(data.body).toBeDefined();
+			expect(data.body.gameId).toBeDefined();
+			expect(data.body.hostId).toBeDefined();
+			createRes = data.body;
+		});
 });
 
-// Request JSON for Joining a Game
+// Player Object Creation
 const badPlayer = {
 	username: 1,
 };
@@ -41,31 +42,41 @@ const player = {
 	username: 'Jorge',
 };
 
+const emptyPlayer = {};
+
 // User Handling Tests
 test('Bad Request / Username is not a string', async () => {
-	await request.post(`/games/${createRes.gameId}/players`)
-	.send(badPlayer)
-	.expect(400);
+	await request
+		.post(`/games/${createRes.gameId}/players`)
+		.send(badPlayer)
+		.expect(400);
 });
 
 test('Bad Request / No Data in Request', async () => {
 	await request.post(`/games/${createRes.gameId}/players`).expect(400);
 });
 
+test('Bad Request / No Data in Request', async () => {
+	await request
+		.post(`/games/${createRes.gameId}/players`)
+		.send(emptyPlayer)
+		.expect(400);
+});
+
 test('Game does not exist', async () => {
-	await request.post('/games/AAAA/players')
-	.send(player)
-	.expect(404);
+	await request.post('/games/AAAA/players').send(player).expect(404);
 });
 
 test('Successful Player Insert', async () => {
-	await request.post(`/games/${createRes.gameId}/players`)
-	.send(player)
-	.expect(201);
+	await request
+		.post(`/games/${createRes.gameId}/players`)
+		.send(player)
+		.expect(201);
 });
 
 test('Username Already Exists', async () => {
-	await request.post(`/games/${createRes.gameId}/players`)
-	.send(player)
-	.expect(409);
+	await request
+		.post(`/games/${createRes.gameId}/players`)
+		.send(player)
+		.expect(409);
 });

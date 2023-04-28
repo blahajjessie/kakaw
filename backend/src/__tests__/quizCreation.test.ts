@@ -12,6 +12,30 @@ afterAll((done) => {
 	httpServer.close(done);
 });
 
+// Quiz Object Creation
+
+const badFormat = {
+	ooga: 'booga',
+};
+
+const emptyJson = {};
+
+const reallyBadFormat = '1001';
+
+const noMeta = {
+	questions: correct.questions,
+};
+
+const wrongMetaTypes = {
+	meta: {
+		title: correct.meta.title,
+		author: 111,
+		pointDefault: '15',
+		timeDefault: '10',
+	},
+	questions: correct.questions,
+};
+
 test('GET Invalid URL', async () => {
 	await request.get('/so-not-a-real-end-point-ba-bip-de-doo-da/').expect(404);
 });
@@ -35,16 +59,22 @@ test('Bad Request / No Data Sent', async () => {
 });
 
 // Quiz Format Tests
-const badFormat = {
-	ooga: 'booga',
-};
-
 test('Wrong Quiz Format / Incorrect JSON', async () => {
 	await request.post('/games').send(badFormat).expect(400);
 });
 
-const reallyBadFormat = '1001';
+test('Wrong Quiz Format / Empty JSON', async () => {
+	await request.post('/games').send(emptyJson).expect(400);
+});
 
 test('Wrong Quiz Format / String', async () => {
 	await request.post('/games').send(reallyBadFormat).expect(400);
+});
+
+test('Wrong Quiz Format / No Meta Data', async () => {
+	await request.post('/games').send(noMeta).expect(400);
+});
+
+test('Wrong Quiz Format / Wrong Meta Data', async () => {
+	await request.post('/games').send(wrongMetaTypes).expect(400);
 });
