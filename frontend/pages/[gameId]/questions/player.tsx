@@ -2,7 +2,7 @@ import { Inter } from 'next/font/google';
 
 import QuestionTop from '@/components/QuestionTop';
 import QuestionAnswers from '@/components/QuestionAnswers';
-import HostQuestionBottom from '@/components/HostQuestionBottom';
+import PlayerQuestionBottom from '@/components/PlayerQuestionBottom';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -22,7 +22,10 @@ export default function Home() {
 					'To seek the holy grail',
 				]}
 			></QuestionAnswers>
-			<HostQuestionBottom numAnswered={2} numPlayers={5}></HostQuestionBottom>
+			<PlayerQuestionBottom
+				name={'Student Name'}
+				score={5000}
+			></PlayerQuestionBottom>
 		</main>
 	);
 }

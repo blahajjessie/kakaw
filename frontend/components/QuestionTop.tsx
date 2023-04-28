@@ -28,19 +28,23 @@ export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
 
 	return (
 		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold">
-			<div className="w-32 bg-orange-50 flex flex-row items-center self-stretch pl-6 rounded-r-xl text-center text-3xl 2xl:w-48 2xl:pl-10 2xl:text-4xl">
+			<div className="w-32 bg-orange-50 shrink-0 flex flex-row items-center self-stretch pl-8 rounded-r-xl text-center text-3xl 2xl:w-48 2xl:pl-12 2xl:text-4xl">
 				Q{qNum}
 			</div>
-			<div className="px-4 py-6 text-2xl text-center overflow-x-auto 2xl:text-3xl 2xl:py-8">
+			<div className="mx-2 px-4 py-6 text-lg text-center overflow-x-auto xl:text-xl 2xl:text-2xl 2xl:py-8">
 				{qText}
 			</div>
-			<div className="w-32 flex flex-row justify-end pr-6 text-3xl 2xl:w-48 2xl:pr-10 2xl:text-4xl">
-				<span className="flex flex-row items-center justify-end text-white mr-2">
+			<div className="w-32 shrink-0 flex flex-row justify-end pr-8 text-3xl 2xl:w-48 2xl:pr-12 2xl:text-4xl">
+				<span className="flex flex-row items-center justify-end text-white">
 					{minutes}:{seconds.toString().padStart(2, '0')}
 				</span>
-				<Image alt="hourglass" src={hourglass} width={30} />
+				<Image
+					className="ml-2 shrink-0"
+					alt="hourglass"
+					src={hourglass}
+					width={30}
+				/>
 			</div>
-			{/* <div className="rounded-l-xl"></div> */}
 		</div>
 	);
 }
