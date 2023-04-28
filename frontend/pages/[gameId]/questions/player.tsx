@@ -1,7 +1,7 @@
 import { Inter } from 'next/font/google';
 
 import QuestionTop from '@/components/QuestionTop';
-import QuestionAnswers from '@/components/QuestionAnswers';
+import PlayerQuestionAnswers from '@/components/PlayerQuestionAnswers';
 import PlayerQuestionBottom from '@/components/PlayerQuestionBottom';
 
 const inter = Inter({ subsets: ['latin'] });
@@ -14,14 +14,14 @@ export default function Home() {
 				qText={'What is your quest?'}
 				qTime={75}
 			></QuestionTop>
-			<QuestionAnswers
+			<PlayerQuestionAnswers
 				answers={[
 					'To pass 115a',
 					'To make a real app',
 					'To have something to put on my GitHub',
 					'To seek the holy grail',
 				]}
-			></QuestionAnswers>
+			></PlayerQuestionAnswers>
 			<PlayerQuestionBottom
 				name={'Student Name'}
 				score={5000}
