@@ -12,7 +12,7 @@ export default function QuestionTop({
 			<div className="flex flex-col justify-center px-4 py-3 self-stretch text-center 2xl:py-4">
 				{numAnswered}/{numPlayers} Answered
 			</div>
-			<div className="bg-orange-50 px-8 py-3 rounded-l-xl text-center cursor-pointer hover:brightness-110 2xl:py-4">
+			<div className="bg-orange-50 px-8 py-3 rounded-l-xl text-center cursor-pointer shadow-heavy hover:brightness-110 2xl:py-4">
 				End Guessing
 			</div>
 		</div>

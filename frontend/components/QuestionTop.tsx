@@ -27,8 +27,8 @@ export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
 	}, [seconds, minutes]);
 
 	return (
-		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold">
-			<div className="w-32 bg-orange-50 shrink-0 flex flex-row items-center self-stretch pl-8 rounded-r-xl text-center text-3xl 2xl:w-48 2xl:pl-12 2xl:text-4xl">
+		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold shadow-heavy">
+			<div className="w-32 bg-orange-50 shrink-0 flex flex-row items-center self-stretch pl-8 rounded-r-xl text-center text-3xl shadow-heavy 2xl:w-48 2xl:pl-12 2xl:text-4xl">
 				Q{qNum}
 			</div>
 			<div className="mx-2 px-4 py-6 text-lg text-center overflow-x-auto xl:text-xl 2xl:text-2xl 2xl:py-8">
