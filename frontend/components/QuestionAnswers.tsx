@@ -1,5 +1,22 @@
-export default function QuestionAnswers() {
+interface QuestionAnswerProps {
+	answers: [string, string, string, string];
+}
+
+export default function QuestionAnswers({ answers }: QuestionAnswerProps) {
 	return (
-		<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold"></div>
+		<div className="flex flex-wrap items-center justify-center grow gap-x-16 w-full font-extrabold text-3xl my-2">
+			<div className="bg-red-500 flex items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center cursor-pointer hover:brightness-110">
+				{answers[0]}
+			</div>
+			<div className="bg-green-500 flex items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center cursor-pointer hover:brightness-110">
+				{answers[1]}
+			</div>
+			<div className="bg-blue-500 flex items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center cursor-pointer hover:brightness-110">
+				{answers[2]}
+			</div>
+			<div className="bg-yellow-500 flex items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center cursor-pointer hover:brightness-110">
+				{answers[3]}
+			</div>
+		</div>
 	);
 }

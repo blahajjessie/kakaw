@@ -38,7 +38,7 @@ export default function Home() {
 						required
 					/>
 					<button
-						className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 text-white text-center text-lg shadow-md"
+						className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-xl w-full px-4 py-2 text-white text-center text-lg shadow-md"
 						type="button"
 					>
 						Join
