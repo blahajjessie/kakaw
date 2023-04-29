@@ -8,7 +8,8 @@
 		"start": "next start",
 		"lint": "next lint",
 		"test": "jest --coverage",
-		"format": "prettier -w pages public styles components"
+		"format": "prettier -w --no-error-on-unmatched-pattern pages public styles components",
+		"check-format": "prettier -c --no-error-on-unmatched-pattern pages public styles components"
 	},
 	"dependencies": {
 		"@types/node": "18.15.11",
