@@ -1,9 +1,15 @@
 import Image from 'next/image';
 import logo2 from '../public/logo2.png';
+import { Inter } from 'next/font/google';
+
+const inter = Inter({
+    subsets: ['latin'],
+    variable: '--font-inter',
+});
 
 export default function Waiting() {
     return (
-        <main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
+        <main className={`${inter.variable} font-sans bg-purple-100 flex min-h-screen flex-col items-center justify-center`}>
             <div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
                 <Image
                         alt="Kakaw logo"
@@ -14,10 +20,10 @@ export default function Waiting() {
                             height: 'auto',
                         }}
                 />
-                <div className= "text-orange-200 text-4xl">
+                <div className= "text-orange-200 text-4xl text-center">
                     You entered a game!
                 </div>
-                <div className= "text-black text-2xl">
+                <div className= "text-black text-2xl text-center">
                     Your quiz will start soon...
                 </div>
             </div>
