@@ -29,7 +29,7 @@ export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
 	}, [seconds, minutes]);
 
 	const mobileContent = (
-		<div className="w-11/12 flex flex-col items-center justify-center font-extrabold text-2xl">
+		<div className="w-11/12 h-2/5 flex flex-col items-center justify-center font-extrabold text-xl">
 			<div className="w-full flex flex-row items-center justify-between my-4">
 				<div className="bg-orange-50 w-1/3 h-full flex flex-row items-center justify-center px-4 py-1 mr-2 rounded-xl text-center shadow-heavy">
 					Q{qNum}
@@ -46,7 +46,7 @@ export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
 					/>
 				</div>
 			</div>
-			<div className="bg-gray-100 w-full py-8 text-center rounded-xl shadow-heavy">
+			<div className="w-full h-full bg-gray-100 flex items-center justify-center p-8 text-center overflow-auto text-2xl rounded-xl shadow-heavy">
 				{qText}
 			</div>
 		</div>
@@ -57,7 +57,7 @@ export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
 			<div className="w-32 bg-orange-50 shrink-0 flex flex-row items-center self-stretch pl-8 rounded-r-xl text-center text-3xl shadow-heavy 2xl:w-48 2xl:pl-12 2xl:text-4xl">
 				Q{qNum}
 			</div>
-			<div className="mx-2 px-4 py-6 text-lg text-center overflow-x-auto xl:text-xl 2xl:text-2xl 2xl:py-8">
+			<div className="w-full h-full max-h-20 text-lg text-center mx-4 px-4 py-6 overflow-auto xl:text-xl 2xl:text-2xl 2xl:py-8">
 				{qText}
 			</div>
 			<div className="w-32 shrink-0 flex flex-row justify-end pr-8 text-3xl 2xl:w-48 2xl:pr-12 2xl:text-4xl">
