@@ -289,9 +289,7 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		// Functionally done to make use of code generation
-		// but I don't want to store the id's more than they already are (twice now)
-
+		// Generate Code and Set User Entry
 		const id = code.gen(8, getUsers(game));
 
 		game.users.set(id, { name: username, answers: [], scores: [], times: [] });
