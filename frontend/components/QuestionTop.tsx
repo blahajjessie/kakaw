@@ -46,7 +46,7 @@ export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
 					/>
 				</div>
 			</div>
-			<div className="w-full h-full bg-gray-100 flex items-center justify-center p-8 text-center overflow-auto text-2xl rounded-xl shadow-heavy">
+			<div className="w-full h-full bg-gray-100 grid items-center justify-center p-8 text-center overflow-auto text-2xl rounded-xl shadow-heavy">
 				{qText}
 			</div>
 		</div>
