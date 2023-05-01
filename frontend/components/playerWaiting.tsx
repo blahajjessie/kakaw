@@ -7,14 +7,14 @@ const inter = Inter({
     variable: '--font-inter',
 });
 
-export default function Waiting() {
+export default function playerWaiting() {
     return (
         <main className={`${inter.variable} font-sans bg-purple-100 flex min-h-screen flex-col items-center justify-center`}>
             <div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
                 <Image
                         alt="Kakaw logo"
                         src={logo2}
-                        width={355}
+                        width={189}
                         style={{
                             maxWidth: '100%',
                             height: 'auto',
