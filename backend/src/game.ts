@@ -43,6 +43,7 @@ export interface Game {
 	users: Map<UserId, User>;
 	hostId: UserId;
 	activeQuestion: number;
+	playerAnswers: Map<UserId, boolean>;
 	quizOpen: boolean;
 	quizData: Quiz;
 }
@@ -67,11 +68,12 @@ function endQuestion(gameId: GameId) {
 	users.forEach(function (value: UserId) {
 		let user = game.users.get(value);
 		if (!user) return;
-		let endResp = {
-			correct: game.quizData.questions[
-				game.activeQuestion
-			].correctAnswers.includes(user.answers[game.activeQuestion]),
 
+		let endResp = {
+			// correct: game.quizData.questions[
+			// 	game.activeQuestion
+			// ].correctAnswers.includes(user.answers[game.activeQuestion]),
+			correct: game.playerAnswers.get(value),
 			correctAnswers:
 				game.quizData.questions[game.activeQuestion].correctAnswers,
 
