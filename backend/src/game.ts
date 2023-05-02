@@ -9,7 +9,7 @@ type UserId = string;
 type GameId = string;
 
 // interface for user, mostly blank rn but will keep score or smth later.
-// Userid is stored in the map for now
+// UserId is stored in the map for now
 export interface User {
 	name: string;
 	answers: number[];
@@ -36,7 +36,6 @@ export interface Quiz {
 		note?: string;
 	};
 	questions: QuizQuestion[];
-	answers: Map<UserId, { time: number; answer: number }>;
 }
 
 export interface Game {
@@ -45,6 +44,7 @@ export interface Game {
 	activeQuestion: number;
 	quizOpen: boolean;
 	quizData: Quiz;
+	answers: Map<UserId, { time: number; answer: number }>;
 }
 
 // first key is gameId
@@ -132,6 +132,7 @@ export default function registerGameRoutes(app: Express) {
 				hostId: response.hostId,
 				activeQuestion: -1,
 				quizOpen: false,
+				answers: new Map()
 			};
 			games.set(response.gameId, data);
 			console.log(response);
