@@ -2,15 +2,31 @@ import Image from 'next/image';
 import logo2 from '../public/logo2.png';
 import { Inter } from 'next/font/google';
 
+import { ChangeEvent, useState } from 'react';
+
 const inter = Inter({
 	subsets: ['latin'],
 	variable: '--font-inter',
 });
 
 export default function hostWaiting() {
+	const [timeLimit, setTimeLimit] = useState<string | null>(null);
+	const [maxPlayers, setMaxPlayers] = useState<string | null>(null);
+
+	// Alters State of timeLimit for every change
+	function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
+		const newTime = e.target.textContent;
+		setTimeLimit(newTime);
+	}
+
+	function handlePlayerChange(e: ChangeEvent<HTMLInputElement>) {
+		const newMax = e.target.textContent;
+		setMaxPlayers(newMax);
+	}
+
 	return (
 		<main
-			className={`${inter.variable} w-full font-sans bg-purple-100 flex flex-col items-center p-8`}
+			className={`${inter.variable} w-full font-sans bg-purple-100 flex flex-col p-8`}
 		>
 			<div className="flex flex-row items-center justify-center w-full">
 				<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-8">
@@ -18,20 +34,18 @@ export default function hostWaiting() {
 						<div className="text-4xl">Join with the code:</div>
 						<div className="text-8xl">XXXXX</div>
 					</div>
-					<div className="flex flex-col p-8">
+					<div className="flex flex-col p-4">
 						<div className="text-4xl">Options:</div>
-						<form className="text-2xl">
-							<label>
-								Time Limit:
-								<input type="text" />
-							</label>
-						</form>
-						<form className="text-2xl">
-							<label>
-								Max Players:
-								<input type="text" />
-							</label>
-						</form>
+						<div className="flex flex-row">
+							<div className="flex flex-col text-2xl">
+								<div>Time Limit:</div>
+								<div>Max Players:</div>
+							</div>
+							<div className="flex flex-col p-4">
+								<input className="flex flex-col" id="time" type="text" maxLength={3} onChange={handleTimeChange}/>
+								<input className="flex flex-col" id="maxPlayers" type="text" maxLength={4} onChange={handlePlayerChange}/>
+							</div>
+						</div>
 					</div>
 					<button
 						className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl p-8 mx-2 text-white text-center text-6xl shadow-md"
@@ -51,7 +65,7 @@ export default function hostWaiting() {
 					}}
 				/>
 			</div>
-			<div className="flex flex-col">
+			<div className="flex flex-col items-start justify-start">
 				<div className="text-4xl font-extrabold">Participants (x)</div>
 				<div></div>
 			</div>
