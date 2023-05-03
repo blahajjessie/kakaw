@@ -18,6 +18,7 @@
 - `questionText` (string) : The text to be displayed as the question
 - `answerTexts` (string[]): The text of the answer choices
 - `correctAnswers` (number[]): The list of correct answers, numeric, corresponding to the array indices of `answerTexts`
+- `answerExplain` [optional] (string[]) : A list of strings that explain why any answer choice is correct or incorrect. This has the same length as the answerTexts array. This has not been used or implemented anywhere, but will be later. 
 - `note` [optional] (string): A note for debug/internal purposes
 - `time` [optional] (number): The time allowed for this question, if different from the default
 - `points` [optional] (number): The number of points for this question, if different from the default.
