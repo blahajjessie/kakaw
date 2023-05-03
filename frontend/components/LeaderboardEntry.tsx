@@ -35,16 +35,16 @@ export default function LeaderboardEntry({
 
 	if (isSelf) {
 		return (
-			<div className="bg-gray-100 bg-opacity-50 outline outline-3 outline-white flex flex-row items-center pl-12 pr-4 py-2 my-5 text-lg text-white rounded-lg shadow-heavy hover:brightness-110">
-				<span>You</span>
+			<div className="bg-gray-100 bg-opacity-50 outline outline-3 outline-white flex flex-row items-center pl-8 pr-4 py-2 my-5 text-white rounded-lg shadow-heavy hover:brightness-110 sm:pl-12">
+				<span className="mx-2">You</span>
 				<span className="ml-auto mr-4">{score}</span>
 				{positionIcon}
 			</div>
 		);
 	} else {
 		return (
-			<div className="bg-gray-100 bg-opacity-50 outline outline-1 outline-gray-200 flex flex-row items-center pl-8 pr-4 py-2 my-5 text-lg text-white rounded-lg shadow-heavy hover:brightness-110">
-				<span>{name}</span>
+			<div className="bg-gray-100 bg-opacity-50 outline outline-1 outline-gray-200 flex flex-row items-center pl-4 pr-4 py-2 my-5 text-white rounded-lg shadow-heavy hover:brightness-110 sm:pl-8">
+				<span className="mx-2">{name}</span>
 				<span className="ml-auto mr-4">{score}</span>
 				{positionIcon}
 			</div>
