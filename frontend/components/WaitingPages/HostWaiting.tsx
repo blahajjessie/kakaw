@@ -1,9 +1,10 @@
 import Image from 'next/image';
-import logo2 from '../public/logo2.png';
 import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
+import { ChangeEvent, useState, useContext } from 'react';
 
-import { ChangeEvent, useState } from 'react';
+import logo2 from '../public/logo2.png';
+import { playerListContextType, playerListContext } from '@/components/Context/ShareContext';
 
 const inter = Inter({
 	subsets: ['latin'],
@@ -13,6 +14,7 @@ const inter = Inter({
 export default function hostWaiting(hostId: number) {
 	const [timeLimit, setTimeLimit] = useState<string | null>(null);
 	const [maxPlayers, setMaxPlayers] = useState<string | null>(null);
+	const playerList = useContext(playerListContext) as playerListContextType;
 
 	// Alters State of timeLimit for every change
 	function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
@@ -99,7 +101,7 @@ export default function hostWaiting(hostId: number) {
 			</div>
 			<div className="flex flex-col items-start justify-start">
 				<div className="text-4xl font-extrabold">Participants (x)</div>
-				<div></div>
+				<div>{playerList}</div>
 			</div>
 		</main>
 	);

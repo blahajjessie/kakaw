@@ -1,7 +1,7 @@
 import { createContext } from "react";
 
 // Context Types
-type playerListContextType = string[];
+export type playerListContextType = string[];
 
 // Contexts
-const playerList = createContext<playerListContextType>([]);
+export const playerListContext = createContext<playerListContextType>([]);
