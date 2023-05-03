@@ -19,5 +19,5 @@ jobs:
         with:
           node-version: '18.x'
       - run: npm ci
-      - run: npx tsc
-      - run: npx prettier -c src
+      - run: npx tsc --noEmit
+      - run: npm run check-format
