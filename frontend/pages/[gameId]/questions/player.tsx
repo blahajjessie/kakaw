@@ -1,12 +1,12 @@
 import { Inter } from 'next/font/google';
 
-import QuestionTop from '@/components/QuestionTop';
-import QuestionAnswers from '@/components/QuestionAnswers';
-import PlayerQuestionBottom from '@/components/PlayerQuestionBottom';
+import QuestionTop from '@/components/QuestionPages/QuestionTop';
+import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
+import PlayerQuestionBottom from '@/components/QuestionPages/PlayerQuestionBottom';
 
 const inter = Inter({ subsets: ['latin'] });
 
-export default function Home() {
+export default function PlayerQuestionPage() {
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
 			<QuestionTop

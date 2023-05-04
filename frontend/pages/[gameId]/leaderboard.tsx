@@ -47,7 +47,7 @@ const leaderboardEntries = [
 	},
 ];
 
-export default function Home() {
+export default function LeaderboardPage() {
 	leaderboardEntries.sort((a, b) => b.score - a.score);
 
 	const entriesList = leaderboardEntries.map((entry, i) => (
