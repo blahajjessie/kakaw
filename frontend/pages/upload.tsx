@@ -11,7 +11,7 @@ enum UploadStatus {
 	Done,
 }
 
-export default function Home() {
+export default function UploadPage() {
 	const mobileContent = (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
 			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
