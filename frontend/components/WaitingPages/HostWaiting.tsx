@@ -58,23 +58,26 @@ export default function HostWaiting({ hostId }: hostProps) {
 
 	const headerContent = (
 		<div className="flex flex-col p-4">
-			<div className="text-4xl p-2">Options:</div>
+			<div className="text-4xl p-2 xl:text-5xl">Options:</div>
 			<div className="flex flex-row">
-				<div className="flex flex-row p-2">
-					<div className="flex flex-col text-2xl">
+				<div className="flex flex-row p-1">
+					<div className="flex flex-col text-xl xl:text-2xl whitespace-nowrap">
 						<div className="mb-2">Time Limit:</div>
 						<div className="mb-2">Max Players:</div>
 					</div>
-					<div className="flex flex-col text-2xl px-3">
+					<div className="flex flex-col text-xl px-2">
+						<div className="flex flex-row">
+							<input
+								className="w-10 mb-2"
+								id="time"
+								type="text"
+								maxLength={3}
+								onChange={handleTimeChange}
+							/>
+							<div className="px-2">Seconds</div>
+						</div>
 						<input
-							className="w-28 mb-2"
-							id="time"
-							type="text"
-							maxLength={3}
-							onChange={handleTimeChange}
-						/>
-						<input
-							className="w-28 mb-2"
+							className="w-32 mb-2"
 							id="maxPlayers"
 							type="text"
 							maxLength={4}
@@ -87,15 +90,15 @@ export default function HostWaiting({ hostId }: hostProps) {
 	);
 
 	const desktopContent = (
-		<div className="flex flex-row items-center justify-start w-full">
-			<div className="bg-gray-100 flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-6">
+		<div className="flex flex-row items-center justify-start">
+			<div className="bg-gray-100 flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-6 w-min">
 				<div>
-					<div className="text-4xl">Join with the code:</div>
-					<div className="text-8xl">{hostId}</div>
+					<div className="text-4xl xl:text-5xl whitespace-nowrap">Join with the code:</div>
+					<div className="text-8xl xl:text-9xl">{hostId}</div>
 				</div>
 				{headerContent}
 				<button
-					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl shadow-heavy w-48 h-20"
+					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-48 h-20"
 					type="button"
 					onClick={() => {
 						startQuiz;
