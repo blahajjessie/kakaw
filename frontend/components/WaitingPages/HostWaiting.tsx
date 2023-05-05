@@ -11,7 +11,7 @@ import {
 } from '@/components/Context/ShareContext';
 
 const inter = Inter({
-	subsets: ['latin']
+	subsets: ['latin'],
 });
 
 interface hostProps {
@@ -93,7 +93,9 @@ export default function HostWaiting({ hostId }: hostProps) {
 		<div className="flex flex-row items-center justify-start">
 			<div className="bg-gray-100 flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-6 w-min">
 				<div>
-					<div className="text-4xl xl:text-5xl whitespace-nowrap">Join with the code:</div>
+					<div className="text-4xl xl:text-5xl whitespace-nowrap">
+						Join with the code:
+					</div>
 					<div className="text-8xl xl:text-9xl">{hostId}</div>
 				</div>
 				{headerContent}
