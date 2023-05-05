@@ -27,12 +27,7 @@
  *~ is the exported object from the file
  */
 export = Game;
-/*~ Write your module's methods and properties in this class */
-declare class Game {
-	constructor(customGreeting?: string);
-	greet: void;
-	myMethod(opts: Game.Game): number;
-}
+
 /*~ If you want to expose types from your module as well, you can
  *~ place them in this block.
  *~
@@ -72,17 +67,20 @@ interface Quiz {
 	questions: QuizQuestion[];
 }
 
-declare namespace Game {
-	export interface Game {
-		users: Map<UserId, User>;
-		hostId: UserId;
-		activeQuestion: number;
-		userAnswers: Map<
-			UserId,
-			Array<{ time: number; answer: number; correct: boolean; score: number }>
-		>;
-		quizOpen: boolean;
-		quizData: Quiz;
+class answerObj {
+	Map()<UserId,new Array()<{ time=-1; answer: number; correct: boolean; score: number }>>;
+}
+export class Game {
+	hostId: UserId;
+	quizData: Quiz;
+	users = new Map<UserId, User>();
+	userAnswers = new Map<UserId, answerObj>();
+	quizOpen = false;
+	activeQuestion = -1;
+
+	constructor(hostId: UserId, quiz:Quiz) {
+		this.hostId = hostId;
+		this.quizData = quiz;
 	}
 }
 

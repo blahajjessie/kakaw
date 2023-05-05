@@ -2,7 +2,7 @@ import { Express } from 'express';
 import * as code from './code';
 
 import { connections, sendMessage } from './connection';
-import { Game } from './game.d';
+import { Game } from './gameTypes';
 
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
