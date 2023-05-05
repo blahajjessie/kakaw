@@ -3,50 +3,6 @@ import * as code from './code';
 
 import { connections, sendMessage } from './connection';
 
-// for clarity, a gameID is just a string
-type UserId = string;
-// used ids for both players and host
-type GameId = string;
-
-// interface for user, mostly blank rn but will keep score or smth later.
-// Userid is stored in the map for now
-export interface User {
-	name: string;
-	answers: number[];
-	scores: number[];
-	times: number[];
-}
-
-// define a quiz and question type
-export interface QuizQuestion {
-	questionText: string;
-	answerTexts: string[];
-	correctAnswers: number[];
-	note?: string;
-	time?: number;
-	points?: number;
-}
-
-export interface Quiz {
-	meta: {
-		title: string;
-		author: string;
-		pointDefault: number;
-		timeDefault: number;
-		note?: string;
-	};
-	questions: QuizQuestion[];
-	answers: Map<UserId, { time: number; answer: number }>;
-}
-
-export interface Game {
-	users: Map<UserId, User>;
-	hostId: UserId;
-	activeQuestion: number;
-	playerAnswers: Map<UserId, boolean>;
-	quizOpen: boolean;
-	quizData: Quiz;
-}
 
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
@@ -58,33 +14,48 @@ function getUsers(game: Game) {
 function endQuestion(gameId: GameId) {
 	const game = games.get(gameId);
 	if (!game) return;
-	const users = getUsers(game);
+	const users = getUsers(game)
 	const userSockets = connections.get(gameId);
 	if (userSockets === undefined) {
 		// Player List Not in Connections
 		return;
 	}
-
+	let qAns = game.quizData.questions[game.activeQuestion].correctAnswers;
 	let leaderboard: { name: string; score: number }[] = [];
-	users.forEach(function (value: UserId) {
-		let user = game.users.get(value);
+	users.forEach(function (playerId: UserId) {
+		let user = game.users.get(playerId);
 		if (!user) return;
 
+		let userAnsArr = game.userAnswers.get(playerId);
+		if (!userAnsArr) {
+			game.userAnswers.set(playerId, new Array());
+			userAnsArr = game.userAnswers.get(playerId);
+		}
+
+		let userAns = userAnsArr![game.activeQuestion];
+		if (userAnsArr![game.activeQuestion] != undefined) {
+			userAns = userAnsArr![game.activeQuestion];
+		}
+		else{
+
+		}
+		// Shut up typescript i just made it
+		if (!userAns) return;
+
+		userAns.correct = userAns && qAns.includes(userAns.answer);
 		let endResp = {
-			// correct: game.quizData.questions[
-			// 	game.activeQuestion
-			// ].correctAnswers.includes(user.answers[game.activeQuestion]),
-			correct: game.playerAnswers.get(value),
+
+			correct: game.userAnswers.get(playerId)?.correct,
 			correctAnswers:
 				game.quizData.questions[game.activeQuestion].correctAnswers,
 
-			score: user.scores.reduce((a, b) => a + b, 0),
+			score: userAns.reduce((a, b) => a + b, 0),
 			scoreChange: user.scores[game.activeQuestion],
 			time: user.times[game.activeQuestion],
 		};
 		let resp = endResp;
 
-		let sock = userSockets.get(value);
+		let sock = userSockets.get(playerId);
 		if (sock === undefined) {
 			return;
 		}
@@ -121,14 +92,15 @@ function beginQuestion(gameId: GameId) {
 	}
 	// TODO: only send question data (dont send answers, etc)
 	const question = game.quizData.questions[game.activeQuestion];
-	users.forEach(function (value: string) {
-		let sock = userSockets.get(value);
+	users.forEach(function (playerId: UserId) {
+		let sock = userSockets.get(playerId);
 		if (sock === undefined) {
 			return;
 		}
 		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'startQuestion', question);
 		}
+		game.userAnswers.set(playerId, {time:-1,answer: -1, correct:false, score: 0});
 	});
 	return;
 }
@@ -148,6 +120,7 @@ export default function registerGameRoutes(app: Express) {
 				hostId: response.hostId,
 				activeQuestion: -1,
 				quizOpen: false,
+				userAnswers: new Map(),
 			};
 			games.set(response.gameId, data);
 			console.log(response);
