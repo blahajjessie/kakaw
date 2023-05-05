@@ -2,7 +2,7 @@ import { Express } from 'express';
 import * as code from './code';
 
 import { connections, sendMessage } from './connection';
-
+import { Game } from './game.d';
 
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
@@ -14,7 +14,7 @@ function getUsers(game: Game) {
 function endQuestion(gameId: GameId) {
 	const game = games.get(gameId);
 	if (!game) return;
-	const users = getUsers(game)
+	const users = getUsers(game);
 	const userSockets = connections.get(gameId);
 	if (userSockets === undefined) {
 		// Player List Not in Connections
@@ -35,16 +35,13 @@ function endQuestion(gameId: GameId) {
 		let userAns = userAnsArr![game.activeQuestion];
 		if (userAnsArr![game.activeQuestion] != undefined) {
 			userAns = userAnsArr![game.activeQuestion];
-		}
-		else{
-
+		} else {
 		}
 		// Shut up typescript i just made it
 		if (!userAns) return;
 
 		userAns.correct = userAns && qAns.includes(userAns.answer);
 		let endResp = {
-
 			correct: game.userAnswers.get(playerId)?.correct,
 			correctAnswers:
 				game.quizData.questions[game.activeQuestion].correctAnswers,
@@ -100,7 +97,12 @@ function beginQuestion(gameId: GameId) {
 		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'startQuestion', question);
 		}
-		game.userAnswers.set(playerId, {time:-1,answer: -1, correct:false, score: 0});
+		game.userAnswers.set(playerId, {
+			time: -1,
+			answer: -1,
+			correct: false,
+			score: 0,
+		});
 	});
 	return;
 }
