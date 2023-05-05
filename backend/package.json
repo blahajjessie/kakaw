@@ -20,7 +20,9 @@
 		"node": "^18.13.0"
 	},
 	"scripts": {
-		"test": "jest --runInBand --coverage --forceExit"
+		"test": "jest --runInBand --coverage --forceExit",
+		"format": "prettier -w src",
+		"check-format": "prettier -c src"
 	},
 	"jest": {
 		"clearMocks": true,

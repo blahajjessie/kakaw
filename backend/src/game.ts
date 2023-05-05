@@ -65,6 +65,7 @@ function endQuestion(gameId: GameId) {
 		return;
 	}
 
+	let leaderboard: { name: string; score: number }[] = [];
 	users.forEach(function (value: UserId) {
 		let user = game.users.get(value);
 		if (!user) return;
@@ -90,7 +91,20 @@ function endQuestion(gameId: GameId) {
 		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'endQuestion', resp);
 		}
+		leaderboard.push({ name: user.name, score: endResp.score });
 	});
+
+	// host view
+	leaderboard.sort((a, b) => b.score - a.score);
+	let hostResp = {
+		correctAnswers: game.quizData.questions[game.activeQuestion].correctAnswers,
+		leaderBoard: leaderboard,
+	};
+	const hostId = game.hostId;
+	const hostSocket = userSockets.get(hostId);
+	if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
+		sendMessage(hostSocket, 'endQuestion', hostResp);
+	}
 	return;
 }
 
@@ -291,13 +305,58 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		// Functionally done to make use of code generation
-		// but I don't want to store the id's more than they already are (twice now)
-
+		// Generate Code and Set User Entry
 		const id = code.gen(8, getUsers(game));
 
 		game.users.set(id, { name: username, answers: [], scores: [], times: [] });
 		res.status(201).json({ ok: true, id });
+		return;
+	});
+
+	app.get('/games/:id/results', (req, res) => {
+		const gameId = req.params.id;
+		const game = games.get(gameId);
+
+		if (!game) {
+			return res
+				.status(404)
+				.send({ ok: false, err: `Game ${gameId} not found` });
+		}
+
+		// gets player name with their responding total score and which questions they got right
+		let results: { name: string; score: number; correctAnswers: number[] }[] =
+			[];
+		const users = getUsers(game);
+		game.users.forEach((user) => {
+			const score = user.scores.reduce((a, b) => a + b, 0);
+			// indices of questions answered correctly
+			const correctAnswers: number[] = [];
+			game.quizData.questions.forEach((question, questionIndex) => {
+				if (question.correctAnswers.includes(user.answers[questionIndex])) {
+					correctAnswers.push(questionIndex);
+				}
+			});
+			results.push({
+				name: user.name,
+				score: score,
+				correctAnswers: correctAnswers,
+			});
+		});
+		results.sort((a, b) => b.score - a.score);
+
+		// host end results
+		const userSockets = connections.get(gameId);
+		if (userSockets === undefined) {
+			// Player List Not in Connections
+			return;
+		}
+		const hostId = game.hostId;
+		const hostSocket = userSockets.get(hostId);
+		if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
+			sendMessage(hostSocket, 'results', results);
+		}
+
+		res.status(200).send({ ok: true });
 		return;
 	});
 }
