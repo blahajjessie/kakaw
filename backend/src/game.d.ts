@@ -22,16 +22,16 @@
  *~ loaded outside a module loader environment, declare that global here.
  *~ Otherwise, delete this declaration.
  */
-export as namespace "game";
+// export as namespace "game";
 /*~ This declaration specifies that the class constructor function
  *~ is the exported object from the file
  */
 export = Game;
 /*~ Write your module's methods and properties in this class */
 declare class Game {
-  constructor(customGreeting?: string);
-  greet: void;
-  myMethod(opts: MyClass.MyClassMethodOptions): number;
+	constructor(customGreeting?: string);
+	greet: void;
+	myMethod(opts: Game.Game): number;
 }
 /*~ If you want to expose types from your module as well, you can
  *~ place them in this block.
@@ -41,53 +41,50 @@ declare class Game {
  *~ --esModuleInterop is turned on:
  *~   import * as x from '[~THE MODULE~]'; // WRONG! DO NOT DO THIS!
  */
-declare namespace MyClass {
-  export interface MyClassMethodOptions {
-    width?: number;
-    height?: number;
-  }
-}
 
 // // for clarity, a gameID is just a string
-// type UserId = string;
+type UserId = string;
 // // used ids for both players and host
-// type GameId = string;
+type GameId = string;
+
+interface User {
+	name: string;
+}
+
+// // define a quiz and question type
+interface QuizQuestion {
+	questionText: string;
+	answerTexts: string[];
+	correctAnswers: number[];
+	note?: string;
+	time?: number;
+	points?: number;
+}
+
+interface Quiz {
+	meta: {
+		title: string;
+		author: string;
+		pointDefault: number;
+		timeDefault: number;
+		note?: string;
+	};
+	questions: QuizQuestion[];
+}
+
+declare namespace Game {
+	export interface Game {
+		users: Map<UserId, User>;
+		hostId: UserId;
+		activeQuestion: number;
+		userAnswers: Map<
+			UserId,
+			Array<{ time: number; answer: number; correct: boolean; score: number }>
+		>;
+		quizOpen: boolean;
+		quizData: Quiz;
+	}
+}
 
 // // interface for user, mostly blank rn but will keep score or smth later.
 // // Userid is stored in the map for now
-// export interface User {
-// 	name: string;
-// }
-
-// // define a quiz and question type
-// export interface QuizQuestion {
-// 	questionText: string;
-// 	answerTexts: string[];
-// 	correctAnswers: number[];
-// 	note?: string;
-// 	time?: number;
-// 	points?: number;
-// }
-
-// export interface Quiz {
-// 	meta: {
-// 		title: string;
-// 		author: string;
-// 		pointDefault: number;
-// 		timeDefault: number;
-// 		note?: string;
-// 	};
-// 	questions: QuizQuestion[];
-// }
-
-// export interface Game {
-// 	users: Map<UserId, User>;
-// 	hostId: UserId;
-// 	activeQuestion: number;
-// 	userAnswers: Map<
-// 		UserId,
-// 		Array<{ time: number; answer: number; correct: boolean; score: number }>
-// 	>;
-// 	quizOpen: boolean;
-// 	quizData: Quiz;
-// }
