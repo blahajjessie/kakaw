@@ -26,7 +26,7 @@
 /*~ This declaration specifies that the class constructor function
  *~ is the exported object from the file
  */
-export = Game;
+
 
 /*~ If you want to expose types from your module as well, you can
  *~ place them in this block.
@@ -68,17 +68,19 @@ interface Quiz {
 }
 
 class answerObj {
-	Map()<UserId,new Array()<{ time=-1; answer: number; correct: boolean; score: number }>>;
+	ans:
+		| { time: number; answer: number; correct: boolean; score: number }
+		| undefined = undefined;
 }
 export class Game {
 	hostId: UserId;
 	quizData: Quiz;
 	users = new Map<UserId, User>();
-	userAnswers = new Map<UserId, answerObj>();
+	userAnswers = new Map<UserId, Array<answerObj>>();
 	quizOpen = false;
 	activeQuestion = -1;
 
-	constructor(hostId: UserId, quiz:Quiz) {
+	constructor(hostId: UserId, quiz: Quiz) {
 		this.hostId = hostId;
 		this.quizData = quiz;
 	}
