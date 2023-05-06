@@ -5,11 +5,11 @@ const used = ['0', '1'];
 
 test('Fin Test', async () => {
 	fin('1', used);
-	expect(used).toBe(['0']);
+	expect(used).toStrictEqual(['0']);
 });
 
 // Test when all possible codes are taken
 // test('Duplicate Code', async () => {
 //    const result = gen(1, allTaken);
-//    expect(result).toBe(-1);
+//    expect(result).toStrictEqual(-1);
 // });

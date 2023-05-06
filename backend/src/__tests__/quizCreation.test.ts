@@ -1,6 +1,6 @@
 import httpServer from '../server';
 import supertest from 'supertest';
-import correct from './testTools/correct.json';
+import correct from './testTools/quizzes/correct.json';
 
 let request: supertest.SuperTest<supertest.Test>;
 
