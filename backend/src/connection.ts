@@ -39,7 +39,6 @@ export function handleConnection(
 	}
 	playersInGame.set(playerId, connection);
 
-	connection.send('hello, world!');
 	connection.on('message', (data) => {
 		console.log(`player ${playerId} says: ${data}`);
 	});
