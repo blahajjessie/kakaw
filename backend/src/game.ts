@@ -2,19 +2,21 @@ import { Express } from 'express';
 import * as code from './code';
 
 import { connections, sendMessage } from './connection';
-import { Game } from './gameTypes';
+import { UserId, GameId, QuizQuestion, Game, EndResp } from './gameTypes';
 
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
 
-function getUsers(game: Game) {
-	return [...game.users.keys(), game.hostId];
+function getGame(gameId: GameId):Game{
+	let out = games.get(gameId);
+	if (!out) throw new Error('Game does not exist');
+	return out;
 }
 
 function endQuestion(gameId: GameId) {
 	const game = games.get(gameId);
 	if (!game) return;
-	const users = getUsers(game);
+	const users = game.getUsers();
 	const userSockets = connections.get(gameId);
 	if (userSockets === undefined) {
 		// Player List Not in Connections
@@ -23,35 +25,7 @@ function endQuestion(gameId: GameId) {
 	let qAns = game.quizData.questions[game.activeQuestion].correctAnswers;
 	let leaderboard: { name: string; score: number }[] = [];
 	users.forEach(function (playerId: UserId) {
-		let user = game.users.get(playerId);
-		if (!user) return;
-
-		let userAnsArr = game.userAnswers.get(playerId);
-		if (!userAnsArr) {
-			game.userAnswers.set(playerId, new Array());
-			userAnsArr = game.userAnswers.get(playerId);
-		}
-
-		let userAns = userAnsArr![game.activeQuestion];
-		if (userAnsArr![game.activeQuestion] != undefined) {
-			userAns = userAnsArr![game.activeQuestion];
-		} else {
-		}
-		// Shut up typescript i just made it
-		if (!userAns) return;
-
-		userAns.correct = userAns && qAns.includes(userAns.answer);
-		let endResp = {
-			correct: game.userAnswers.get(playerId)?.correct,
-			correctAnswers:
-				game.quizData.questions[game.activeQuestion].correctAnswers,
-
-			score: userAns.reduce((a, b) => a + b, 0),
-			scoreChange: user.scores[game.activeQuestion],
-			time: user.times[game.activeQuestion],
-		};
-		let resp = endResp;
-
+		let resp = game.addScore(playerId);
 		let sock = userSockets.get(playerId);
 		if (sock === undefined) {
 			return;
@@ -59,7 +33,7 @@ function endQuestion(gameId: GameId) {
 		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'endQuestion', resp);
 		}
-		leaderboard.push({ name: user.name, score: endResp.score });
+		leaderboard.push({ name: game.getUser(playerId).name, score: resp.score });
 	});
 
 	// host view
@@ -81,7 +55,7 @@ function endQuestion(gameId: GameId) {
 function beginQuestion(gameId: GameId) {
 	const game = games.get(gameId);
 	if (!game) return;
-	const users = getUsers(game);
+	const users = game.getUsers();
 	const userSockets = connections.get(gameId);
 	if (userSockets === undefined) {
 		// Player List Not in Connections
@@ -97,12 +71,7 @@ function beginQuestion(gameId: GameId) {
 		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'startQuestion', question);
 		}
-		game.userAnswers.set(playerId, {
-			time: -1,
-			answer: -1,
-			correct: false,
-			score: 0,
-		});
+		game.initScore(playerId);
 	});
 	return;
 }
@@ -110,21 +79,13 @@ function beginQuestion(gameId: GameId) {
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
-			const quizData: Quiz = req.body;
 			const response = {
-				gameId: code.gen(5, []),
+				gameId: code.gen(5, [...games.keys()]),
 				hostId: code.gen(8, []),
 			};
-			// associate gameId with data and host
-			const data = {
-				users: new Map(),
-				quizData,
-				hostId: response.hostId,
-				activeQuestion: -1,
-				quizOpen: false,
-				userAnswers: new Map(),
-			};
-			games.set(response.gameId, data);
+			let freshGame = new Game(response.hostId, req.body);
+			// req.body is the quiz
+			games.set(response.gameId, freshGame);
 			console.log(response);
 			res.status(201).json(response);
 		} catch (e) {
