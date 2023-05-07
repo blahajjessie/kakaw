@@ -10,7 +10,7 @@ npm test
 
 inside of the backend folder.
 
-All testing suites must be put in the corresponding folder in source. 
+All testing suites must be put in the corresponding folder in source.
 
 ## General Convention
 
@@ -23,16 +23,16 @@ little set-up, can use Jest's test function.
 
 ```ts
 test('Test Name', async () => {
-		await request
-			.post('/route')
-			.send(data)
-			.expect(200)
-			.then((data) => {
-				expect(data).toBeDefined();
-				expect(data.body).toBeDefined();
-				expect(data.body.jsonKey).toBeDefined();
-			});
-	});
+	await request
+		.post('/route')
+		.send(data)
+		.expect(200)
+		.then((data) => {
+			expect(data).toBeDefined();
+			expect(data.body).toBeDefined();
+			expect(data.body.jsonKey).toBeDefined();
+		});
+});
 ```
 
 The necessary variables and types can be defined outside of the test calls.
@@ -40,11 +40,10 @@ The necessary variables and types can be defined outside of the test calls.
 ### Complex Tests
 
 Tests requiring multiple api calls to set-up properly should use Jest's describe
-function to wrap their necessary set-up.  This includes variables and objects.
+function to wrap their necessary set-up. This includes variables and objects.
 
 ```ts
 describe('Suite Objective', () => {
-
 	// Set-Up
 	let something: string;
 
@@ -95,7 +94,7 @@ await request
 	.send(REQUEST)
 	.expect(RESPONSE_CODE)
 	.then((RESPONSE) => {
-	    expect(RESPONSE).toBeDefined();
+		expect(RESPONSE).toBeDefined();
 		expect(RESPONSE.body).toBeDefined();
 		expect(RESPONSE.body.jsonKey).toBeDefined();
 	});
@@ -122,12 +121,12 @@ await waitForSocketState(ws, ws.OPEN);
 Handling:
 
 To handle WebSocket events, use the WebSocket.on convention to handle what you
-are expecting.  Ensure the variables being used inside are in the scope you wish
+are expecting. Ensure the variables being used inside are in the scope you wish
 to use them.
 
 ```ts
 ws.on('message', function message(data) {
-			serverMessage = JSON.parse(data.toString());
+	serverMessage = JSON.parse(data.toString());
 });
 ```
 
