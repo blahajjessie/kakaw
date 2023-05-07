@@ -11,8 +11,6 @@ interface CreationResponse {
 }
 
 let request: supertest.SuperTest<supertest.Test>;
-let createRes: CreationResponse;
-let hostSocket: WebSocket;
 
 beforeAll(() => {
 	request = supertest(httpServer);
@@ -22,28 +20,40 @@ afterAll((done) => {
 	httpServer.close(done);
 });
 
-// Quiz Upload for the Purposes of Testing WebSocket Connections
-test('Quiz Upload', async () => {
-	await request
-		.post('/games')
-		.send(correct)
-		.expect(201)
-		.then((data) => {
-			expect(data).toBeDefined();
-			expect(data.body).toBeDefined();
-			expect(data.body.gameId).toBeDefined();
-			expect(data.body.hostId).toBeDefined();
-			createRes = data.body;
-		});
-});
-
-// Tests to see if a Host can connect and receive data from the websocket
-test('Host WebSockets', async () => {
-	hostSocket = new WebSocket(
-		`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
-	);
-	hostSocket.on('message', function message() {
-		hostSocket.close();
+describe('WebSocket Connection Tests', () => {
+	let hostSocket: WebSocket;
+	let createRes: CreationResponse;
+	// Quiz Upload for the Purposes of Testing WebSocket Connections
+	test('Quiz Upload', async () => {
+		await request
+			.post('/games')
+			.send(correct)
+			.expect(201)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.gameId).toBeDefined();
+				expect(data.body.hostId).toBeDefined();
+				createRes = data.body;
+			});
 	});
-	await waitForSocketState(hostSocket, hostSocket.CLOSED);
+
+	// Test Socket Destruction when trying to upgrade on the wrong path
+	test('Wrong Path', async () => {
+		const failSocket = new WebSocket(`ws://localhost:8080/con`);
+		failSocket.on('error', (err) => {
+			expect(err.message).toBe('socket hang up');
+		});
+	});
+
+	// Tests to see if a Host can connect and receive data from the websocket
+	test('Successful Connection', async () => {
+		hostSocket = new WebSocket(
+			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
+		);
+		hostSocket.on('message', function message() {
+			hostSocket.close();
+		});
+		await waitForSocketState(hostSocket, hostSocket.CLOSED);
+	});
 });
