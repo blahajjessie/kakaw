@@ -21,9 +21,9 @@ afterAll((done) => {
 });
 
 describe('WebSocket Connection Tests', () => {
+	// Set Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
-	// Quiz Upload for the Purposes of Testing WebSocket Connections
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')

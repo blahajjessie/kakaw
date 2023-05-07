@@ -20,7 +20,9 @@ afterAll((done) => {
 	httpServer.close(done);
 });
 
+// Tests if the same player/host can connect twice
 describe('Multiple Connection Attempts', () => {
+	// Set-Up Tests
 	let hostSocket: WebSocket;
 	let dupeSocket: WebSocket;
 	let createRes: CreationResponse;
@@ -55,7 +57,9 @@ describe('Multiple Connection Attempts', () => {
 	});
 });
 
+// Tests if server can receive client messages ok
 describe('Client can Message Host', () => {
+	// Set-Up Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
 	test('Set-Up / Quiz Upload', async () => {
@@ -72,13 +76,13 @@ describe('Client can Message Host', () => {
 			});
 	});
 
-	test('Second Connection is Destroyed', async () => {
+	test('Message Server', async () => {
 		hostSocket = new WebSocket(
 			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
 		);
 
 		hostSocket.on('message', () => {
-			hostSocket.send(JSON.stringify({ok: 'bongo'}));
+			hostSocket.send(JSON.stringify({ ok: 'bongo' }));
 			hostSocket.close();
 		});
 

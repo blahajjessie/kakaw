@@ -22,10 +22,10 @@ afterAll((done) => {
 });
 
 describe('Question Controls', () => {
+	// Set-Up Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
 	let serverMessage: JSON;
-	// Quiz Upload for the Purposes of Testing WebSocket Connections
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')
@@ -40,6 +40,7 @@ describe('Question Controls', () => {
 			});
 	});
 
+	// Host Connection
 	test('Host Connect', async () => {
 		const url = new URL('/connect', WEBSOCKET_BASE_URL);
 		url.searchParams.set('gameId', createRes.gameId);
@@ -48,6 +49,7 @@ describe('Question Controls', () => {
 		await waitForSocketState(hostSocket, hostSocket.OPEN);
 	});
 
+	// Control Tests
 	test('Start Question Failure / Question Out of Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/2/start`)
@@ -85,7 +87,6 @@ describe('Question Controls', () => {
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(true);
 			});
-		console.log(serverMessage);
 	});
 
 	test('End Question', async () => {
@@ -112,6 +113,7 @@ describe('Question Controls', () => {
 			});
 	});
 
+	// Close Game
 	test('Close Host', async () => {
 		hostSocket.close();
 		await waitForSocketState(hostSocket, hostSocket.CLOSED);

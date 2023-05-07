@@ -22,6 +22,7 @@ afterAll((done) => {
 });
 
 describe('Player Control', () => {
+	// Set-Up
 	let hostSocket: WebSocket;
 	let playerSocket: WebSocket;
 	let playerId: string;
@@ -30,12 +31,12 @@ describe('Player Control', () => {
 	};
 	const answer = {
 		userId: '',
-		answer: 1
+		answer: 1,
 	};
 	let createRes: CreationResponse;
 	let serverMessage: JSON;
 
-	// Quiz Upload for the Purposes of Testing WebSocket Connections
+	// Host and Game Set-Up
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')
@@ -58,6 +59,7 @@ describe('Player Control', () => {
 		await waitForSocketState(hostSocket, hostSocket.OPEN);
 	});
 
+	// Player Set-Up
 	test('Player Join', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/players`)
@@ -80,12 +82,14 @@ describe('Player Control', () => {
 		await waitForSocketState(playerSocket, playerSocket.OPEN);
 	});
 
+	// Quiz Start
 	test('Start Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
 			.expect(200);
 	});
 
+	// Question Answering Tests
 	test('Answer Question / Correct', async () => {
 		playerSocket.on('message', function message(raw) {
 			serverMessage = JSON.parse(raw.toString());
@@ -133,12 +137,13 @@ describe('Player Control', () => {
 			.expect(200);
 	});
 
-    test('Close Player', async () => {
+	// Close Game
+	test('Close Player', async () => {
 		playerSocket.close();
 		await waitForSocketState(playerSocket, playerSocket.CLOSED);
 	});
 
-    test('Close Host', async () => {
+	test('Close Host', async () => {
 		hostSocket.close();
 		await waitForSocketState(hostSocket, hostSocket.CLOSED);
 	});
