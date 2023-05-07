@@ -78,7 +78,7 @@ describe('Client can Message Host', () => {
 		);
 
 		hostSocket.on('message', () => {
-			hostSocket.send('Hello World!');
+			hostSocket.send(JSON.stringify({ok: 'bongo'}));
 			hostSocket.close();
 		});
 

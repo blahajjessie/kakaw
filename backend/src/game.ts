@@ -86,7 +86,7 @@ function endQuestion(gameId: GameId) {
 		if (sock === undefined) {
 			return;
 		}
-		if (sock.readyState === WebSocket.OPEN) {
+		if (sock.readyState === sock.OPEN) {
 			sendMessage(sock, 'endQuestion', resp);
 		}
 		leaderboard.push({ name: user.name, score: endResp.score });
@@ -124,7 +124,8 @@ function beginQuestion(gameId: GameId) {
 		if (sock === undefined) {
 			return;
 		}
-		if (sock.readyState === WebSocket.OPEN) {
+		console.log(sock.readyState);
+		if (sock.readyState === sock.OPEN) {
 			sendMessage(sock, 'startQuestion', question);
 		}
 	});
