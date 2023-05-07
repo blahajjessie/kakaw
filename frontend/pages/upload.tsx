@@ -67,7 +67,7 @@ export default function UploadPage() {
 				await apiCall('POST', '/games', quizData)
 			).json();
 			// i don't know what the client-side URL here will be eventually
-			router.push(`/${gameId}/${hostId}`);
+			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			setUploadStatus(UploadStatus.Error);
 			console.error(e);
