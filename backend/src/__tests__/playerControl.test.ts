@@ -28,6 +28,10 @@ describe('Player Control', () => {
 	const player = {
 		username: 'Jorge',
 	};
+	const answer = {
+		userId: '',
+		answer: 1
+	};
 	let createRes: CreationResponse;
 	let serverMessage: JSON;
 
@@ -64,6 +68,7 @@ describe('Player Control', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.id).toBeDefined();
 				playerId = data.body.id;
+				answer.userId = playerId;
 			});
 	});
 
@@ -78,6 +83,53 @@ describe('Player Control', () => {
 	test('Start Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
+			.expect(200);
+	});
+
+	test('Answer Question / Correct', async () => {
+		playerSocket.on('message', function message(raw) {
+			serverMessage = JSON.parse(raw.toString());
+		});
+		await request
+			.post(`/games/${createRes.gameId}/questions/0/answer`)
+			.send(answer)
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.ok).toBeDefined();
+				expect(data.body.ok).toBe(true);
+			});
+	});
+
+	test('End Question', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/0/end`)
+			.expect(200);
+	});
+
+	test('Start Second Question', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/1/start`)
+			.expect(200);
+	});
+
+	test('Answer Question / Incorrect', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/1/answer`)
+			.send(answer)
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.ok).toBeDefined();
+				expect(data.body.ok).toBe(true);
+			});
+	});
+
+	test('End Second Question', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/1/end`)
 			.expect(200);
 	});
 
