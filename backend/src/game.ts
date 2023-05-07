@@ -100,7 +100,7 @@ function endQuestion(gameId: GameId) {
 	};
 	const hostId = game.hostId;
 	const hostSocket = userSockets.get(hostId);
-	if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
+	if (hostSocket !== undefined && hostSocket.readyState === hostSocket.OPEN) {
 		sendMessage(hostSocket, 'endQuestion', hostResp);
 	}
 	return;
@@ -351,7 +351,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 		const hostId = game.hostId;
 		const hostSocket = userSockets.get(hostId);
-		if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
+		if (hostSocket !== undefined && hostSocket.readyState === hostSocket.OPEN) {
 			sendMessage(hostSocket, 'results', results);
 		}
 

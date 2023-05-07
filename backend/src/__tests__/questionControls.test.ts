@@ -48,6 +48,30 @@ describe('Question Controls', () => {
 		await waitForSocketState(hostSocket, hostSocket.OPEN);
 	});
 
+	test('Start Question Failure / Question Out of Quiz', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/2/start`)
+			.expect(404)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.ok).toBeDefined();
+				expect(data.body.ok).toBe(false);
+			});
+	});
+
+	test('End Question Failure / Question Out of Quiz', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/2/end`)
+			.expect(404)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.ok).toBeDefined();
+				expect(data.body.ok).toBe(false);
+			});
+	});
+
 	test('Start Quiz', async () => {
 		hostSocket.on('message', function message(raw) {
 			serverMessage = JSON.parse(raw.toString());
@@ -62,6 +86,30 @@ describe('Question Controls', () => {
 				expect(data.body.ok).toBe(true);
 			});
 		console.log(serverMessage);
+	});
+
+	test('End Question', async () => {
+		await request
+			.post(`/games/${createRes.gameId}/questions/0/end`)
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.ok).toBeDefined();
+				expect(data.body.ok).toBe(true);
+			});
+	});
+
+	test('Results', async () => {
+		await request
+			.get(`/games/${createRes.gameId}/results`)
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.body.ok).toBeDefined();
+				expect(data.body.ok).toBe(true);
+			});
 	});
 
 	test('Close Host', async () => {
