@@ -18,6 +18,15 @@ function ConnectPage() {
 		onOpen: () => {
 			console.log('WebSocket connection established.');
 		},
+
+		onMessage: (event: MessageEvent<string>) => {
+			try {
+				const data = JSON.parse(event.data);
+				console.log(data);
+			} catch (error) {
+				console.error('got invalid message from server:', error, event);
+			}
+		},
 	});
 
 	// render the page component with the query parameters
