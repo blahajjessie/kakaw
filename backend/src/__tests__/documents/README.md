@@ -8,7 +8,8 @@ The testing suites can be run on the backend by using the command:
 npm test
 ```
 
-inside of the backend folder.
+inside of the backend folder. If you want to see console output from the code
+or the test suites for debugging, you can use `npm run test-verbose` instead.
 
 All testing suites must be put in the corresponding folder in source.
 

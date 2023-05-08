@@ -21,6 +21,7 @@
 	},
 	"scripts": {
 		"test": "jest --runInBand --coverage --forceExit --detectOpenHandles --silent",
+		"test-verbose": "jest --runInBand --coverage --forceExit --detectOpenHandles",
 		"format": "prettier -w src",
 		"check-format": "prettier -c src"
 	},
