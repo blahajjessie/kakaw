@@ -52,7 +52,7 @@ describe('Multiple Connection Attempts', () => {
 			hostSocket.close();
 		});
 
-		await waitForSocketState(hostSocket, hostSocket.CLOSED);
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 		await waitForSocketState(dupeSocket, 3);
 	});
 });
@@ -86,6 +86,6 @@ describe('Client can Message Host', () => {
 			hostSocket.close();
 		});
 
-		await waitForSocketState(hostSocket, hostSocket.CLOSED);
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });

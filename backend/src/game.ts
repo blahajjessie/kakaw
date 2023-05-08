@@ -1,6 +1,7 @@
 import { Express } from 'express';
-import * as code from './code';
+import { WebSocket } from 'ws';
 
+import * as code from './code';
 import { connections, sendMessage } from './connection';
 
 // for clarity, a gameID is just a string
@@ -86,7 +87,7 @@ function endQuestion(gameId: GameId) {
 		if (sock === undefined) {
 			return;
 		}
-		if (sock.readyState === sock.OPEN) {
+		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'endQuestion', resp);
 		}
 		leaderboard.push({ name: user.name, score: endResp.score });
@@ -100,7 +101,7 @@ function endQuestion(gameId: GameId) {
 	};
 	const hostId = game.hostId;
 	const hostSocket = userSockets.get(hostId);
-	if (hostSocket !== undefined && hostSocket.readyState === hostSocket.OPEN) {
+	if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
 		sendMessage(hostSocket, 'endQuestion', hostResp);
 	}
 	return;
@@ -125,7 +126,7 @@ function beginQuestion(gameId: GameId) {
 			return;
 		}
 		console.log(sock.readyState);
-		if (sock.readyState === sock.OPEN) {
+		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'startQuestion', question);
 		}
 	});
@@ -351,7 +352,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 		const hostId = game.hostId;
 		const hostSocket = userSockets.get(hostId);
-		if (hostSocket !== undefined && hostSocket.readyState === hostSocket.OPEN) {
+		if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
 			sendMessage(hostSocket, 'results', results);
 		}
 

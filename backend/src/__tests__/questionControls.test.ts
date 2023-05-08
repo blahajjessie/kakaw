@@ -46,7 +46,7 @@ describe('Question Controls', () => {
 		url.searchParams.set('gameId', createRes.gameId);
 		url.searchParams.set('playerId', createRes.hostId);
 		hostSocket = new WebSocket(url);
-		await waitForSocketState(hostSocket, hostSocket.OPEN);
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
 	});
 
 	// Control Tests
@@ -116,6 +116,6 @@ describe('Question Controls', () => {
 	// Close Game
 	test('Close Host', async () => {
 		hostSocket.close();
-		await waitForSocketState(hostSocket, hostSocket.CLOSED);
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });

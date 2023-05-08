@@ -115,7 +115,7 @@ url and wait for the socket to open.
 
 ```ts
 ws = new WebSocket(url);
-await waitForSocketState(ws, ws.OPEN);
+await waitForSocketState(ws, WebSocket.OPEN);
 ```
 
 Handling:
@@ -137,5 +137,5 @@ using waitForSocketState.
 
 ```ts
 ws.close();
-await waitForSocketState(ws, ws.CLOSED);
+await waitForSocketState(ws, WebSocket.CLOSED);
 ```

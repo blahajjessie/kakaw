@@ -54,6 +54,6 @@ describe('WebSocket Connection Tests', () => {
 		hostSocket.on('message', function message() {
 			hostSocket.close();
 		});
-		await waitForSocketState(hostSocket, hostSocket.CLOSED);
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });

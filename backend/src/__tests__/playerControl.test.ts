@@ -56,7 +56,7 @@ describe('Player Control', () => {
 		url.searchParams.set('gameId', createRes.gameId);
 		url.searchParams.set('playerId', createRes.hostId);
 		hostSocket = new WebSocket(url);
-		await waitForSocketState(hostSocket, hostSocket.OPEN);
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
 	});
 
 	// Player Set-Up
@@ -79,7 +79,7 @@ describe('Player Control', () => {
 		url.searchParams.set('gameId', createRes.gameId);
 		url.searchParams.set('playerId', playerId);
 		playerSocket = new WebSocket(url);
-		await waitForSocketState(playerSocket, playerSocket.OPEN);
+		await waitForSocketState(playerSocket, WebSocket.OPEN);
 	});
 
 	// Quiz Start
@@ -140,11 +140,11 @@ describe('Player Control', () => {
 	// Close Game
 	test('Close Player', async () => {
 		playerSocket.close();
-		await waitForSocketState(playerSocket, playerSocket.CLOSED);
+		await waitForSocketState(playerSocket, WebSocket.CLOSED);
 	});
 
 	test('Close Host', async () => {
 		hostSocket.close();
-		await waitForSocketState(hostSocket, hostSocket.CLOSED);
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });
