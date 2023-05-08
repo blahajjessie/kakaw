@@ -7,7 +7,7 @@ import { UserId, GameId, QuizQuestion, Game, EndResp } from './gameTypes';
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
 
-function getGame(gameId: GameId): Game {
+export function getGame(gameId: GameId): Game {
 	let out = games.get(gameId);
 	if (!out) throw new Error('Game does not exist');
 	return out;

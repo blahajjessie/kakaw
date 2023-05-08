@@ -5,7 +5,8 @@ import { handleConnection } from './connection';
 const app = express();
 app.use(express.json());
 
-import registerGameRoutes, { Game } from './game';
+import registerGameRoutes, { getGame } from './game';
+import { Game } from './gameTypes';
 registerGameRoutes(app);
 
 app.get('/', (_req, res) => {
@@ -43,10 +44,10 @@ httpServer.on('upgrade', (request, socket, head) => {
 	}
 	const gameId = url.searchParams.get('gameId')!;
 	const playerId = url.searchParams.get('playerId')!;
-
+	const game = getGame(gameId);
 	webSocketServer.handleUpgrade(request, socket, head, (client, request) => {
 		webSocketServer.emit('connection', client, request);
-		handleConnection(client, gameId, playerId);
+		handleConnection(client, game, playerId);
 	});
 });
 
