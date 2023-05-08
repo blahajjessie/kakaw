@@ -127,8 +127,6 @@ export class Game {
 			correctAnswers: number[];
 		}[] = new Array();
 
-
-
 		this.getPlayers().forEach((user) => {
 			let userAnswers = this.userAnswers.get(user);
 			let score: number = userAnswers

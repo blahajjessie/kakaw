@@ -41,6 +41,5 @@ export function handleConnection(
 	connection.on('close', () => {
 		console.log(`player ${playerId} disconnected`);
 		game.removeWs(playerId);
-
 	});
 }
