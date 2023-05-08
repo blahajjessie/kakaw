@@ -20,5 +20,7 @@ const HostGameRouter: NextPage<{}> = () => {
 	return <h1>Waiting to receive data from server...</h1>;
 };
 
+// this line disables server side rendering; otherwise, it is rendered with an empty query which
+// causes an error in useConnection
 HostGameRouter.getInitialProps = async () => ({});
 export default HostGameRouter;
