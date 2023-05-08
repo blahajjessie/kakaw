@@ -61,8 +61,23 @@ function beginQuestion(gameId: GameId) {
 		// Player List Not in Connections
 		return;
 	}
-	// TODO: only send question data (dont send answers, etc)
+	
+	// only sends necessary question data
 	const question = game.quizData.questions[game.activeQuestion];
+	if (!question) {
+		// TODO: send error
+		return;
+	}
+	const timeLimit =
+		question.time !== undefined
+			? question.time
+			: game.quizData.meta.timeDefault;
+	const beginResp = {
+		question: question.questionText,
+		answers: question.answerTexts,
+		time: timeLimit,
+	};
+
 	users.forEach(function (playerId: UserId) {
 		let sock = userSockets.get(playerId);
 		if (sock === undefined) {
@@ -198,6 +213,23 @@ export default function registerGameRoutes(app: Express) {
 				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
 		}
 
+		// validate time, assuming that time taken to answer is recorded by client
+		const time = req.body.time;
+		const timeLimit =
+			game.quizData.questions[game.activeQuestion].time !== undefined
+				? game.quizData.questions[game.activeQuestion].time
+				: game.quizData.meta.timeDefault;
+		if (
+			typeof time != 'number' ||
+			(timeLimit !== undefined && time > timeLimit) ||
+			time < 0
+		) {
+			res
+				.status(400)
+				.send({ ok: false, err: `Time taken ${time} is not valid.` });
+			return;
+		}
+
 		// add answer to userId
 		const user = game.users.get(userId);
 		if (user) {
@@ -210,6 +242,7 @@ export default function registerGameRoutes(app: Express) {
 			} else {
 				// if a player has joined late, their previous answers will be undefined
 				user.answers[index] = answer;
+				user.times[index] = time;
 			}
 		} else {
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });

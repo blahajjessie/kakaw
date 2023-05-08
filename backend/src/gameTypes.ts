@@ -32,19 +32,23 @@ interface Quiz {
 }
 
 class AnswerObj {
+	totalTime = -1;
 	time = -1;
 	answer = -1;
 	correct = false;
 	score = 0;
-	constructor(time?: number, answer?: number) {
+	constructor(totalTime?: number, time?: number, answer?: number) {
+		if (totalTime) this.totalTime = totalTime;
 		if (time) this.time = time;
 		if (answer) this.answer = answer;
 	}
 	scoreQuestion(answerArray: Array<number>): void {
-		if (answerArray.includes(this.answer)) {
-			this.correct = true;
-			this.score = 100;
-		}
+		this.correct = answerArray.includes(this.answer);
+		const isCorrect = this.correct ? 1 : 0;
+		const ratio = this.time / this.totalTime;
+		this.score = Math.round(
+			(900 * (1 - ratio) + 100) * isCorrect
+		);
 		return;
 	}
 }
