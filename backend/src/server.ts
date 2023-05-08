@@ -41,6 +41,7 @@ httpServer.on('upgrade', (request, socket, head) => {
 	) {
 		// rude but no one should be trying to open websocket connections at other URLs
 		socket.destroy();
+		return;
 	}
 	const gameId = url.searchParams.get('gameId')!;
 	const playerId = url.searchParams.get('playerId')!;

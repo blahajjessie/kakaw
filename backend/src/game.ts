@@ -1,9 +1,9 @@
 import { Express } from 'express';
-import * as code from './code';
+import { WebSocket } from 'ws';
 
 import { sendMessage } from './connection';
 import { UserId, GameId, QuizQuestion, Game, EndResp } from './gameTypes';
-
+import { gen } from './code';
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
 
@@ -60,6 +60,7 @@ function beginQuestion(gameId: GameId) {
 		if (sock === undefined) {
 			return;
 		}
+		console.log(sock.readyState);
 		if (sock.readyState === WebSocket.OPEN) {
 			sendMessage(sock, 'startQuestion', question);
 		}
@@ -72,8 +73,8 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		try {
 			const response = {
-				gameId: code.gen(5, [...games.keys()]),
-				hostId: code.gen(8, []),
+				gameId: gen(5, [...games.keys()]),
+				hostId: gen(8, []),
 			};
 			let freshGame = new Game(response.hostId, req.body);
 			// req.body is the quiz
@@ -226,7 +227,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		// Generate Code and Set User Entry
-		const id = code.gen(8, game.getUsers());
+		const id = gen(8, game.getUsers());
 		game.addPlayer(id, username);
 		res.status(201).json({ ok: true, id });
 		return;
