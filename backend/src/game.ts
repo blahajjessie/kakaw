@@ -1,13 +1,13 @@
 import { Express } from 'express';
 import * as code from './code';
 
-import { connections, sendMessage } from './connection';
+import { sendMessage } from './connection';
 import { UserId, GameId, QuizQuestion, Game, EndResp } from './gameTypes';
 
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
 
-function getGame(gameId: GameId):Game{
+function getGame(gameId: GameId): Game {
 	let out = games.get(gameId);
 	if (!out) throw new Error('Game does not exist');
 	return out;
@@ -17,21 +17,17 @@ function endQuestion(gameId: GameId) {
 	const game = games.get(gameId);
 	if (!game) return;
 	const users = game.getUsers();
-	const userSockets = connections.get(gameId);
-	if (userSockets === undefined) {
-		// Player List Not in Connections
-		return;
-	}
+
 	let qAns = game.quizData.questions[game.activeQuestion].correctAnswers;
 	let leaderboard: { name: string; score: number }[] = [];
 	users.forEach(function (playerId: UserId) {
 		let resp = game.addScore(playerId);
-		let sock = userSockets.get(playerId);
-		if (sock === undefined) {
+		let playerSocket = game.getWs(playerId);
+		if (playerSocket === undefined) {
 			return;
 		}
-		if (sock.readyState === WebSocket.OPEN) {
-			sendMessage(sock, 'endQuestion', resp);
+		if (playerSocket.readyState === WebSocket.OPEN) {
+			sendMessage(playerSocket, 'endQuestion', resp);
 		}
 		leaderboard.push({ name: game.getUser(playerId).name, score: resp.score });
 	});
@@ -43,7 +39,7 @@ function endQuestion(gameId: GameId) {
 		leaderBoard: leaderboard,
 	};
 	const hostId = game.hostId;
-	const hostSocket = userSockets.get(hostId);
+	const hostSocket = game.getWs(hostId);
 	if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
 		sendMessage(hostSocket, 'endQuestion', hostResp);
 	}
@@ -56,15 +52,11 @@ function beginQuestion(gameId: GameId) {
 	const game = games.get(gameId);
 	if (!game) return;
 	const users = game.getUsers();
-	const userSockets = connections.get(gameId);
-	if (userSockets === undefined) {
-		// Player List Not in Connections
-		return;
-	}
+
 	// TODO: only send question data (dont send answers, etc)
 	const question = game.quizData.questions[game.activeQuestion];
 	users.forEach(function (playerId: UserId) {
-		let sock = userSockets.get(playerId);
+		let sock = game.getWs(playerId);
 		if (sock === undefined) {
 			return;
 		}
@@ -199,19 +191,11 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		// add answer to userId
-		const user = game.users.get(userId);
-		if (user) {
-			if (user.answers[index] !== undefined) {
-				res.status(400).send({
-					ok: false,
-					err: `Answer for Question ${index} already exists`,
-				});
-				return;
-			} else {
-				// if a player has joined late, their previous answers will be undefined
-				user.answers[index] = answer;
-			}
-		} else {
+
+		try {
+			game.answer(userId, 0, answer);
+		} catch {
+			console.log('answer() failed; the error message might be right');
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
 		}
 
@@ -236,15 +220,14 @@ export default function registerGameRoutes(app: Express) {
 
 		const username: string = body.username;
 		// EW disgusting.... Gets the usernames from the users list
-		if ([...game.users.values()].map((usr) => usr.name).includes(username)) {
+		if (game.getUserNames().includes(username)) {
 			res.status(409).send();
 			return;
 		}
 
 		// Generate Code and Set User Entry
-		const id = code.gen(8, getUsers(game));
-
-		game.users.set(id, { name: username, answers: [], scores: [], times: [] });
+		const id = code.gen(8, game.getUsers());
+		game.addPlayer(id, username);
 		res.status(201).json({ ok: true, id });
 		return;
 	});
@@ -260,36 +243,13 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		// gets player name with their responding total score and which questions they got right
-		let results: { name: string; score: number; correctAnswers: number[] }[] =
-			[];
-		const users = getUsers(game);
-		game.users.forEach((user) => {
-			const score = user.scores.reduce((a, b) => a + b, 0);
-			// indices of questions answered correctly
-			const correctAnswers: number[] = [];
-			game.quizData.questions.forEach((question, questionIndex) => {
-				if (question.correctAnswers.includes(user.answers[questionIndex])) {
-					correctAnswers.push(questionIndex);
-				}
-			});
-			results.push({
-				name: user.name,
-				score: score,
-				correctAnswers: correctAnswers,
-			});
-		});
-		results.sort((a, b) => b.score - a.score);
 
 		// host end results
-		const userSockets = connections.get(gameId);
-		if (userSockets === undefined) {
-			// Player List Not in Connections
-			return;
-		}
+
 		const hostId = game.hostId;
-		const hostSocket = userSockets.get(hostId);
+		const hostSocket = game.getWs(hostId);
 		if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
-			sendMessage(hostSocket, 'results', results);
+			sendMessage(hostSocket, 'results', game.getLeaderboard());
 		}
 
 		res.status(200).send({ ok: true });

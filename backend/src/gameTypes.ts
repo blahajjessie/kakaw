@@ -91,6 +91,9 @@ export class Game {
 			ans[this.activeQuestion] || new AnswerObj());
 		ans[this.activeQuestion].scoreQuestion(correct);
 	}
+	getUserNames() {
+		return [...this.users.values(), this.hostId];
+	}
 	getUsers() {
 		return [...this.users.keys(), this.hostId];
 	}
@@ -99,6 +102,12 @@ export class Game {
 	}
 	getUser(id: UserId): User {
 		return this.users.get(id) || invalidUser;
+	}
+	addPlayer(id: UserId, username: string) {
+		this.users.set(id, {
+			name: username,
+			connection: undefined,
+		});
 	}
 	addScore(user: UserId): EndResp {
 		this.scorePlayer(user);
@@ -111,6 +120,36 @@ export class Game {
 		};
 		return out;
 	}
+	getLeaderboard() {
+		let results: {
+			name: string;
+			score: number;
+			correctAnswers: number[];
+		}[] = new Array();
+
+
+
+		this.getPlayers().forEach((user) => {
+			let userAnswers = this.userAnswers.get(user);
+			let score: number = userAnswers
+				? userAnswers.reduce((a, b) => b.score + a, 0)
+				: 0;
+
+			// indices of questions answered correctly
+			let correctAnswers = userAnswers?.reduce((indices, ans, i) => {
+				if (ans.correct) indices.push(i);
+				return indices;
+			}, new Array<number>());
+			correctAnswers = correctAnswers ? correctAnswers : [];
+			results.push({
+				name: this.users.get(user)!.name,
+				score: score,
+				correctAnswers: correctAnswers,
+			});
+		});
+		results.sort((a, b) => b.score - a.score);
+		return results;
+	}
 	// Set Player's score to an empty score object (mostly so we dont have to export the answer type)
 	initScore(playerId: UserId): AnswerObj {
 		const correct = this.getQuestionData().correctAnswers;
@@ -120,13 +159,28 @@ export class Game {
 
 		return ans;
 	}
+	answer(playerId: UserId, time: number, answer: number) {
+		// if (user.answers[index] !== undefined) {
+		// 	res.status(400).send({
+		// 		ok: false,
+		// 		err: `Answer for Question ${index} already exists`,
+		// 	});
+		// 	return;
+		// } else {
+		// 	// if a player has joined late, their previous answers will be undefined
+		// 	user.answers[index] = answer;
+		// }
+	}
 	addWs(playerId: UserId, sock: WebSocket) {
 		this.getUser(playerId).connection = sock;
 	}
-	removeWs(playerId:UserId){
+	removeWs(playerId: UserId) {
 		this.getUser(playerId).connection = undefined;
 	}
-	getWs(playerId:UserId){
+	getWs(playerId: UserId): WebSocket | undefined {
+		if (this.getUser(playerId).connection) {
+			throw new Error('user not connected');
+		}
 		return this.getUser(playerId).connection;
 	}
 	getQuizName() {
