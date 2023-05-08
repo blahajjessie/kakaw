@@ -146,7 +146,7 @@ export default function registerGameRoutes(app: Express) {
 				hostId: response.hostId,
 				activeQuestion: -1,
 				quizOpen: false,
-				answers: new Map()
+				answers: new Map(),
 			};
 			games.set(response.gameId, data);
 			console.log(response);
