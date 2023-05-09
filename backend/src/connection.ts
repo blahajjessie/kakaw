@@ -27,7 +27,6 @@ export function handleConnection(
 	// 	return killConnection(connection, 'That game does not exist');
 	// }
 
-	// consider whether to allow this -- would need something like Map<string, Map<string, Array<WS>>>
 	if (game.getWs(playerId)) {
 		return killConnection(connection, 'You are already connected to this game');
 	}

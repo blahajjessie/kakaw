@@ -71,6 +71,9 @@ function beginQuestion(gameId: GameId) {
 
 export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
+		if (!req.body) {
+			res.status(400).send('Invalid JSON file');
+		}
 		try {
 			const response = {
 				gameId: gen(5, [...games.keys()]),

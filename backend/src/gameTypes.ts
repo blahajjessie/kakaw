@@ -66,6 +66,7 @@ function quizValidate(q: Quiz): Quiz {
 
 export class Game {
 	hostId: UserId;
+	host: User;
 	quizData: Quiz;
 	users = new Map<UserId, User>();
 	userAnswers = new Map<UserId, Array<AnswerObj>>();
@@ -74,6 +75,7 @@ export class Game {
 
 	constructor(hostId: UserId, quiz: Quiz) {
 		this.hostId = hostId;
+		this.host = { name: 'HOST', connection: undefined };
 		// silly goofy code.
 		// QuizValidate returns the quiz right back, but will throw an error if its not valid
 		this.quizData = quizValidate(quiz);
@@ -91,8 +93,10 @@ export class Game {
 			ans[this.activeQuestion] || new AnswerObj());
 		ans[this.activeQuestion].scoreQuestion(correct);
 	}
-	getUserNames() {
-		return [...this.users.values(), this.hostId];
+	getUserNames(): String[] {
+		const users = [...this.users.values()];
+		const names: String[] = users.map((usr) => usr.name, []);
+		return names;
 	}
 	getUsers() {
 		return [...this.users.keys(), this.hostId];
@@ -101,6 +105,7 @@ export class Game {
 		return [...this.users.keys()];
 	}
 	getUser(id: UserId): User {
+		if (id == this.hostId) return this.host;
 		return this.users.get(id) || invalidUser;
 	}
 	addPlayer(id: UserId, username: string) {
@@ -170,14 +175,16 @@ export class Game {
 		// }
 	}
 	addWs(playerId: UserId, sock: WebSocket) {
+		if (this.getUser(playerId) == invalidUser) throw new Error('Invalid user');
 		this.getUser(playerId).connection = sock;
 	}
 	removeWs(playerId: UserId) {
 		this.getUser(playerId).connection = undefined;
 	}
 	getWs(playerId: UserId): WebSocket | undefined {
-		if (this.getUser(playerId).connection) {
-			throw new Error('user not connected');
+		if (!this.getUser(playerId).connection) {
+			return undefined;
+			// throw new Error('user not connected');
 		}
 		return this.getUser(playerId).connection;
 	}
