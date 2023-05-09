@@ -53,7 +53,7 @@ describe('Multiple Connection Attempts', () => {
 		});
 
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
-		await waitForSocketState(dupeSocket, 3);
+		await waitForSocketState(dupeSocket, WebSocket.CLOSED);
 	});
 });
 
