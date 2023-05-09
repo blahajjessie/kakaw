@@ -9,9 +9,6 @@ import registerGameRoutes, { getGame } from './game';
 import { Game } from './gameTypes';
 registerGameRoutes(app);
 
-app.get('/', (_req, res) => {
-	res.send('Hello, world!');
-});
 
 // create websocket "server" which really piggybacks on the express server
 const webSocketServer = new WebSocket.Server({
