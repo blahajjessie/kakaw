@@ -68,16 +68,29 @@ function quizValidate(q: Quiz): Quiz {
 	return q;
 }
 
+export function waitTimer(ms: number): Promise<void> {
+	return new Promise(resolve => setTimeout(resolve, ms));
+}
+
+type Timer = {
+	beginTimestamp: number;
+	endTimestamp: number;
+	timeLimit: number;
+};
+
 export class Game {
 	hostId: UserId;
+	host: User;
 	quizData: Quiz;
 	users = new Map<UserId, User>();
 	userAnswers = new Map<UserId, Array<AnswerObj>>();
 	quizOpen = false;
 	activeQuestion = -1;
+	timer: Timer = { beginTimestamp: -1, endTimestamp: -1, timeLimit: -1 };
 
 	constructor(hostId: UserId, quiz: Quiz) {
 		this.hostId = hostId;
+		this.host = { name: 'HOST', connection: undefined };
 		// silly goofy code.
 		// QuizValidate returns the quiz right back, but will throw an error if its not valid
 		this.quizData = quizValidate(quiz);
@@ -95,6 +108,11 @@ export class Game {
 			ans[this.activeQuestion] || new AnswerObj());
 		ans[this.activeQuestion].scoreQuestion(correct);
 	}
+	getUserNames(): String[] {
+		const users = [...this.users.values()];
+		const names: String[] = users.map((usr) => usr.name, []);
+		return names;
+	}
 	getUsers() {
 		return [...this.users.keys(), this.hostId];
 	}
@@ -102,7 +120,14 @@ export class Game {
 		return [...this.users.keys()];
 	}
 	getUser(id: UserId): User {
+		if (id == this.hostId) return this.host;
 		return this.users.get(id) || invalidUser;
+	}
+	addPlayer(id: UserId, username: string) {
+		this.users.set(id, {
+			name: username,
+			connection: undefined,
+		});
 	}
 	addScore(user: UserId): EndResp {
 		this.scorePlayer(user);
@@ -115,6 +140,34 @@ export class Game {
 		};
 		return out;
 	}
+	getLeaderboard() {
+		let results: {
+			name: string;
+			score: number;
+			correctAnswers: number[];
+		}[] = new Array();
+
+		this.getPlayers().forEach((user) => {
+			let userAnswers = this.userAnswers.get(user);
+			let score: number = userAnswers
+				? userAnswers.reduce((a, b) => b.score + a, 0)
+				: 0;
+
+			// indices of questions answered correctly
+			let correctAnswers = userAnswers?.reduce((indices, ans, i) => {
+				if (ans.correct) indices.push(i);
+				return indices;
+			}, new Array<number>());
+			correctAnswers = correctAnswers ? correctAnswers : [];
+			results.push({
+				name: this.users.get(user)!.name,
+				score: score,
+				correctAnswers: correctAnswers,
+			});
+		});
+		results.sort((a, b) => b.score - a.score);
+		return results;
+	}
 	// Set Player's score to an empty score object (mostly so we dont have to export the answer type)
 	initScore(playerId: UserId): AnswerObj {
 		const correct = this.getQuestionData().correctAnswers;
@@ -124,13 +177,40 @@ export class Game {
 
 		return ans;
 	}
+	answer(playerId: UserId, time: number, answer: number) {
+		// if (user.answers[index] !== undefined) {
+		// 	res.status(400).send({
+		// 		ok: false,
+		// 		err: `Answer for Question ${index} already exists`,
+		// 	});
+		// 	return;
+		// } else {
+		// 	// if a player has joined late, their previous answers will be undefined
+		// 	user.answers[index] = answer;
+		// }
+	}
+	async runTimer(ms: number) {
+		console.log('Starting timer');
+		await waitTimer(ms); // Wait for 5 seconds
+		console.log('Ending timer');
+	}
+	resetTimer() {
+		this.timer.beginTimestamp = -1;
+		this.timer.endTimestamp = -1;
+		this.timer.timeLimit = -1;
+	}
 	addWs(playerId: UserId, sock: WebSocket) {
+		if (this.getUser(playerId) == invalidUser) throw new Error('Invalid user');
 		this.getUser(playerId).connection = sock;
 	}
-	removeWs(playerId:UserId){
+	removeWs(playerId: UserId) {
 		this.getUser(playerId).connection = undefined;
 	}
-	getWs(playerId:UserId){
+	getWs(playerId: UserId): WebSocket | undefined {
+		if (!this.getUser(playerId).connection) {
+			return undefined;
+			// throw new Error('user not connected');
+		}
 		return this.getUser(playerId).connection;
 	}
 	getQuizName() {
