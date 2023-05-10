@@ -1,12 +1,9 @@
 import Image from 'next/image';
-import { Inter } from 'next/font/google';
 
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import LeaderboardEntry from '@/components/LeaderboardEntry';
 
 import logo2 from 'public/logo2.png';
-
-const inter = Inter({ subsets: ['latin'] });
 
 const leaderboardEntries = [
 	{
