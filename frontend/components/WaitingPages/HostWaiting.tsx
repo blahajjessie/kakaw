@@ -15,10 +15,10 @@ const inter = Inter({
 });
 
 interface hostProps {
-	hostId: string;
+	gameId: string;
 }
 
-export default function HostWaiting({ hostId }: hostProps) {
+export default function HostWaiting({ gameId }: hostProps) {
 	const [timeLimit, setTimeLimit] = useState<string | null>(null);
 	const [maxPlayers, setMaxPlayers] = useState<string | null>(null);
 	const playerList = useContext(playerListContext) as playerListContextType;
@@ -38,7 +38,7 @@ export default function HostWaiting({ hostId }: hostProps) {
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
 	async function startQuiz() {
-		apiCall('POST', `/games/${hostId}/questions/0/start`)
+		apiCall('POST', `/games/${gameId}/questions/0/start`)
 			.then((res) => {
 				if (!res.ok) {
 					throw res;
@@ -96,14 +96,14 @@ export default function HostWaiting({ hostId }: hostProps) {
 					<div className="text-4xl xl:text-5xl whitespace-nowrap">
 						Join with the code:
 					</div>
-					<div className="text-8xl xl:text-9xl">{hostId}</div>
+					<div className="text-8xl xl:text-9xl">{gameId}</div>
 				</div>
 				{headerContent}
 				<button
 					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-48 h-20"
 					type="button"
 					onClick={() => {
-						startQuiz;
+						startQuiz();
 					}}
 				>
 					Start
@@ -126,14 +126,14 @@ export default function HostWaiting({ hostId }: hostProps) {
 		<div className="bg-gray-100 w-full flex flex-col items-center justify-center font-extrabold shadow-heavy rounded-xl p-4">
 			<div className="flex flex-col items-center justify-center">
 				<div className="text-4xl">Join with the code:</div>
-				<div className="text-8xl">{hostId}</div>
+				<div className="text-8xl">{gameId}</div>
 			</div>
 			{headerContent}
 			<button
 				className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl shadow-heavy w-48 h-20"
 				type="button"
 				onClick={() => {
-					startQuiz;
+					startQuiz();
 				}}
 			>
 				Start
