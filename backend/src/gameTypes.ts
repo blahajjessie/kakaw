@@ -32,12 +32,14 @@ interface Quiz {
 }
 
 class AnswerObj {
-	totalTime = -1;
+	totalPoints = 0;
+	totalTime = 0;
 	time = -1;
 	answer = -1;
 	correct = false;
 	score = 0;
-	constructor(totalTime?: number, time?: number, answer?: number) {
+	constructor(totalPoints?: number, totalTime?: number, time?: number, answer?: number) {
+		if (totalPoints) this.totalPoints = totalPoints;
 		if (totalTime) this.totalTime = totalTime;
 		if (time) this.time = time;
 		if (answer) this.answer = answer;
@@ -46,9 +48,9 @@ class AnswerObj {
 		this.correct = answerArray.includes(this.answer);
 		const isCorrect = this.correct ? 1 : 0;
 		const ratio = this.time / this.totalTime;
-		this.score = Math.round(
-			(900 * (1 - ratio) + 100) * isCorrect
-		);
+		const varPoints = .9 * this.totalPoints;
+		const setPoints = .1 * this.totalPoints;
+		this.score = Math.round((varPoints * (1 - ratio) + setPoints) * isCorrect);
 		return;
 	}
 }
@@ -62,14 +64,115 @@ export type EndResp = {
 };
 
 function quizValidate(q: Quiz): Quiz {
-	// TODO:: Throw an error on invalid quizzes
-	// if the quiz is invalid, its caught by the post request (goofy) and sent up
-	if (!q) throw new Error('Invalid Quiz!');
+	// validate meta object
+	if (
+		!q.meta ||
+		typeof q.meta !== 'object' ||
+		typeof q.meta.title !== 'string' ||
+		typeof q.meta.author !== 'string' ||
+		typeof q.meta.pointDefault !== 'number' ||
+		typeof q.meta.timeDefault !== 'number'
+	) {
+		throw new Error('Invalid Quiz meta object');
+	}
+
+	if (q.meta.title.length < 1 || q.meta.title.length > 100) {
+		throw new Error(`Invalid Quiz title length`);
+	}
+	if (q.meta.author.length < 1 || q.meta.author.length > 100) {
+		throw new Error(`Invalid Quiz author length`);
+	}
+	if (q.meta.pointDefault < 1 || q.meta.pointDefault > 1000) {
+		throw new Error(`Invalid Quiz pointDefault`);
+	}
+	if (q.meta.timeDefault < 1 || q.meta.timeDefault > 420) {
+		throw new Error(`Invalid Quiz timeDefault`);
+	}
+
+	// validate questions array
+	if (!Array.isArray(q.questions)) {
+		throw new Error('Quiz questions must be an array');
+	}
+	if (q.questions.length === 0) {
+		throw new Error(`Quiz must have at least one question`);
+	}
+
+	for (let qIndex = 0; qIndex < q.questions.length; qIndex++) {
+		const question = q.questions[qIndex];
+
+		// validate question
+		if (
+			!question ||
+			!question.questionText ||
+			!Array.isArray(question.answerTexts) ||
+			!Array.isArray(question.correctAnswers)
+		) {
+			throw new Error(`Invalid Quiz question object at index ${qIndex}`);
+		}
+
+		// validate questionText character length
+		const qTextLen = question.questionText.length;
+		if (qTextLen <= 0 || qTextLen > 100) {
+			throw new Error(
+				`Invalid questionText char length of ${qTextLen} at question index ${qIndex}`
+			);
+		}
+
+		// validate answerTexts array length
+		const ansArrLen = question.answerTexts.length;
+		if (ansArrLen < 2 || ansArrLen > 6) {
+			throw new Error(
+				`Invalid answerText array length of ${ansArrLen} at question index ${qIndex}`
+			);
+		}
+
+		// validate answerTexts array elements character length
+		for (let ansIndex = 0; ansIndex < ansArrLen; ansIndex++) {
+			const ansTextLen = question.answerTexts[ansIndex].length;
+			if (ansTextLen <= 0 || ansTextLen >= 100) {
+				throw new Error(
+					`Invalid char length in answerText index ${ansIndex} at question index ${qIndex}`
+				);
+			}
+		}
+
+		// validate correctAnswers array length
+		const corrArrLen = question.correctAnswers.length;
+		if (corrArrLen <= 1 || corrArrLen > ansArrLen) {
+			throw new Error(
+				`Invalid correctAnswers array length of ${corrArrLen} at question index ${qIndex}`
+			);
+		}
+
+		// validate correctAnswers set
+		const corrAnsSet = new Set(question.correctAnswers);
+		if (corrAnsSet.size !== corrArrLen) {
+			throw new Error(`Duplicate correctAnswers indices at question index ${qIndex}`);
+		}
+
+		// validate correctAnswer array elements value
+		for (let corrIndex = 0; corrIndex < corrArrLen; corrIndex++) {
+			const corrAns = question.correctAnswers[corrIndex];
+			if (corrAns < 0 || corrAns >= corrArrLen) {
+				throw new Error(
+					`Invalid value in correctAnswer index ${corrIndex} at question index ${qIndex}`
+				);
+			}
+		}
+
+		// validate time duration and point values
+		if (question.time !== undefined && (question.time > 420 || question.time < 1)) {
+			throw new Error(`Invalid time at question index ${qIndex}`);
+		}
+		if (question.points !== undefined && (question.points > 1000 || question.points < 1)) {
+			throw new Error(`Invalid points at question index ${qIndex}`);
+		}
+	}
 	return q;
 }
 
 export function waitTimer(ms: number): Promise<void> {
-	return new Promise(resolve => setTimeout(resolve, ms));
+	return new Promise((resolve) => setTimeout(resolve, ms));
 }
 
 type Timer = {
