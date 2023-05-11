@@ -304,4 +304,18 @@ export default function registerGameRoutes(app: Express) {
 		res.status(200).send({ ok: true });
 		return;
 	});
+
+	app.get('/games/:id/export-quiz', (req, res) => {
+		const gameId = req.params.id;
+		const game = games.get(gameId);
+
+		if (!game) {
+			res
+				.status(404)
+				.send({ ok: false, err: `Game ${gameId} not found` });
+			return;
+		}
+		res.status(200).json(game.quizData);
+		return;
+	});
 }
