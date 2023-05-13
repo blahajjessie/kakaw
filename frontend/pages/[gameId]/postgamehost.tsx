@@ -1,183 +1,109 @@
 import Image from 'next/image';
 import Link from 'next/link';
 
-import { PieChart } from 'react-minimal-pie-chart';
-
-import MatchMediaWrapper from '@/components/MatchMediaWrapper';
-import LeaderboardEntry from '@/components/LeaderboardEntry';
-
 import postgame from 'public/postgame.png';
 
-const postgameData = {
-	name: 'Player 1',
-	correct: 16,
-	wrong: 8,
-	unanswered: 2,
-};
+const postgameData = [
+	{
+		name: 'Player 1',
+		correct: 16,
+		wrong: 8,
+		unanswered: 2,
+	},
+	{
+		name: 'Player 2',
+		correct: 20,
+		wrong: 4,
+		unanswered: 2,
+	},
+	{
+		name: 'Player 3',
+		correct: 20,
+		wrong: 6,
+		unanswered: 0,
+	},
+	{
+		name: 'Player 4',
+		correct: 15,
+		wrong: 10,
+		unanswered: 1,
+	},
+	{
+		name: 'Player 5',
+		correct: 24,
+		wrong: 2,
+		unanswered: 0,
+	},
+];
 
-export default function PostgamePage() {
-	const rank = (() => {
-		const total =
-			postgameData.correct + postgameData.wrong + postgameData.unanswered;
-		const percentCorrect = (100 * postgameData.correct) / total;
+interface percentCounts {
+	[percent: string]: number;
+}
 
-		if (percentCorrect === 100) {
-			return 'Perfect!';
-		} else if (percentCorrect >= 90) {
-			return 'Awesome!';
-		} else if (percentCorrect >= 80) {
-			return 'Great!';
-		} else if (percentCorrect >= 70) {
-			return 'Nice!';
-		} else {
-			return 'Good try!';
-		}
-	})();
+export default function PostgameHostPage() {
+	// Build array of % correct as whole numbers for all players
+	const percentCorrectArray = postgameData
+		.map((p) => (100 * p.correct) / (p.correct + p.wrong + p.unanswered))
+		.sort((a, b) => a - b)
+		.map((p) => p.toFixed(0));
 
-	const mobileContent = (
-		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
-			<button className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
-				Quit
-			</button>
-			<button className="absolute top-6 right-52 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-2xl 2xl:right-56">
-				Export Quiz
-			</button>
-			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
-				Play Again
-			</button>
-
-			<div className="w-4/5 h-full flex flex-col items-center justify-center">
-				<Image
-					alt="postgame logo"
-					src={postgame}
-					width={150}
-					className="-mb-6"
-				/>
-
-				<div className="w-fit bg-gray-100 border border-black px-16 py-1 text-3xl z-20 2xl:text-4xl">
-					How you did
-				</div>
-
-				<div className="w-full h-2/3 bg-purple-500 flex items-center justify-center p-12 -mt-6 text-xl rounded-xl z-10 2xl:text-3xl">
-					<div className="w-11/12 h-full flex flex-row items-center justify-center gap-16 bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy">
-						<PieChart
-							className="w-1/6"
-							radius={50}
-							startAngle={-90}
-							data={[
-								{
-									title: 'Correct',
-									value: postgameData.correct,
-									color: '#9EE09E',
-								},
-								{
-									title: 'Wrong',
-									value: postgameData.wrong,
-									color: '#FF6663',
-								},
-								{
-									title: 'Unanswered',
-									value: postgameData.unanswered,
-									color: '#FDFD97',
-								},
-							]}
-						/>
-
-						<div className="flex flex-col items-center justify-center gap-6">
-							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg text-white shadow-heavy">
-								Correct: {postgameData.correct}
-							</div>
-							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg text-white shadow-heavy">
-								Wrong: {postgameData.wrong}
-							</div>
-							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg text-gray-200 shadow-heavy">
-								Unanswered: {postgameData.unanswered}
-							</div>
-						</div>
-
-						<div className="w-fit bg-purple-500 border border-gray-200 px-4 py-1 rounded-lg text-white text-2xl shadow-heavy 2xl:text-4xl">
-							{rank}
-						</div>
-					</div>
-				</div>
-			</div>
-		</main>
+	// Create object mapping of % correct to number of occurrences
+	const percentCounts = percentCorrectArray.reduce(
+		(percentCounts: percentCounts, percent: string) => {
+			percent in percentCounts
+				? (percentCounts[percent] += 1)
+				: (percentCounts[percent] = 1);
+			return percentCounts;
+		},
+		{}
 	);
 
-	const desktopContent = (
-		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
-			<button className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
-				Quit
-			</button>
-			<button className="absolute top-6 right-52 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-2xl 2xl:right-56">
-				Export Quiz
-			</button>
-			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
-				Play Again
-			</button>
-
-			<div className="w-4/5 h-full flex flex-col items-center justify-center">
-				<Image
-					alt="postgame logo"
-					src={postgame}
-					width={150}
-					className="-mb-6"
-				/>
-
-				<div className="w-fit bg-gray-100 border border-black px-16 py-1 text-3xl z-20 2xl:text-4xl">
-					How you did
-				</div>
-
-				<div className="w-full h-2/3 bg-purple-500 flex items-center justify-center p-12 -mt-6 text-xl rounded-xl z-10 2xl:text-3xl">
-					<div className="w-11/12 h-full flex flex-row items-center justify-center gap-16 bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy 2xl:gap-20">
-						<PieChart
-							className="w-1/6"
-							radius={50}
-							startAngle={-90}
-							data={[
-								{
-									title: 'Correct',
-									value: postgameData.correct,
-									color: '#9EE09E',
-								},
-								{
-									title: 'Wrong',
-									value: postgameData.wrong,
-									color: '#FF6663',
-								},
-								{
-									title: 'Unanswered',
-									value: postgameData.unanswered,
-									color: '#FDFD97',
-								},
-							]}
-						/>
-
-						<div className="flex flex-col items-center justify-center gap-6 2xl:gap-10">
-							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg text-white shadow-heavy 2xl:px-4 2xl:py-2">
-								Correct: {postgameData.correct}
-							</div>
-							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg text-white shadow-heavy 2xl:px-4 2xl:py-2">
-								Wrong: {postgameData.wrong}
-							</div>
-							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg text-gray-200 shadow-heavy 2xl:px-4 2xl:py-2">
-								Unanswered: {postgameData.unanswered}
-							</div>
-						</div>
-
-						<div className="w-fit bg-purple-500 border border-gray-200 px-4 py-1 rounded-lg text-white text-2xl shadow-heavy 2xl:text-4xl 2xl:px-6 2xl:py-2">
-							{rank}
-						</div>
-					</div>
-				</div>
+	const histogram: JSX.Element[] = [];
+	for (const p in percentCounts) {
+		histogram.push(
+			<div key={p}>
+				<div
+					className="bg-purple-100"
+					style={{ height: `${percentCounts[p] * 100}px` }}
+				></div>
+				<div>{p}</div>
 			</div>
-		</main>
-	);
+		);
+	}
 
 	return (
-		<MatchMediaWrapper
-			mobileContent={mobileContent}
-			desktopContent={desktopContent}
-		/>
+		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
+			<Link
+				href="/"
+				className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl"
+			>
+				Quit
+			</Link>
+			<button className="absolute top-6 right-48 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl 2xl:right-52">
+				Export Quiz
+			</button>
+			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
+				Play Again
+			</button>
+
+			<div className="w-4/5 h-full flex flex-col items-center justify-center">
+				<Image
+					alt="postgame logo"
+					src={postgame}
+					width={130}
+					className="-mb-4"
+				/>
+
+				<div className="w-fit bg-gray-100 border border-black px-8 py-1 text-3xl z-20 2xl:text-4xl">
+					How the class did
+				</div>
+
+				<div className="w-full h-2/3 bg-purple-500 flex items-center justify-center p-12 -mt-6 text-xl rounded-xl z-10 2xl:text-3xl">
+					<div className="w-11/12 h-full flex flex-row items-end justify-center gap-16 bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy 2xl:gap-20">
+						{histogram}
+					</div>
+				</div>
+			</div>
+		</main>
 	);
 }
