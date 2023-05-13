@@ -3,6 +3,7 @@ import { useRouter } from 'next/router';
 
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import { apiCall } from '@/lib/api';
+import Link from 'next/link';
 
 enum UploadStatus {
 	Idle,
@@ -76,9 +77,9 @@ export default function UploadPage() {
 
 	const desktopContent = (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
-			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
-				<form className="bg-gray-100 rounded-xl w-full p-10 mb-2 shadow-heavy">
-					<div className="text-center text-lg mb-4">Upload Quiz</div>
+			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold text-lg 2xl:text-xl">
+				<form className="bg-gray-100 flex flex-col items-center justify-center rounded-xl w-full p-10 mb-2 shadow-heavy">
+					<div className="text-center mb-4">Upload Quiz</div>
 					{typeof filename == 'string' && quizData && (
 						<div className="mb-4 bg-white rounded-xl p-2 mx-3 flex flex-row">
 							<span className="flex-grow font-bold">
@@ -101,7 +102,7 @@ export default function UploadPage() {
 							</button>
 						</div>
 					)}
-					<div className="flex flex-row justify-center px-1">
+					<div className="w-full flex flex-row justify-center px-1 mb-4">
 						<label htmlFor="quiz-upload-input" className="w-full mx-2">
 							<input
 								type="file"
@@ -112,7 +113,7 @@ export default function UploadPage() {
 								onChange={handleFileInput}
 							/>
 							<button
-								className="bg-white hover:bg-gray-50 border-1 border-gray-200 rounded-xl text-center text-lg shadow-md p-2 w-full"
+								className="bg-white hover:bg-gray-50 border-1 border-gray-200 rounded-xl text-center shadow-md p-2 w-full"
 								type="button"
 								onClick={() => {
 									fileInputRef.current!.click();
@@ -122,7 +123,7 @@ export default function UploadPage() {
 							</button>
 						</label>
 						<button
-							className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-xl w-full p-2 mx-2 text-white text-center text-lg shadow-md"
+							className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-xl w-full p-2 mx-2 text-white text-center shadow-md"
 							type="button"
 							disabled={
 								!valid ||
@@ -137,6 +138,13 @@ export default function UploadPage() {
 								: 'Upload'}
 						</button>
 					</div>
+					<div className="text-center mb-4">Or create a new one</div>
+					<Link
+						href="/editor"
+						className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-xl w-1/2 p-2 mx-2 text-white text-center shadow-md"
+					>
+						Create Quiz
+					</Link>
 				</form>
 			</div>
 		</main>
