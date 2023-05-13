@@ -107,6 +107,7 @@ export default function UploadPage() {
 								type="file"
 								className="hidden"
 								id="quiz-upload-input"
+								data-testid="upload"
 								accept="application/json"
 								ref={fileInputRef}
 								onChange={handleFileInput}
