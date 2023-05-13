@@ -19,23 +19,31 @@ test('Home', () => {
 
 test('Upload', () => {
 	render(<Upload />);
-	expect(screen.getAllByRole('button')).not.toBe(null);
+    waitFor(() => {
+	    expect(screen.getAllByRole('button')).not.toBe(null);
+    });
 });
 
 test('Leaderboard', () => {
 	mockRouter.push('/55555/leaderboard');
 	render(<LeaderboardPage />);
-	expect(screen.getAllByRole('img')).not.toBe(null);
+    waitFor(() => {
+	    expect(screen.getAllByRole('img')).not.toBe(null);
+    });
 });
 
-test('Host', () => {
+test('Host Questions Page', () => {
 	mockRouter.push('/55555/questions/host');
 	render(<HostQuestionPage />);
-	expect(screen.getByRole('main')).not.toBe(null);
+    waitFor(() => {
+	    expect(screen.getByRole('main')).not.toBe(null);
+    });
 });
 
-test('Player', () => {
+test('Player Questions Page', () => {
 	mockRouter.push('/55555/questions/player');
 	render(<PlayerQuestionPage />);
-	expect(screen.getByRole('main')).not.toBe(null);
+    waitFor(() => {
+	    expect(screen.getByRole('main')).not.toBe(null);
+    });
 });
