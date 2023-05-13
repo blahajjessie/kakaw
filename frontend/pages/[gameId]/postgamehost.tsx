@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import { PieChart } from 'react-minimal-pie-chart';
 
@@ -35,13 +36,13 @@ export default function PostgamePage() {
 
 	const mobileContent = (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
-			<button className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl">
+			<button className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
 				Quit
 			</button>
-			<button className="absolute top-6 right-52 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl 2xl:right-56">
+			<button className="absolute top-6 right-52 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-2xl 2xl:right-56">
 				Export Quiz
 			</button>
-			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl">
+			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
 				Play Again
 			</button>
 
@@ -105,13 +106,13 @@ export default function PostgamePage() {
 
 	const desktopContent = (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
-			<button className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl">
+			<button className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
 				Quit
 			</button>
-			<button className="absolute top-6 right-52 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl 2xl:right-56">
+			<button className="absolute top-6 right-52 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-2xl 2xl:right-56">
 				Export Quiz
 			</button>
-			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl">
+			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
 				Play Again
 			</button>
 
@@ -128,7 +129,7 @@ export default function PostgamePage() {
 				</div>
 
 				<div className="w-full h-2/3 bg-purple-500 flex items-center justify-center p-12 -mt-6 text-xl rounded-xl z-10 2xl:text-3xl">
-					<div className="w-11/12 h-full flex flex-row items-center justify-center gap-16 bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy">
+					<div className="w-11/12 h-full flex flex-row items-center justify-center gap-16 bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy 2xl:gap-20">
 						<PieChart
 							className="w-1/6"
 							radius={50}
@@ -152,19 +153,19 @@ export default function PostgamePage() {
 							]}
 						/>
 
-						<div className="flex flex-col items-center justify-center gap-6">
-							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg text-white shadow-heavy">
+						<div className="flex flex-col items-center justify-center gap-6 2xl:gap-10">
+							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg text-white shadow-heavy 2xl:px-4 2xl:py-2">
 								Correct: {postgameData.correct}
 							</div>
-							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg text-white shadow-heavy">
+							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg text-white shadow-heavy 2xl:px-4 2xl:py-2">
 								Wrong: {postgameData.wrong}
 							</div>
-							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg text-gray-200 shadow-heavy">
+							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg text-gray-200 shadow-heavy 2xl:px-4 2xl:py-2">
 								Unanswered: {postgameData.unanswered}
 							</div>
 						</div>
 
-						<div className="w-fit bg-purple-500 border border-gray-200 px-4 py-1 rounded-lg text-white text-2xl shadow-heavy 2xl:text-4xl">
+						<div className="w-fit bg-purple-500 border border-gray-200 px-4 py-1 rounded-lg text-white text-2xl shadow-heavy 2xl:text-4xl 2xl:px-6 2xl:py-2">
 							{rank}
 						</div>
 					</div>
