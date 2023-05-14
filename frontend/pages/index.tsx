@@ -17,16 +17,20 @@ export default function Home() {
 		return /[0-9]{5}/g.test(gameId) && username.length > 0;
 	}
 
-	async function joinGame() {
+	async function joinGame(e: React.FormEvent<HTMLFormElement>) {
+		e.preventDefault();
+
 		if (!isGameJoinable()) {
 			return;
 		}
 
 		setJoining(true);
 
+		let response;
+
 		try {
-			const response = await apiCall('POST', `/games/${gameId}/players`, {
-				name: username,
+			response = await apiCall('POST', `/games/${gameId}/players`, {
+				username,
 			});
 
 			const { ok, id, err } = await response.json();
@@ -35,10 +39,20 @@ export default function Home() {
 				setJoining(false);
 			} else {
 				// we got an ID so redirect to the player page
+				console.log(`entering game: ${gameId}, ${id}`);
 				router.push(`/play/${gameId}/${id}`);
 			}
 		} catch (e) {
-			setError('An error occurred communicating with the server.');
+			// TODO backend should communicate this better
+			if (response?.status == 404) {
+				setError(
+					'That game does not exist. Make sure you typed the code correctly.'
+				);
+			} else if (response?.status == 409) {
+				setError('Someone has already joined with that username.');
+			} else {
+				setError('An error occurred communicating with the server.');
+			}
 			setJoining(false);
 			console.error(e);
 		}
@@ -57,7 +71,7 @@ export default function Home() {
 					}}
 				/>
 
-				<form className="p-8 mb-2 w-4/5 sm:w-full">
+				<form className="p-8 mb-2 w-4/5 sm:w-full" onSubmit={joinGame}>
 					<input
 						className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md"
 						id="code"
@@ -80,9 +94,8 @@ export default function Home() {
 					/>
 					<button
 						className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-xl w-full px-4 py-2 text-white text-center text-lg shadow-md"
-						type="button"
+						type="submit"
 						disabled={!isGameJoinable() && !joining}
-						onClick={joinGame}
 					>
 						{joining ? 'Joining...' : 'Join'}
 					</button>
