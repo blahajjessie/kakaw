@@ -1,25 +1,47 @@
 import Image from 'next/image';
+import Link from 'next/link';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import logo from 'public/logo.png';
-import Link from 'next/link';
+import { apiCall } from '@/lib/api';
 
 export default function Home() {
 	const [gameId, setGameId] = useState('');
 	const [username, setUsername] = useState('');
+	const [joining, setJoining] = useState(false);
+	const [error, setError] = useState('');
 	const router = useRouter();
 
 	function isGameJoinable(): boolean {
-		return /[0-9]{6}/g.test(gameId) && username.length > 0;
+		return /[0-9]{5}/g.test(gameId) && username.length > 0;
 	}
 
-	function joinGame() {
+	async function joinGame() {
 		if (!isGameJoinable()) {
 			return;
 		}
 
-		router.push(`/play/${gameId}?name=${encodeURIComponent(username)}`);
+		setJoining(true);
+
+		try {
+			const response = await apiCall('POST', `/games/${gameId}/players`, {
+				name: username,
+			});
+
+			const { ok, id, err } = await response.json();
+			if (!ok) {
+				setError(err);
+				setJoining(false);
+			} else {
+				// we got an ID so redirect to the player page
+				router.push(`/play/${gameId}/${id}`);
+			}
+		} catch (e) {
+			setError('An error occurred communicating with the server.');
+			setJoining(false);
+			console.error(e);
+		}
 	}
 
 	return (
@@ -59,12 +81,14 @@ export default function Home() {
 					<button
 						className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-xl w-full px-4 py-2 text-white text-center text-lg shadow-md"
 						type="button"
-						disabled={!isGameJoinable()}
+						disabled={!isGameJoinable() && !joining}
 						onClick={joinGame}
 					>
-						Join
+						{joining ? 'Joining...' : 'Join'}
 					</button>
 				</form>
+
+				{error != '' && <p className="text-center p-8">{error}</p>}
 
 				<Link
 					href="/upload"
