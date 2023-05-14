@@ -5,45 +5,35 @@ import Upload from '@/pages/upload';
 import LeaderboardPage from '@/pages/[gameId]/leaderboard';
 import HostQuestionPage from '@/pages/[gameId]/questions/host';
 import PlayerQuestionPage from '@/pages/[gameId]/questions/player';
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import mockRouter from 'next-router-mock';
 
 jest.mock('next/router', () => require('next-router-mock'));
 
-test('Home', () => {
+test('Home', async () => {
 	render(<Home />);
-	waitFor(() => {
-		expect(screen.getByRole('link')).not.toBe(null);
-	});
+	await screen.findByRole('link');
 });
 
-test('Upload', () => {
+test('Upload', async () => {
 	render(<Upload />);
-    waitFor(() => {
-	    expect(screen.getAllByRole('button')).not.toBe(null);
-    });
+	expect(await screen.findAllByRole('button')).not.toBe(null);
 });
 
-test('Leaderboard', () => {
+test('Leaderboard', async () => {
 	mockRouter.push('/55555/leaderboard');
 	render(<LeaderboardPage />);
-    waitFor(() => {
-	    expect(screen.getAllByRole('img')).not.toBe(null);
-    });
+	expect(await screen.findAllByRole('img')).not.toBe(null);
 });
 
-test('Host Questions Page', () => {
+test('Host Questions Page', async () => {
 	mockRouter.push('/55555/questions/host');
 	render(<HostQuestionPage />);
-    waitFor(() => {
-	    expect(screen.getByRole('main')).not.toBe(null);
-    });
+	expect(await screen.findByRole('main')).not.toBe(null);
 });
 
-test('Player Questions Page', () => {
+test('Player Questions Page', async () => {
 	mockRouter.push('/55555/questions/player');
 	render(<PlayerQuestionPage />);
-    waitFor(() => {
-	    expect(screen.getByRole('main')).not.toBe(null);
-    });
+	expect(await screen.findByRole('main')).not.toBe(null);
 });
