@@ -5,12 +5,9 @@ import { handleConnection } from './connection';
 const app = express();
 app.use(express.json());
 
-import registerGameRoutes, { Game } from './game';
+import registerGameRoutes, { getGame } from './game';
+import { Game } from './gameTypes';
 registerGameRoutes(app);
-
-app.get('/', (_req, res) => {
-	res.send('Hello, world!');
-});
 
 // create websocket "server" which really piggybacks on the express server
 const webSocketServer = new WebSocket.Server({
@@ -40,13 +37,14 @@ httpServer.on('upgrade', (request, socket, head) => {
 	) {
 		// rude but no one should be trying to open websocket connections at other URLs
 		socket.destroy();
+		return;
 	}
 	const gameId = url.searchParams.get('gameId')!;
 	const playerId = url.searchParams.get('playerId')!;
-
+	const game = getGame(gameId);
 	webSocketServer.handleUpgrade(request, socket, head, (client, request) => {
 		webSocketServer.emit('connection', client, request);
-		handleConnection(client, gameId, playerId);
+		handleConnection(client, game, playerId);
 	});
 });
 

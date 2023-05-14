@@ -7,7 +7,7 @@ on:
     branches: [main]
 
 jobs:
-  build:
+  backend-compiles:
     runs-on: ubuntu-latest
     defaults:
       run:
