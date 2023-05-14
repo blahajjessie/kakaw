@@ -4,15 +4,17 @@ import { useRouter } from 'next/router';
 import useWebSocket from 'react-use-websocket';
 
 export interface UseConnectionParams {
-	onEvent: (type: string, event: any) => void;
+	onOpen: () => void;
+	onMessage: (type: string, event: any) => void;
 	onError: (error: any) => void;
 	onClose: (reason?: string) => void;
 }
 
 export default function useConnection({
-	// extract the three functions, but rename them locally (i.e. onEvent -> onEventCallback) to
+	// extract the four functions, but rename them locally (i.e. onMessage -> onMessageCallback) to
 	// avoid confusion with the callbacks we pass into useWebSocket
-	onEvent: onEventCallback,
+	onOpen: onOpenCallback,
+	onMessage: onMessageCallback,
 	onError: onErrorCallback,
 	onClose: onCloseCallback,
 }: UseConnectionParams): void {
@@ -35,7 +37,7 @@ export default function useConnection({
 
 	useWebSocket(url.href, {
 		onOpen() {
-			console.log('WebSocket connection established.');
+			onOpenCallback();
 		},
 
 		onMessage(event: MessageEvent<string>) {
@@ -57,7 +59,7 @@ export default function useConnection({
 					setCloseReason(data.reason);
 				}
 
-				onEventCallback(data.type, data);
+				onMessageCallback(data.type, data);
 			} catch (error) {
 				onErrorCallback(new Error(`JSON parse error: ${error}`));
 			}
@@ -70,5 +72,7 @@ export default function useConnection({
 		onClose() {
 			onCloseCallback(closeReason);
 		},
+
+		share: true,
 	});
 }
