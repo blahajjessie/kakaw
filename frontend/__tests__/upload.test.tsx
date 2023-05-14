@@ -53,6 +53,17 @@ test('Upload - File Selection', async () => {
 	expect(fileTitle).not.toBe(null);
 });
 
+test('Upload - Clear File', async () => {
+	render(<Upload />);
+	expect(await screen.findAllByRole('button')).not.toBe(null);
+	const uploadInput = screen.getByTestId('upload');
+	fireEvent.change(uploadInput, { target: { files: [file] } });
+	await screen.findByText('test.json');
+	await userEvent.click(screen.getByText('🗙'));
+	const fileTitle = screen.queryByText('test.json');
+	expect(fileTitle).toBeNull();
+});
+
 test('Upload - Wrong File Type', async () => {
 	render(<Upload />);
 	expect(await screen.findAllByRole('button')).not.toBe(null);
