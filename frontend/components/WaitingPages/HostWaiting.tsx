@@ -70,6 +70,7 @@ export default function HostWaiting({ hostId }: hostProps) {
 							<input
 								className="w-10 mb-2"
 								id="time"
+								data-testid="time"
 								type="text"
 								maxLength={3}
 								onChange={handleTimeChange}
@@ -79,6 +80,7 @@ export default function HostWaiting({ hostId }: hostProps) {
 						<input
 							className="w-32 mb-2"
 							id="maxPlayers"
+							data-testid="playerCount"
 							type="text"
 							maxLength={4}
 							onChange={handlePlayerChange}
@@ -103,7 +105,7 @@ export default function HostWaiting({ hostId }: hostProps) {
 					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-48 h-20"
 					type="button"
 					onClick={() => {
-						startQuiz;
+						startQuiz();
 					}}
 				>
 					Start
@@ -154,15 +156,17 @@ export default function HostWaiting({ hostId }: hostProps) {
 					Participants ({playerList.length})
 				</div>
 				<table className="w-full text-2xl font-extrabold">
-					{displayPlayers.map((subArray, index) => (
-						<tr key={index}>
-							{subArray.map((player, i) => (
-								<td className="py-4" key={index + i}>
-									{player}
-								</td>
-							))}
-						</tr>
-					))}
+					<tbody>
+						{displayPlayers.map((subArray, index) => (
+							<tr key={index}>
+								{subArray.map((player, i) => (
+									<td className="py-4" key={index + i}>
+										{player}
+									</td>
+								))}
+							</tr>
+						))}
+					</tbody>
 				</table>
 			</div>
 		</main>

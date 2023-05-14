@@ -5,6 +5,7 @@ import Upload from '@/pages/upload';
 import LeaderboardPage from '@/pages/[gameId]/leaderboard';
 import HostQuestionPage from '@/pages/[gameId]/questions/host';
 import PlayerQuestionPage from '@/pages/[gameId]/questions/player';
+import PlayerWaiting from '@/components/WaitingPages/PlayerWaiting';
 import { screen } from '@testing-library/react';
 import mockRouter from 'next-router-mock';
 
@@ -36,4 +37,9 @@ test('Player Questions Page', async () => {
 	mockRouter.push('/55555/questions/player');
 	render(<PlayerQuestionPage />);
 	expect(await screen.findByRole('main')).not.toBe(null);
+});
+
+test('Player Waiting', async () => {
+	render(<PlayerWaiting />);
+	expect(await screen.findByText('You entered a game!')).not.toBe(null);
 });

@@ -1,5 +1,5 @@
 import { render } from '@testing-library/react';
-import { screen, fireEvent, waitForElementToBeRemoved } from '@testing-library/react';
+import { screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import './mocks/matchMedia.mock';
 import Upload from '@/pages/upload';
@@ -23,7 +23,7 @@ beforeAll(() => {
 	server.listen();
 });
 
-afterEach(() => server.resetHandlers())
+afterEach(() => server.resetHandlers());
 
 afterAll(() => server.close());
 
@@ -40,7 +40,7 @@ const wrongFile = new File(['Hi'], 'test.text', {
 test('Upload - No File Selected', async () => {
 	render(<Upload />);
 	expect(await screen.findAllByRole('button')).not.toBe(null);
-	userEvent.click(screen.getByText('Upload'));
+	await userEvent.click(screen.getByText('Upload'));
 	// Currently does nothing on failure
 });
 
@@ -83,6 +83,6 @@ test('Upload File', async () => {
 	fireEvent.change(uploadInput, { target: { files: [file] } });
 	const fileTitle = await screen.findByText('test.json');
 	expect(fileTitle).not.toBe(null);
-	userEvent.click(screen.getByText('Upload'));
+	await userEvent.click(screen.getByText('Upload'));
 	await screen.findByText('Uploading...');
 });

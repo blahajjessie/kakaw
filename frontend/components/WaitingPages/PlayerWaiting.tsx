@@ -7,7 +7,7 @@ const inter = Inter({
 	variable: '--font-inter',
 });
 
-export default function playerWaiting() {
+export default function PlayerWaiting() {
 	return (
 		<main
 			className={`${inter.variable} font-sans bg-purple-100 flex min-h-screen flex-col items-center justify-center`}
