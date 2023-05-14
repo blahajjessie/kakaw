@@ -34,18 +34,6 @@ const postgameData = [
 		wrong: 2,
 		unanswered: 0,
 	},
-	{
-		name: 'Player 4',
-		correct: 15,
-		wrong: 10,
-		unanswered: 1,
-	},
-	{
-		name: 'Player 5',
-		correct: 23,
-		wrong: 3,
-		unanswered: 0,
-	},
 ];
 
 interface percentCounts {
