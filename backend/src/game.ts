@@ -2,7 +2,7 @@ import { Express } from 'express';
 import { WebSocket } from 'ws';
 
 import { sendMessage } from './connection';
-import { UserId, GameId, QuizQuestion, Game, EndResp, } from './gameTypes';
+import { UserId, GameId, QuizQuestion, Game, EndResp } from './gameTypes';
 import { gen } from './code';
 // first key is gameId
 const games: Map<GameId, Game> = new Map();
@@ -68,19 +68,23 @@ function beginQuestion(gameId: GameId) {
 	if (game.timer.beginTimestamp == -1) {
 		// check if questionTime is valid, else timeLimit is default time
 		const questionOptionalTime = question.time;
-		if (typeof questionOptionalTime !== 'undefined' && !isNaN(questionOptionalTime)) {
+		if (
+			typeof questionOptionalTime !== 'undefined' &&
+			!isNaN(questionOptionalTime)
+		) {
 			game.timer.timeLimit = questionOptionalTime * 1000;
 		} else {
 			game.timer.timeLimit = game.quizData.meta.timeDefault * 1000;
 		}
 		game.timer.beginTimestamp == Date.now();
 		game.timer.endTimestamp == Date.now() + game.timer.timeLimit;
-	} 
+	}
 
 	const beginResp = {
 		question: question.questionText,
 		answers: question.answerTexts,
 		time: game.timer.endTimestamp - Date.now(),
+		index: game.activeQuestion,
 	};
 
 	users.forEach(function (playerId: UserId) {
@@ -90,7 +94,7 @@ function beginQuestion(gameId: GameId) {
 		}
 		console.log(sock.readyState);
 		if (sock.readyState === WebSocket.OPEN) {
-			sendMessage(sock, 'startQuestion', question);
+			sendMessage(sock, 'startQuestion', beginResp);
 		}
 		game.initScore(playerId);
 	});
@@ -158,7 +162,7 @@ export default function registerGameRoutes(app: Express) {
 		beginQuestion(gameId);
 
 		res.status(200).send({ ok: true });
-		
+
 		return;
 	});
 
@@ -288,9 +292,7 @@ export default function registerGameRoutes(app: Express) {
 		const game = games.get(gameId);
 
 		if (!game) {
-			res
-				.status(404)
-				.send({ ok: false, err: `Game ${gameId} not found` });
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
 			return;
 		}
 
@@ -310,9 +312,7 @@ export default function registerGameRoutes(app: Express) {
 		const game = games.get(gameId);
 
 		if (!game) {
-			res
-				.status(404)
-				.send({ ok: false, err: `Game ${gameId} not found` });
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
 			return;
 		}
 		res.status(200).json(game.quizData);

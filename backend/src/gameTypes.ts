@@ -38,7 +38,12 @@ class AnswerObj {
 	answer = -1;
 	correct = false;
 	score = 0;
-	constructor(totalPoints?: number, totalTime?: number, time?: number, answer?: number) {
+	constructor(
+		totalPoints?: number,
+		totalTime?: number,
+		time?: number,
+		answer?: number
+	) {
 		if (totalPoints) this.totalPoints = totalPoints;
 		if (totalTime) this.totalTime = totalTime;
 		if (time) this.time = time;
@@ -48,8 +53,8 @@ class AnswerObj {
 		this.correct = answerArray.includes(this.answer);
 		const isCorrect = this.correct ? 1 : 0;
 		const ratio = this.time / this.totalTime;
-		const varPoints = .9 * this.totalPoints;
-		const setPoints = .1 * this.totalPoints;
+		const varPoints = 0.9 * this.totalPoints;
+		const setPoints = 0.1 * this.totalPoints;
 		this.score = Math.round((varPoints * (1 - ratio) + setPoints) * isCorrect);
 		return;
 	}
@@ -104,7 +109,7 @@ function quizValidate(q: Quiz): Quiz {
 		// validate question
 		if (
 			!question ||
-			!question.questionText ||
+			typeof question.questionText !== 'string' ||
 			!Array.isArray(question.answerTexts) ||
 			!Array.isArray(question.correctAnswers)
 		) {
@@ -113,7 +118,7 @@ function quizValidate(q: Quiz): Quiz {
 
 		// validate questionText character length
 		const qTextLen = question.questionText.length;
-		if (qTextLen <= 0 || qTextLen > 100) {
+		if (qTextLen == 0 || qTextLen > 100) {
 			throw new Error(
 				`Invalid questionText char length of ${qTextLen} at question index ${qIndex}`
 			);
@@ -129,6 +134,11 @@ function quizValidate(q: Quiz): Quiz {
 
 		// validate answerTexts array elements character length
 		for (let ansIndex = 0; ansIndex < ansArrLen; ansIndex++) {
+			if (typeof question.answerTexts[ansIndex] !== 'string') {
+				throw new Error(
+					`Invalid type in answerText index ${ansIndex} at question index ${qIndex}`
+				);
+			}
 			const ansTextLen = question.answerTexts[ansIndex].length;
 			if (ansTextLen == 0 || ansTextLen > 100) {
 				throw new Error(
@@ -148,11 +158,18 @@ function quizValidate(q: Quiz): Quiz {
 		// validate correctAnswers set
 		const corrAnsSet = new Set(question.correctAnswers);
 		if (corrAnsSet.size !== corrArrLen) {
-			throw new Error(`Duplicate correctAnswers indices at question index ${qIndex}`);
+			throw new Error(
+				`Duplicate correctAnswers indices at question index ${qIndex}`
+			);
 		}
 
 		// validate correctAnswer array elements value
 		for (let corrIndex = 0; corrIndex < corrArrLen; corrIndex++) {
+			if (typeof question.correctAnswers[corrIndex] !== 'number') {
+				throw new Error(
+					`Invalid type in correctAnswer index ${corrIndex} at question index ${qIndex}`
+				);
+			}
 			const corrAns = question.correctAnswers[corrIndex];
 			if (corrAns < 0 || corrAns >= ansArrLen) {
 				throw new Error(
@@ -161,12 +178,20 @@ function quizValidate(q: Quiz): Quiz {
 			}
 		}
 
-		// validate time duration and point values
-		if (question.time !== undefined && (question.time > 420 || question.time < 1)) {
-			throw new Error(`Invalid time at question index ${qIndex}`);
+		// validate optional time duration and point values
+		if (question.time !== undefined) {
+			if (isNaN(question.time) || question.time > 420 || question.time < 1) {
+				throw new Error(`Invalid time at question index ${qIndex}`);
+			}
 		}
-		if (question.points !== undefined && (question.points > 1000 || question.points < 1)) {
-			throw new Error(`Invalid points at question index ${qIndex}`);
+		if (question.points !== undefined) {
+			if (
+				isNaN(question.points) ||
+				question.points > 10000 ||
+				question.points < 1
+			) {
+				throw new Error(`Invalid points at question index ${qIndex}`);
+			}
 		}
 	}
 	return q;
