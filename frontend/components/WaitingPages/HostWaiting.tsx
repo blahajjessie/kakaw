@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
+import qr from '@/components/qrCode';
 import { ChangeEvent, useState, useContext } from 'react';
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 
@@ -89,26 +90,10 @@ export default function HostWaiting({ gameId }: hostProps) {
 		</div>
 	);
 
+	const qrCode = qr();
+
 	const desktopContent = (
 		<div className="flex flex-row items-center justify-start">
-			<div className="bg-gray-100 flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-6 w-min">
-				<div>
-					<div className="text-4xl xl:text-5xl whitespace-nowrap">
-						Join with the code:
-					</div>
-					<div className="text-8xl xl:text-9xl">{gameId}</div>
-				</div>
-				{headerContent}
-				<button
-					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-48 h-20"
-					type="button"
-					onClick={() => {
-						startQuiz();
-					}}
-				>
-					Start
-				</button>
-			</div>
 			<Image
 				alt="Kakaw logo"
 				className="mx-4"
@@ -119,6 +104,16 @@ export default function HostWaiting({ gameId }: hostProps) {
 					height: 'auto',
 				}}
 			/>
+			{qrCode}
+			<div className="bg-gray-100 flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-6 w-min">
+				<div>
+					<div className="text-4xl xl:text-5xl whitespace-nowrap">
+						Join with the code:
+					</div>
+					<div className="text-8xl xl:text-9xl">{gameId}</div>
+				</div>
+				{headerContent}
+			</div>
 		</div>
 	);
 
@@ -165,6 +160,15 @@ export default function HostWaiting({ gameId }: hostProps) {
 					))}
 				</table>
 			</div>
+			<button
+				className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-48 h-20"
+				type="button"
+				onClick={() => {
+					startQuiz;
+				}}
+			>
+				Start
+			</button>
 		</main>
 	);
 }
