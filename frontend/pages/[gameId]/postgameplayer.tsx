@@ -46,10 +46,10 @@ export default function PostgamePlayerPage() {
 					How you did
 				</div>
 
-				<div className="w-full h-3/4 bg-purple-500 flex items-center justify-center p-8 pt-10 -mt-6 text-xl rounded-3xl z-10 sm:h-2/3 sm:p-12 sm:rounded-xl 2xl:text-3xl">
-					<div className="w-full h-full flex flex-col items-center justify-center gap-8 bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy sm:flex-row sm:gap-16 sm:w-11/12 2xl:gap-20">
+				<div className="w-full h-1/2 grow bg-purple-500 flex items-center justify-center p-8 pt-10 -mt-6 text-lg rounded-3xl z-10 sm:h-2/3 sm:p-12 sm:rounded-xl md:text-xl 2xl:text-3xl">
+					<div className="w-full h-full flex flex-col items-center justify-around bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy py-8 sm:flex-row sm:w-11/12 sm:py-0 md:px-8 lg:px-24 xl:px-36 2xl:px-40">
 						<PieChart
-							className="w-1/2 h-1/4 sm:w-1/6 sm:h-full"
+							className="w-1/2 h-1/4 min-w-[3em] min-h-[3em] sm:w-1/4 sm:h-full md:w-1/5"
 							radius={50}
 							startAngle={-90}
 							data={[
@@ -83,14 +83,14 @@ export default function PostgamePlayerPage() {
 							</div>
 						</div>
 
-						<div className="w-fit bg-purple-500 border border-gray-200 px-4 py-1 rounded-lg text-white text-2xl shadow-heavy 2xl:text-4xl 2xl:px-6 2xl:py-2">
+						<div className="w-fit bg-purple-500 border border-gray-200 px-4 py-1 rounded-lg text-white text-xl shadow-heavy md:text-2xl 2xl:text-4xl 2xl:px-6 2xl:py-2">
 							{rank}
 						</div>
 					</div>
 				</div>
 			</div>
 
-			<div className="w-3/4 flex justify-center gap-2 -mt-2 mb-2">
+			<div className="w-3/4 flex justify-center gap-2 my-2">
 				<Link
 					href="/"
 					className="grow bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white text-center shadow-heavy hover:brightness-110 sm:absolute sm:top-6 sm:left-6 2xl:text-xl"
