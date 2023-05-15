@@ -2,7 +2,7 @@ import { useState } from 'react';
 
 import useConnection from './useConnection';
 
-export enum KakawGameStage {
+export enum Stage {
 	WaitingRoom,
 	Question,
 	PostQuestion,
@@ -17,12 +17,17 @@ export interface Question {
 
 export type KakawGame =
 	| {
-			stage: KakawGameStage.WaitingRoom;
+			stage: Stage.WaitingRoom;
+			// id -> username
+			players?: Map<string, string>;
 	  }
 	| {
-			stage: KakawGameStage.Question | KakawGameStage.PostQuestion;
+			stage: Stage.Question;
 			questionIndex: number;
 			currentQuestion: Question;
+	  }
+	| {
+			stage: Stage.PostQuestion;
 	  };
 
 export default function useKakawGame(): {
@@ -33,6 +38,10 @@ export default function useKakawGame(): {
 	const [connected, setConnected] = useState(false);
 	const [error, setError] = useState<string | undefined>(undefined);
 
+	const [game, setGame] = useState<KakawGame>({
+		stage: Stage.WaitingRoom,
+	});
+
 	useConnection({
 		onOpen() {
 			setConnected(true);
@@ -40,6 +49,31 @@ export default function useKakawGame(): {
 
 		onMessage(type, event) {
 			console.log(`received message: ${type}, ${JSON.stringify(event)}`);
+
+			switch (type) {
+				case 'startQuestion':
+					setGame({
+						stage: Stage.Question,
+						questionIndex: event.index,
+						currentQuestion: {
+							questionText: event.questionText,
+							answerTexts: event.answerTexts,
+							time: event.time,
+						},
+					});
+					break;
+				case 'endQuestion':
+					setGame({
+						stage: Stage.PostQuestion,
+					});
+					break;
+				case 'lobby':
+					setGame({
+						stage: Stage.WaitingRoom,
+						players: new Map(Object.entries(event.players)),
+					});
+					break;
+			}
 		},
 
 		onError(error) {
@@ -57,5 +91,5 @@ export default function useKakawGame(): {
 		},
 	});
 
-	return { connected, error, game: { stage: KakawGameStage.WaitingRoom } };
+	return { connected, error, game };
 }

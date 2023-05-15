@@ -13,7 +13,9 @@ const HostGameRouter: NextPage<{}> = () => {
 	};
 
 	useConnection({
-		onEvent(type, event) {
+		onOpen() {},
+
+		onMessage(type, event) {
 			console.log(`got ${type} message: ${JSON.stringify(event)}`);
 		},
 

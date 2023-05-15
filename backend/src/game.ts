@@ -62,7 +62,10 @@ function beginQuestion(gameId: GameId) {
 		}
 		console.log(sock.readyState);
 		if (sock.readyState === WebSocket.OPEN) {
-			sendMessage(sock, 'startQuestion', question);
+			sendMessage(sock, 'startQuestion', {
+				...question,
+				index: game.activeQuestion,
+			});
 		}
 		game.initScore(playerId);
 	});

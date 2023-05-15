@@ -1,4 +1,4 @@
-import useKakawGame, { KakawGameStage } from '@/lib/useKakawGame';
+import useKakawGame, { Stage } from '@/lib/useKakawGame';
 import { NextPage } from 'next';
 import { useRouter } from 'next/router';
 
@@ -18,7 +18,7 @@ const PlayerGameRouter: NextPage<{}> = () => {
 				<br />
 				Error: {error}
 				<br />
-				Stage: {KakawGameStage[game.stage]}
+				Stage: {Stage[game.stage]}
 			</p>
 			<p>
 				Game data: <code>{JSON.stringify(game)}</code>
