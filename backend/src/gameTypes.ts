@@ -93,11 +93,12 @@ function quizValidate(q: Quiz): Quiz {
 	if (!Array.isArray(q.questions)) {
 		throw new Error('Quiz questions must be an array');
 	}
-	if (q.questions.length === 0) {
-		throw new Error(`Quiz must have at least one question`);
+	const qArrLen = q.questions.length;
+	if (qArrLen == 0 || qArrLen > 100) {
+		throw new Error(`Invalid Quiz questions array length of ${qArrLen}`);
 	}
 
-	for (let qIndex = 0; qIndex < q.questions.length; qIndex++) {
+	for (let qIndex = 0; qIndex < qArrLen; qIndex++) {
 		const question = q.questions[qIndex];
 
 		// validate question
@@ -129,7 +130,7 @@ function quizValidate(q: Quiz): Quiz {
 		// validate answerTexts array elements character length
 		for (let ansIndex = 0; ansIndex < ansArrLen; ansIndex++) {
 			const ansTextLen = question.answerTexts[ansIndex].length;
-			if (ansTextLen <= 0 || ansTextLen >= 100) {
+			if (ansTextLen == 0 || ansTextLen > 100) {
 				throw new Error(
 					`Invalid char length in answerText index ${ansIndex} at question index ${qIndex}`
 				);
@@ -138,7 +139,7 @@ function quizValidate(q: Quiz): Quiz {
 
 		// validate correctAnswers array length
 		const corrArrLen = question.correctAnswers.length;
-		if (corrArrLen <= 1 || corrArrLen > ansArrLen) {
+		if (corrArrLen < 1 || corrArrLen > ansArrLen) {
 			throw new Error(
 				`Invalid correctAnswers array length of ${corrArrLen} at question index ${qIndex}`
 			);
@@ -153,9 +154,9 @@ function quizValidate(q: Quiz): Quiz {
 		// validate correctAnswer array elements value
 		for (let corrIndex = 0; corrIndex < corrArrLen; corrIndex++) {
 			const corrAns = question.correctAnswers[corrIndex];
-			if (corrAns < 0 || corrAns >= corrArrLen) {
+			if (corrAns < 0 || corrAns >= ansArrLen) {
 				throw new Error(
-					`Invalid value in correctAnswer index ${corrIndex} at question index ${qIndex}`
+					`Invalid value ${corrAns} in correctAnswer index ${corrIndex} at question index ${qIndex}`
 				);
 			}
 		}
