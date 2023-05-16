@@ -69,41 +69,47 @@ function beginQuestion(gameId: GameId) {
 	return;
 }
 
-function validateGame(req: Request, res: Response){
+function validateGame(req: Request, res: Response, next:NextFunction){
 	const params = req.params;
+	console.log(params.gameId)
 	if (!games.has(params.gameId)){
+		console.log("eek!");
 		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
 		return;
 	}
+	console.log("valid game")
+	next()
 
 }
-function validateQuestion(req: Request, res: Response){
+function validateQuestion(req: Request, res: Response, next:NextFunction){
 	const params = req.params;
-	const game = games.get(params.game)!;
-	
-	if (params.index === undefined) {
-		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
+	if (req.params.gameId === undefined){
+		res.status(400).send({ ok: false, err: `Question number is required` });
 		return;
 	}
+	const game = games.get(params.gameId)!;
+	
 	try{
 		parseInt(params.index)
 	}
 	catch{
 		// should this be a different error
-		res.status(400).send({ ok: false, err: `Game ${params.gameId} not a number` });
+		res.status(404).send({ ok: false, err: `Question ${params.index} not a number` });
+		return;
 
 	}
-	if (parseInt(params.index) < game.quizData.questions.length){
-		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
+	if (parseInt(params.index) > game.quizData.questions.length){
+		res.status(404).send({ ok: false, err: `Question ${params.index} not found` });
 		return;
 	}
+	next()
 
 }
 
 
 export default function registerGameRoutes(app: Express) {
-	app.use('/games/gameId', validateGame);
-	app.use('/games/gameId/questions/:index', validateQuestion);
+	app.use('/games/:gameId/', validateGame);
+	app.use('/games/:gameId/questions/:index/', validateQuestion);
 
 	app.post('/games', (req, res) => {
 		if (!req.body) {
@@ -164,22 +170,14 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/questions/:index/end', (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		const index = parseInt(req.params.index);
-		const game = games.get(gameId);
+		const game = games.get(gameId)!;
 
 		// host-requested game error
-		if (game === undefined) {
-			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
-			return;
-		}
 
 		const quiz = game.quizData;
 		// out-of-bounds error
-		if (index >= quiz.questions.length) {
-			res.status(404).send({ ok: false, err: `Question ${index} not found` });
-			return;
-		}
 
-		// start accepting answers for the question index
+		// stop accepting answers for the question index
 		if (index != game.activeQuestion) {
 			res.status(400).send({
 				ok: false,
@@ -246,12 +244,8 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		const game = games.get(gameId);
+		const game = games.get(gameId)!;
 
-		if (game === undefined) {
-			res.status(404).send();
-			return;
-		}
 
 		const username: string = body.username;
 		// EW disgusting.... Gets the usernames from the users list
@@ -269,13 +263,7 @@ export default function registerGameRoutes(app: Express) {
 
 	app.get('/games/:id/results', (req, res) => {
 		const gameId = req.params.id;
-		const game = games.get(gameId);
-
-		if (!game) {
-			return res
-				.status(404)
-				.send({ ok: false, err: `Game ${gameId} not found` });
-		}
+		const game = games.get(gameId)!;
 
 		// gets player name with their responding total score and which questions they got right
 
