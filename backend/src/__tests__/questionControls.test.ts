@@ -72,6 +72,7 @@ describe('Question Controls', () => {
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(false);
 				console.log(data.error);
+				console.log(data.body.err);
 			});
 	});
 
