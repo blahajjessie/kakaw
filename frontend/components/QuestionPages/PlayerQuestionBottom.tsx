@@ -5,7 +5,7 @@ interface PlayerQuestionBottomProps {
 	score: number;
 }
 
-export default function QuestionTop({
+export default function PlayerQuestionBottom({
 	name,
 	score,
 }: PlayerQuestionBottomProps) {

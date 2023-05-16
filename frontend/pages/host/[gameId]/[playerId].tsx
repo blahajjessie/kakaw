@@ -1,9 +1,10 @@
 import React from 'react';
 import { NextPage } from 'next';
-import useConnection from '@/lib/useConnection';
 
 import HostWaiting from '@/components/WaitingPages/HostWaiting';
 import { useRouter } from 'next/router';
+import useKakawGame, { Stage } from '@/lib/useKakawGame';
+import QuestionPage from '@/components/QuestionPage';
 
 const HostGameRouter: NextPage<{}> = () => {
 	const router = useRouter();
@@ -12,23 +13,21 @@ const HostGameRouter: NextPage<{}> = () => {
 		playerId: string;
 	};
 
-	useConnection({
-		onOpen() {},
+	const { connected, error, game } = useKakawGame();
 
-		onMessage(type, event) {
-			console.log(`got ${type} message: ${JSON.stringify(event)}`);
-		},
-
-		onError(error) {
-			console.error(error);
-		},
-
-		onClose(reason) {
-			console.log(`connection closed: ${reason}`);
-		},
-	});
-
-	return <HostWaiting gameId={gameId} />;
+	switch (game.stage) {
+		case Stage.WaitingRoom:
+			return <HostWaiting gameId={gameId} />;
+		case Stage.Question:
+			return (
+				<QuestionPage
+					scope="host"
+					question={game.currentQuestion}
+					index={game.questionIndex}
+				/>
+			);
+	}
+	throw new Error('unreachable');
 };
 
 // this line disables server side rendering; otherwise, it is rendered with an empty query which

@@ -5,7 +5,7 @@ interface HostQuestionBottomProps {
 	numPlayers: number;
 }
 
-export default function QuestionTop({
+export default function HostQuestionBottom({
 	numAnswered,
 	numPlayers,
 }: HostQuestionBottomProps) {
