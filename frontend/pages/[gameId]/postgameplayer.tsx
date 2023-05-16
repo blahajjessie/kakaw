@@ -46,7 +46,7 @@ export default function PostgamePlayerPage() {
 					How you did
 				</div>
 
-				<div className="w-full h-1/2 grow bg-purple-500 flex items-center justify-center p-8 pt-10 -mt-6 text-lg rounded-3xl z-10 sm:h-2/3 sm:p-12 sm:rounded-xl md:text-xl 2xl:text-3xl">
+				<div className="w-full h-3/4 bg-purple-500 flex items-center justify-center p-8 pt-10 -mt-6 text-lg rounded-3xl z-10 sm:h-2/3 sm:p-12 sm:rounded-xl md:text-xl 2xl:text-3xl">
 					<div className="w-full h-full flex flex-col items-center justify-around bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy py-8 sm:flex-row sm:w-11/12 sm:py-0 md:px-8 lg:px-24 xl:px-36 2xl:px-40">
 						<PieChart
 							className="w-1/2 h-1/4 min-w-[3em] min-h-[3em] sm:w-1/4 sm:h-full md:w-1/5"
