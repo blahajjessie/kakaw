@@ -125,6 +125,10 @@ export class Game {
 		};
 		return out;
 	}
+	private getPlayerScoreArray(player:UserId){
+		let userAnswers = this.userAnswers.get(player);
+
+	}
 	getLeaderboard() {
 		let results: {
 			name: string;
@@ -132,8 +136,8 @@ export class Game {
 			correctAnswers: number[];
 		}[] = new Array();
 
-		this.getPlayers().forEach((user) => {
-			let userAnswers = this.userAnswers.get(user);
+		this.getPlayers().forEach((player) => {
+			let userAnswers = this.userAnswers.get(player);
 			let score: number = userAnswers
 				? userAnswers.reduce((a, b) => b.score + a, 0)
 				: 0;
@@ -145,7 +149,7 @@ export class Game {
 			}, new Array<number>());
 			correctAnswers = correctAnswers ? correctAnswers : [];
 			results.push({
-				name: this.users.get(user)!.name,
+				name: this.users.get(player)!.name,
 				score: score,
 				correctAnswers: correctAnswers,
 			});

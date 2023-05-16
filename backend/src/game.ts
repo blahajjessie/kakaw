@@ -1,4 +1,4 @@
-import { Express } from 'express';
+import { Express, NextFunction, Request, Response } from 'express';
 import { WebSocket } from 'ws';
 
 import { sendMessage } from './connection';
@@ -69,7 +69,42 @@ function beginQuestion(gameId: GameId) {
 	return;
 }
 
+function validateGame(req: Request, res: Response){
+	const params = req.params;
+	if (!games.has(params.gameId)){
+		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
+		return;
+	}
+
+}
+function validateQuestion(req: Request, res: Response){
+	const params = req.params;
+	const game = games.get(params.game)!;
+	
+	if (params.index === undefined) {
+		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
+		return;
+	}
+	try{
+		parseInt(params.index)
+	}
+	catch{
+		// should this be a different error
+		res.status(400).send({ ok: false, err: `Game ${params.gameId} not a number` });
+
+	}
+	if (parseInt(params.index) < game.quizData.questions.length){
+		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
+		return;
+	}
+
+}
+
+
 export default function registerGameRoutes(app: Express) {
+	app.use('/games/gameId', validateGame);
+	app.use('/games/gameId/questions/:index', validateQuestion);
+
 	app.post('/games', (req, res) => {
 		if (!req.body) {
 			res.status(400).send('Invalid JSON file');
@@ -95,13 +130,9 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/questions/:index/start', (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		const index = parseInt(req.params.index);
-		const game = games.get(gameId);
+		const game = games.get(gameId)!;
 
 		// client-requested game error
-		if (game === undefined) {
-			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
-			return;
-		}
 
 		// TODO: validate this request comes from the host (pending API description)
 		// client permission 403 error
