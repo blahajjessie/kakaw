@@ -7,12 +7,22 @@ import speech_small from 'public/speech_small.svg';
 export default function EditorGuide() {
 	return (
 		<div className="w-1/4 h-2/5 absolute bottom-[70%] right-[0%]">
-			{/* <div className="absolute bottom-[50%] right-[60%] w-24 h-16 bg-white flex items-center justify-center rounded-[100%] text-center text-sm p-2 z-30 lg:text-base lg:w-32 lg:h-20 2xl:text-xl 2xl:w-36 2xl:h-24 before:content-[''] before:absolute before:bottom-[10%] before:right-[8%] before:w-0 before:border-r-[0.8em] before:border-r-white before:border-t-[1.2em] before:border-t-transparent before:border-b-[0.2em] before:border-b-transparent">
-				Tap me for help!
-			</div> */}
-			<Image alt="small speech bubble" src={speech_small} width={20}></Image>
-			<div className="absolute bottom-[50%] right-[60%] w-24 flex items-center justify-center text-center text-sm p-2 z-30 lg:text-base 2xl:text-xl">
-				Tap me for help!
+			<div className="absolute bottom-[50%] right-[60%] w-[50%] h-[50%] text-sm p-2 z-30 lg:text-base 2xl:text-xl">
+				<Image
+					alt="small speech bubble"
+					src={speech_small}
+					width={100}
+					style={{
+						position: 'absolute',
+						top: '0%',
+						left: '0%',
+						width: '100%',
+						height: '100%',
+					}}
+				/>
+				<div className="absolute top-0 left-0 w-full h-full flex items-center justify-center text-center p-2">
+					Tap me for help!
+				</div>
 			</div>
 			<Image
 				alt="happy kaw"

@@ -1,6 +1,7 @@
 import Link from 'next/link';
 
 import EditorGuide from '@/components/EditorPages/EditorGuide';
+import TimerSetter from '@/components/EditorPages/TimerSetter';
 
 export default function EditorPage() {
 	return (
@@ -22,10 +23,10 @@ export default function EditorPage() {
 
 					<div className="w-full h-full flex flex-col items-center justify-around bg-gray-100 bg-opacity-50 rounded-xl my-2 shadow-heavy">
 						<div className="w-2/3 flex flex-col items-center justify-center">
-							<div className="w-3/4 bg-white bg-opacity-50 px-4 py-1 rounded-lg text-center mb-2 lg:py-2 lg:mb-3 2xl:py-4 2xl:mb-6">
+							<div className="w-3/5 bg-white bg-opacity-50 px-4 py-1 rounded-lg text-center mb-2 lg:py-2 lg:mb-3 2xl:py-4 2xl:mb-6">
 								Choose a name for your Quiz
 							</div>
-							<div className="w-4/5 bg-white rounded-lg p-2 shadow-heavy 2xl:p-3">
+							<div className="w-2/3 bg-white rounded-lg p-2 shadow-heavy 2xl:p-3">
 								<input
 									type="text"
 									placeholder="Quiz name"
@@ -33,8 +34,9 @@ export default function EditorPage() {
 								></input>
 							</div>
 						</div>
-						<div className="w-1/2 bg-white bg-opacity-50 px-4 py-1 rounded-lg text-center lg:py-2 2xl:py-4">
-							Set default timer:
+						<div className="w-2/5 bg-white bg-opacity-50 flex justify-between px-4 py-1 rounded-lg text-center lg:py-2 2xl:py-4">
+							<div className="pl-4">Set default timer:</div>
+							<TimerSetter />
 						</div>
 					</div>
 
