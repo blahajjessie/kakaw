@@ -1,12 +1,11 @@
 import React from 'react';
 import { useQRCode } from 'next-qrcode';
-import { API_BASE_URL } from '@/lib/api'
 
-export default function qr() {
+export default function qr(hostId: string) {
 	const { Canvas } = useQRCode();
 	return (
 		<Canvas
-			text={`${API_BASE_URL}`}
+			text={`https://localhost:3000/?hostId=${hostId}`}
 			options={{
 				level: 'M',
 				margin: 3,

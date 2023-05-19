@@ -3,7 +3,6 @@ import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
 import qr from '@/components/qrCode';
 import { ChangeEvent, useState, useContext } from 'react';
-import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 
 import logo2 from '@/public/logo2.png';
 import {
@@ -90,60 +89,37 @@ export default function HostWaiting({ hostId }: hostProps) {
 		</div>
 	);
 
-	const qrCode = qr();
-
-	const desktopContent = (
-		<div className="flex flex-row items-center justify-start">
-			<Image
-				alt="Kakaw logo"
-				className="mx-4"
-				src={logo2}
-				width={189}
-				style={{
-					maxWidth: '100%',
-					height: 'auto',
-				}}
-			/>
-			{qrCode}
-			<div className="bg-gray-100 flex flex-row items-center justify-between font-extrabold shadow-heavy rounded-xl p-6 w-min">
-				<div>
-					<div className="text-4xl xl:text-5xl whitespace-nowrap">
-						Join with the code:
-					</div>
-					<div className="text-8xl xl:text-9xl">{hostId}</div>
-				</div>
-				{headerContent}
-			</div>
-		</div>
-	);
-
-	const mobileContent = (
-		<div className="bg-gray-100 w-full flex flex-col items-center justify-center font-extrabold shadow-heavy rounded-xl p-4">
-			<div className="flex flex-col items-center justify-center">
-				<div className="text-4xl">Join with the code:</div>
-				<div className="text-8xl">{hostId}</div>
-			</div>
-			{headerContent}
-			<button
-				className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl shadow-heavy w-48 h-20"
-				type="button"
-				onClick={() => {
-					startQuiz;
-				}}
-			>
-				Start
-			</button>
-		</div>
-	);
+	const qrCode = qr(hostId);
 
 	return (
 		<main
 			className={`${inter.className} w-full font-sans bg-purple-100 flex flex-col p-6`}
 		>
-			<MatchMediaWrapper
-				mobileContent={mobileContent}
-				desktopContent={desktopContent}
-			/>
+			<div className="flex flex-row items-center justify-start">
+				<Image
+					alt="Kakaw logo"
+					className="mx-4 hidden sm:block"
+					src={logo2}
+					width={284}
+					style={{
+						maxWidth: '100%',
+						height: 'auto',
+					}}
+				/>
+				<div className="bg-gray-100 flex flex-col sm:flex-row items-center justify-center sm:justify-between font-extrabold shadow-heavy rounded-xl p-6 w-full sm:w-min">
+					<div>{qrCode}</div>
+					<div className="flex flex-col items-center justify-center">
+						<div className="text-4xl xl:text-5xl whitespace-nowrap">
+							Join with the code:
+						</div>
+						<div className="text-8xl xl:text-9xl">{hostId}</div>
+						<div className="text-2xl xl:text-3xl whitespace-nowrap">
+							at https://www.kakaw.com
+						</div>
+					</div>
+					{headerContent}
+				</div>
+			</div>
 			<div className="flex flex-col items-start justify-start p-10">
 				<div className="text-4xl font-extrabold py-4">
 					Participants ({playerList.length})
