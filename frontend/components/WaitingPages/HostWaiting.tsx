@@ -19,21 +19,15 @@ interface hostProps {
 }
 
 export default function HostWaiting({ hostId }: hostProps) {
-	const [timeLimit, setTimeLimit] = useState<string | null>(null);
-	const [maxPlayers, setMaxPlayers] = useState<string | null>(null);
+	const [timeLimit, setTimeLimit] = useState<number>(15);
+	const [maxPlayers, setMaxPlayers] = useState<number>(5);
 	const playerList = useContext(playerListContext) as playerListContextType;
 
 	// Alters State of timeLimit for every change
-	function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
-		const newTime = e.target.textContent;
-		setTimeLimit(newTime);
-	}
+	function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {}
 
 	// Alters State of maxPlayers for every change
-	function handlePlayerChange(e: ChangeEvent<HTMLInputElement>) {
-		const newMax = e.target.textContent;
-		setMaxPlayers(newMax);
-	}
+	function handlePlayerChange(e: ChangeEvent<HTMLInputElement>) {}
 
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
@@ -55,39 +49,6 @@ export default function HostWaiting({ hostId }: hostProps) {
 		const row = playerList.slice(i, i + 4);
 		displayPlayers.push(row);
 	}
-
-	const headerContent = (
-		<div className="flex flex-col p-4">
-			<div className="text-4xl p-2 xl:text-5xl">Options:</div>
-			<div className="flex flex-row">
-				<div className="flex flex-row p-1">
-					<div className="flex flex-col text-xl xl:text-2xl whitespace-nowrap">
-						<div className="mb-2">Time Limit:</div>
-						<div className="mb-2">Max Players:</div>
-					</div>
-					<div className="flex flex-col text-xl px-2">
-						<div className="flex flex-row">
-							<input
-								className="w-10 mb-2"
-								id="time"
-								type="text"
-								maxLength={3}
-								onChange={handleTimeChange}
-							/>
-							<div className="px-2">Seconds</div>
-						</div>
-						<input
-							className="w-32 mb-2"
-							id="maxPlayers"
-							type="text"
-							maxLength={4}
-							onChange={handlePlayerChange}
-						/>
-					</div>
-				</div>
-			</div>
-		</div>
-	);
 
 	const qrCode = qr(hostId);
 
@@ -117,13 +78,41 @@ export default function HostWaiting({ hostId }: hostProps) {
 							at https://www.kakaw.com
 						</div>
 					</div>
-					{headerContent}
+					<div className="flex flex-col p-4">
+						<div className="text-4xl p-2 xl:text-5xl">Settings:</div>
+						<div className="flex flex-row">
+							<div className="flex flex-row p-1">
+								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
+									<div className="mb-2">Time Limit:</div>
+									<div className="mb-2">Max Players:</div>
+								</div>
+								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
+									<div className="flex flex-row justify-between items-center rounded-xl border-2 border-gray-200 mb-2 mx-2 w-28 h-11">
+										<button className="bg-white border-1 border-gray-200 rounded text-red-400 text-center w-7 h-8 mx-2">
+											-
+										</button>
+										<div className="text-lg">{timeLimit}</div>
+										<button className="bg-white border-1 border-gray-200 rounded text-green-400 text-center w-7 h-8 mx-2">
+											+
+										</button>
+									</div>
+									<div className="flex flex-row justify-between items-center rounded-xl border-2 border-gray-200 mb-2 mx-2 w-28 h-11">
+										<button className="bg-white border-1 border-gray-200 rounded text-red-400 text-center w-7 h-8 mx-2">
+											-
+										</button>
+										<div className="text-lg">{maxPlayers}</div>
+										<button className="bg-white border-1 border-gray-200 rounded text-green-400 text-center w-7 h-8 mx-2">
+											+
+										</button>
+									</div>
+								</div>
+							</div>
+						</div>
+					</div>
 				</div>
 			</div>
-			<div className="flex flex-col items-start justify-start p-10">
-				<div className="text-4xl font-extrabold py-4">
-					Participants ({playerList.length})
-				</div>
+			<div className="flex flex-col items-start justify-start w-full p-10 shadow-heavy rounded-xl">
+				<div className="text-4xl font-extrabold py-4">Participants</div>
 				<table className="w-full text-2xl font-extrabold">
 					{displayPlayers.map((subArray, index) => (
 						<tr key={index}>
@@ -135,9 +124,12 @@ export default function HostWaiting({ hostId }: hostProps) {
 						</tr>
 					))}
 				</table>
+				<div>
+					{playerList.length}/{maxPlayers}
+				</div>
 			</div>
 			<button
-				className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-48 h-20"
+				className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-full h-5"
 				type="button"
 				onClick={() => {
 					startQuiz;
