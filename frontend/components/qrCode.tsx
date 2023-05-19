@@ -8,12 +8,12 @@ export default function qr(hostId: string) {
 			text={`https://localhost:3000/?hostId=${hostId}`}
 			options={{
 				level: 'M',
-				margin: 3,
+				margin: 2,
 				scale: 4,
 				width: 200,
 				color: {
 					dark: '#010599FF',
-					light: '#FFBF60FF',
+					light: '#FFFFFFFF',
 				},
 			}}
 		/>
