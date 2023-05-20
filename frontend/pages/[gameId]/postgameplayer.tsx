@@ -71,14 +71,14 @@ export default function PostgamePlayerPage() {
 							]}
 						/>
 
-						<div className="flex flex-col items-center justify-center gap-4 sm:gap-6 2xl:gap-10">
-							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg text-white shadow-heavy 2xl:px-4 2xl:py-2">
+						<div className="flex flex-col items-center justify-center gap-4 text-black sm:gap-6 2xl:gap-10">
+							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
 								Correct: {postgameData.correct}
 							</div>
-							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg text-white shadow-heavy 2xl:px-4 2xl:py-2">
+							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
 								Wrong: {postgameData.wrong}
 							</div>
-							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg text-gray-200 shadow-heavy 2xl:px-4 2xl:py-2">
+							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
 								Unanswered: {postgameData.unanswered}
 							</div>
 						</div>
