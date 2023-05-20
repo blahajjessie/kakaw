@@ -2,6 +2,11 @@ import QuestionTop from '@/components/QuestionPages/QuestionTop';
 import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import HostQuestionBottom from '@/components/QuestionPages/HostQuestionBottom';
 
+  // Handle answer click event
+  const handleAnswerClick = (answerIndex: number) => {
+
+  };
+
 export default function HostQuestionPage() {
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
@@ -17,6 +22,8 @@ export default function HostQuestionPage() {
 					'To have something to put on my GitHub',
 					'To seek the holy grail',
 				]}
+				selectedAnswerIndex={null}
+				onAnswerClick={handleAnswerClick}
 			></QuestionAnswers>
 			<HostQuestionBottom numAnswered={2} numPlayers={5}></HostQuestionBottom>
 		</main>
