@@ -29,6 +29,18 @@ module.exports = {
 					400: '#CCCCCC',
 					500: '#B9B9B9',
 				},
+				red: {
+					200: '#FF6663',
+				},
+				blue: {
+					200: '#9EC1CF',
+				},
+				green: {
+					200: '#9EE09E',
+				},
+				yellow: {
+					200: '#FDFD97',
+				},
 			},
 			boxShadow: {
 				heavy: '0px 4px 4px rgba(0, 0, 0, 0.25)',
