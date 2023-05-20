@@ -66,8 +66,7 @@ const injectedQuestion = {
 	anakin: 'you underestimate my power.',
 };
 
-const injectedList = correct.questions;
-injectedList.push(injectedQuestion);
+const injectedList = { questions: [injectedQuestion] };
 
 const questionInjectionQuiz = {
 	meta: correct.meta,
