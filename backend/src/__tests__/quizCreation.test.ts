@@ -48,7 +48,7 @@ const metaInjection = {
 		author: correct.meta.author,
 		pointDefault: 15,
 		timeDefault: 10,
-		kenobi: "I am old Lol",
+		kenobi: 'I am old Lol',
 	},
 	questions: correct.questions,
 };
@@ -63,7 +63,7 @@ const injectedQuestion = {
 	],
 	correctAnswers: [1],
 	time: 10,
-	anakin: "you underestimate my power.",
+	anakin: 'you underestimate my power.',
 };
 
 const injectedList = correct.questions;
