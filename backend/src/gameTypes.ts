@@ -69,6 +69,28 @@ export type EndResp = {
 };
 
 function quizValidate(q: Quiz): Quiz {
+	// validate that meta and questions are the only objects
+	const quizKeys = ['meta', 'questions'];
+	const quizInvalidKeys = Object.keys(q).filter(
+		(key) => !quizKeys.includes(key)
+	);
+	if (quizInvalidKeys.length > 0) {
+		throw new Error(
+			`Invalid keys found in Quiz object: ${quizInvalidKeys.join(', ')}`
+		);
+	}
+
+	// validate expected keys in meta object
+	const metaKeys = ['title', 'author', 'pointDefault', 'timeDefault', 'note'];
+	const metaInvalidKeys = Object.keys(q.meta).filter(
+		(key) => !metaKeys.includes(key)
+	);
+	if (metaInvalidKeys.length > 0) {
+		throw new Error(
+			`Invalid keys found in Quiz meta object: ${metaInvalidKeys.join(', ')}`
+		);
+	}
+
 	// validate meta object
 	if (
 		!q.meta ||
@@ -103,8 +125,28 @@ function quizValidate(q: Quiz): Quiz {
 		throw new Error(`Invalid Quiz questions array length of ${qArrLen}`);
 	}
 
+	const questionKeys = [
+		'questionText',
+		'answerTexts',
+		'correctAnswers',
+		'note',
+		'time',
+		'points',
+	];
 	for (let qIndex = 0; qIndex < qArrLen; qIndex++) {
 		const question = q.questions[qIndex];
+
+		// validate expected keys in each question object
+		const questionInvalidKeys = Object.keys(question).filter(
+			(key) => !questionKeys.includes(key)
+		);
+		if (questionInvalidKeys.length > 0) {
+			throw new Error(
+				`Invalid keys found in Quiz question object at index ${qIndex}: ${questionInvalidKeys.join(
+					', '
+				)}`
+			);
+		}
 
 		// validate question
 		if (
