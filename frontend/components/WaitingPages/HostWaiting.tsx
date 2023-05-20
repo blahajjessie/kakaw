@@ -2,6 +2,7 @@ import Image from 'next/image';
 import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
 import qr from '@/components/qrCode';
+import qr from '@/components/qrCode';
 import { ChangeEvent, useState, useContext } from 'react';
 
 import logo2 from '@/public/logo2.png';
@@ -25,8 +26,11 @@ export default function HostWaiting({ gameId }: hostProps) {
 
 	// Alters State of timeLimit for every change
 	function increment(e: ChangeEvent<HTMLInputElement>) {}
+	function increment(e: ChangeEvent<HTMLInputElement>) {}
 
 	// Alters State of maxPlayers for every change
+	function decrement(e: ChangeEvent<HTMLInputElement>) {
+		
 	function decrement(e: ChangeEvent<HTMLInputElement>) {
 		
 	}
@@ -82,7 +86,35 @@ export default function HostWaiting({ gameId }: hostProps) {
 					</div>
 					<div className="bg-white flex flex-col rounded-xl p-4">
 						<div className="text-4xl p-2 xl:text-5xl">Settings:</div>
+					<div className="bg-white flex flex-col rounded-xl p-4">
+						<div className="text-4xl p-2 xl:text-5xl">Settings:</div>
 						<div className="flex flex-row">
+							<div className="flex flex-row p-1">
+								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
+									<div className="mb-4">Time Limit:</div>
+									<div className="mb-4">Max Players:</div>
+								</div>
+								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
+									<div className="flex flex-row justify-between items-center rounded-xl border-2 border-gray-200 mb-2 mx-2 w-28 h-11">
+										<button className="bg-white border-1 border-gray-200 rounded text-red-400 text-center w-7 h-8 mx-2">
+											-
+										</button>
+										<div className="text-lg">{timeLimit}</div>
+										<button className="bg-white border-1 border-gray-200 rounded text-green-400 text-center w-7 h-8 mx-2">
+											+
+										</button>
+									</div>
+									<div className="flex flex-row justify-between items-center rounded-xl border-2 border-gray-200 mb-2 mx-2 w-28 h-11">
+										<button className="bg-white border-1 border-gray-200 rounded text-red-400 text-center w-7 h-8 mx-2">
+											-
+										</button>
+										<div className="text-lg">{maxPlayers}</div>
+										<button className="bg-white border-1 border-gray-200 rounded text-green-400 text-center w-7 h-8 mx-2">
+											+
+										</button>
+									</div>
+								</div>
+							</div>
 							<div className="flex flex-row p-1">
 								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
 									<div className="mb-4">Time Limit:</div>
@@ -130,10 +162,30 @@ export default function HostWaiting({ gameId }: hostProps) {
 				</table>
 				<div className="rounded-xl bg-purple-100 text-white">
 					{playerList.length}/{maxPlayers}
+			<div className="flex flex-col items-start justify-start w-full h-full shadow-heavy rounded-xl bg-gray-100 bg-opacity-50">
+				<div className="rounded-xl bg-purple-50 text-4xl font-extrabold py-4">
+					Participants
+				</div>
+				<table className="w-full text-2xl font-extrabold">
+					{displayPlayers.map((subArray, index) => (
+						<tr key={index}>
+							{subArray.map((player, i) => (
+								<td className="rounded-xl bg-purple-50" key={index + i}>
+									{player}
+								</td>
+							))}
+						</tr>
+					))}
+				</table>
+				<div className="rounded-xl bg-purple-100 text-white">
+					{playerList.length}/{maxPlayers}
 				</div>
 			</div>
 			<div>
+			</div>
+			<div>
 				<button
+					className="bg-purple-50 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-1/4 h-24"
 					className="bg-purple-50 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-1/4 h-24"
 					type="button"
 					onClick={() => {
@@ -141,7 +193,18 @@ export default function HostWaiting({ gameId }: hostProps) {
 					}}
 				>
 					Back
+					Back
 				</button>
+				<button
+					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-2/3 h-24"
+					type="button"
+					onClick={() => {
+						startQuiz;
+					}}
+				>
+					Start
+				</button>
+			</div>
 				<button
 					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-4xl xl:text-5xl shadow-heavy w-2/3 h-24"
 					type="button"
