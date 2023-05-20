@@ -17,7 +17,7 @@ export default function HostQuestionPage() {
 					'To have something to put on my GitHub',
 					'To seek the holy grail',
 				]}
-			></QuestionAnswers>
+			/>
 			<HostQuestionBottom numAnswered={2} numPlayers={5}></HostQuestionBottom>
 		</main>
 	);
