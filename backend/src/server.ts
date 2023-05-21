@@ -9,7 +9,6 @@ import registerGameRoutes, { getGame } from './game';
 import { Game } from './gameTypes';
 registerGameRoutes(app);
 
-
 // create websocket "server" which really piggybacks on the express server
 const webSocketServer = new WebSocket.Server({
 	// if true, the ws library maintains a Set of all client connections
