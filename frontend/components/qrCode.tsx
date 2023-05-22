@@ -10,7 +10,7 @@ export default function qr(gameId: string) {
 				level: 'M',
 				margin: 2,
 				scale: 4,
-				width: 200,
+				width: 180,
 				color: {
 					dark: '#000000',
 					light: '#FFFFFFFF',
