@@ -8,6 +8,7 @@ export interface QuestionPageProps {
 	question: Question;
 	index: number;
 	scope: 'host' | 'player';
+	onAnswer?: (answer: number) => void | Promise<void>;
 }
 
 export default function QuestionPage(props: QuestionPageProps) {
@@ -18,13 +19,14 @@ export default function QuestionPage(props: QuestionPageProps) {
 				qText={props.question.questionText}
 				qTime={props.question.time}
 			></QuestionTop>
-			{/* TODO don't hardcode 4!!!!!!!!!!!!!!!!!!!!!!! */}
 			<QuestionAnswers
-				answers={props.question.answerTexts as [string, string, string, string]}
+				answers={props.question.answerTexts}
+				onAnswer={props.onAnswer ?? ((answer) => undefined)}
 			></QuestionAnswers>
 			{props.scope == 'host' ? (
 				<HostQuestionBottom numAnswered={5} numPlayers={5} />
 			) : (
+				// TODO this is hardcoded, get from startQuestion message
 				<PlayerQuestionBottom name="your name" score={5000} />
 			)}
 		</main>

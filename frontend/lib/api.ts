@@ -15,6 +15,4 @@ export function apiCall(
 	}
 
 	return fetch(API_BASE_URL + url, options);
-
 }
-

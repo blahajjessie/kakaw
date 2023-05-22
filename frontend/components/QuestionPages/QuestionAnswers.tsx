@@ -6,17 +6,23 @@ interface StyledAnswersProps {
 	answers: string[];
 	containerClass: string;
 	itemClass: string;
+	onAnswer: (answer: number) => void;
 }
 
 function StyledAnswers({
 	answers,
 	containerClass,
 	itemClass,
+	onAnswer,
 }: StyledAnswersProps) {
 	return (
 		<div className={containerClass}>
 			{answers.map((answer, i) => (
-				<div key={i} className={`${itemClass} ${colors[i]}`}>
+				<div
+					key={i}
+					className={`${itemClass} ${colors[i]}`}
+					onClick={() => onAnswer(i)}
+				>
 					{answer}
 				</div>
 			))}
@@ -25,10 +31,14 @@ function StyledAnswers({
 }
 
 export interface QuestionAnswerProps {
-	answers: [string, string, string, string];
+	answers: Array<string>;
+	onAnswer: (answer: number) => void | Promise<void>;
 }
 
-export default function QuestionAnswers({ answers }: QuestionAnswerProps) {
+export default function QuestionAnswers({
+	answers,
+	onAnswer,
+}: QuestionAnswerProps) {
 	const mobileContainerClass =
 		'w-11/12 h-2/3 flex flex-col justify-between font-extrabold text-lg my-2';
 	const mobileItemClass =
@@ -46,6 +56,7 @@ export default function QuestionAnswers({ answers }: QuestionAnswerProps) {
 					answers={answers}
 					containerClass={mobileContainerClass}
 					itemClass={mobileItemClass}
+					onAnswer={onAnswer}
 				/>
 			}
 			desktopContent={
@@ -53,6 +64,7 @@ export default function QuestionAnswers({ answers }: QuestionAnswerProps) {
 					answers={answers}
 					containerClass={desktopContainerClass}
 					itemClass={desktopItemClass}
+					onAnswer={onAnswer}
 				/>
 			}
 		/>
