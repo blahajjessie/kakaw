@@ -1,11 +1,18 @@
 import { useState, useEffect, useRef } from 'react';
 
-const DEFAULT_TIMER_VALUE = 15;
 const MIN_TIMER_VALUE = 1;
 const MAX_TIMER_VALUE = 420;
 
-export default function TimerSetter() {
-	const [timerValue, setTimerValue] = useState(DEFAULT_TIMER_VALUE);
+interface TimerSetterProps {
+	initTimerValue: number;
+	onChange: (timerValue: number) => void;
+}
+
+export default function TimerSetter({
+	initTimerValue,
+	onChange,
+}: TimerSetterProps) {
+	const [timerValue, setTimerValue] = useState(initTimerValue);
 	const [isIncrementing, setIsIncrementing] = useState(false);
 	const [isDecrementing, setIsDecrementing] = useState(false);
 
@@ -64,6 +71,7 @@ export default function TimerSetter() {
 
 	function stopIncrementing() {
 		setIsIncrementing(false);
+		onChange(timerValue);
 	}
 
 	function startDecrementing() {
@@ -74,22 +82,23 @@ export default function TimerSetter() {
 
 	function stopDecrementing() {
 		setIsDecrementing(false);
+		onChange(timerValue);
 	}
 
 	return (
-		<div className="w-16 h-full bg-gray-100 flex flex-row items-center justify-between font-normal text-base rounded-lg lg:text-lg lg:w-20 2xl:text-xl 2xl:w-24">
+		<div className="h-full bg-gray-100 flex flex-row items-center justify-between font-normal text-base rounded-lg lg:text-lg 2xl:text-xl">
 			<button
-				className="w-4 h-4 bg-white flex items-center justify-center text-red-200 rounded-md ml-1 my-1 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
+				className="w-4 h-4 bg-white flex items-center justify-center text-red-200 rounded-md ml-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
 				onMouseDown={startDecrementing}
 				onMouseUp={stopDecrementing}
 			>
 				-
 			</button>
 
-			<div>{timerValue}</div>
+			<div className="px-1">{timerValue}</div>
 
 			<button
-				className="w-4 h-4 bg-white flex items-center justify-center text-green-200 rounded-md mr-1 my-1 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
+				className="w-4 h-4 bg-white flex items-center justify-center text-green-200 rounded-md mr-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
 				onMouseDown={startIncrementing}
 				onMouseUp={stopIncrementing}
 			>

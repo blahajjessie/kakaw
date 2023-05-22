@@ -1,9 +1,12 @@
 import Link from 'next/link';
+import { useState } from 'react';
 
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import TimerSetter from '@/components/EditorPages/TimerSetter';
 
 export default function EditorPage() {
+	const [timerValue, setTimerValue] = useState(15);
+
 	return (
 		<main className="bg-purple-100 h-screen flex flex-col items-center justify-center text-black font-extrabold">
 			<div className="w-5/6 h-full flex flex-col items-center justify-center">
@@ -39,7 +42,10 @@ export default function EditorPage() {
 						</div>
 						<div className="w-2/5 bg-white bg-opacity-50 flex justify-between px-4 py-1 rounded-lg text-center lg:py-2 2xl:py-4">
 							<div className="pl-4">Set default timer:</div>
-							<TimerSetter />
+							<TimerSetter
+								initTimerValue={timerValue}
+								onChange={(v) => setTimerValue(v)}
+							/>
 						</div>
 					</div>
 
