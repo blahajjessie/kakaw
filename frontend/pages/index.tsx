@@ -1,17 +1,26 @@
 import Image from 'next/image';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
 import logo from 'public/logo.png';
 import { apiCall } from '@/lib/api';
 
 export default function Home() {
-	const [gameId, setGameId] = useState('');
+	const router = useRouter();
 	const [username, setUsername] = useState('');
 	const [joining, setJoining] = useState(false);
 	const [error, setError] = useState('');
-	const router = useRouter();
+	const [gameId, setGameId] = useState('');
+
+	useEffect(() => {
+		if (!router.isReady) return;
+		setGameId(
+			Array.isArray(router.query.code)
+				? router.query.code[0]
+				: router.query.code ?? ''
+		);
+	}, [router.isReady]);
 
 	function isGameJoinable(): boolean {
 		return /[0-9]{5}/g.test(gameId) && username.length > 0;

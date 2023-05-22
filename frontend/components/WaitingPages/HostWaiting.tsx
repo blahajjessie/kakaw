@@ -33,7 +33,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 	const playerList = useContext(playerListContext) as playerListContextType;
 	const router = useRouter();
 
-	// Alters State of timeLimit for every change
+	// timeLimit Modifiers for every change
 	function incrementTime() {
 		if (timeLimit < 420) {
 			const newValue = timeLimit + 1;
@@ -52,7 +52,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 
 	// Alters State of maxPlayers for every change
 	function incrementPlayers() {
-		if (maxPlayers < 100) {
+		if (maxPlayers < 420) {
 			const newValue = maxPlayers + 1;
 			setMaxPlayers(newValue);
 		}
