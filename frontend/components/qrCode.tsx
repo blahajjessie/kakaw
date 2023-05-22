@@ -12,7 +12,7 @@ export default function qr(hostId: string) {
 				scale: 4,
 				width: 200,
 				color: {
-					dark: '#010599FF',
+					dark: '#000000',
 					light: '#FFFFFFFF',
 				},
 			}}
