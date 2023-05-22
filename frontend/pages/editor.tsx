@@ -1,6 +1,6 @@
 import Link from 'next/link';
 
-import EditorGuide from '@/components/EditorPages/EditorGuide';
+import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import TimerSetter from '@/components/EditorPages/TimerSetter';
 
 export default function EditorPage() {
@@ -11,8 +11,11 @@ export default function EditorPage() {
 					Create your own Quiz!
 				</div>
 
-				<div className="relative w-full h-3/4 bg-purple-500 flex flex-col items-center justify-center p-6 text-base rounded-3xl z-10 xl:text-xl 2xl:text-2xl">
-					<EditorGuide />
+				<div className="w-full h-3/4 bg-purple-500 flex flex-col items-center justify-center p-6 text-base rounded-3xl z-10 xl:text-xl 2xl:text-2xl">
+					<EditorGuide
+						tutorialText={`On this page you can pick a name for your quiz and set a default timer
+					(You can change the timer for each individual question later)`}
+					/>
 
 					<Link
 						href="/upload"
