@@ -7,16 +7,16 @@ interface QuestionAnswerProps {
 export default function QuestionAnswers({ answers }: QuestionAnswerProps) {
 	const mobileContent = (
 		<div className="w-11/12 h-2/3 flex flex-col justify-between font-extrabold text-lg my-2">
-			<div className="w-full h-1/4 bg-red-400 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
+			<div className="w-full h-1/4 bg-red-200 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
 				{answers[0]}
 			</div>
-			<div className="w-full h-1/4 bg-green-400 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
+			<div className="w-full h-1/4 bg-green-200 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
 				{answers[1]}
 			</div>
-			<div className="w-full h-1/4 bg-blue-400 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
+			<div className="w-full h-1/4 bg-blue-200 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
 				{answers[2]}
 			</div>
-			<div className="w-full h-1/4 bg-yellow-400 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
+			<div className="w-full h-1/4 bg-yellow-200 grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110">
 				{answers[3]}
 			</div>
 		</div>
