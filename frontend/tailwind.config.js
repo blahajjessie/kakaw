@@ -32,13 +32,16 @@ module.exports = {
 					500: '#B9B9B9',
 				},
 				red: {
-					300: '#FF6663',
-				},
-				green: {
-					300: '#9EE09E',
+					200: '#FF6663',
 				},
 				blue: {
-					300: '#9EC1CF',
+					200: '#9EC1CF',
+				},
+				green: {
+					200: '#9EE09E',
+				},
+				yellow: {
+					200: '#FDFD97',
 				},
 			},
 			boxShadow: {
