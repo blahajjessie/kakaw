@@ -2,7 +2,7 @@
 import { Quiz } from './quiz';
 import { endResp } from './respTypes';
 import { gen } from './code';
-import { UserId } from './user';
+import { UserId, User } from './user';
 
 // // used ids for both players and host
 export type GameId = string;
@@ -14,6 +14,10 @@ export function getGame(gameId: GameId): Game {
 	let out = games.get(gameId);
 	if (!out) throw new Error('Game does not exist');
 	return out;
+}
+
+export function gameExist(gameId: GameId){
+	return !!games.get(gameId);
 }
 
 
@@ -30,7 +34,6 @@ type Timer = {
 };
 
 export class Game {
-	static otherIDs:GameId[];
 	id: GameId;
 	hostId: UserId;
 	host: User;
@@ -41,14 +44,15 @@ export class Game {
 	activeQuestion = -1;
 	timer: Timer = { beginTimestamp: -1, endTimestamp: -1, timeLimit: -1 };
 
-	constructor(hostId: UserId, quiz: Quiz) {
-		this.id = gen(5, this.)
+	constructor( quiz: Quiz) {
+		this.id = gen(5, [...games.keys()])
 		this.quizData = quiz;
-		this.hostId = hostId;
-		this.host = { name: 'HOST', connection: undefined };
+		this.hostId = gen(8, []);
+		quiz.quizValidate();
+		this.host = { name: this.quizData.meta.author, connection: undefined };
 		// silly goofy code.
 		// QuizValidate returns the quiz right back, but will throw an error if its not valid
-		quiz.quizValidate();
+
 	}
 
 	endQuestion(gameId: GameId) {

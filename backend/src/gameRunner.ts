@@ -1,7 +1,7 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import { WebSocket } from 'ws';
 import { sendMessage } from './connection';
-import { GameId, Game} from './game';
+import { GameId, Game, gameExist, getGame} from './game';
 import {QuizQuestion} from './quiz'
 
 // first key is gameId
@@ -12,7 +12,7 @@ import {QuizQuestion} from './quiz'
 function validateGame(req: Request, res: Response, next:NextFunction){
 	const params = req.params;
 	console.log(params.gameId)
-	if (!games.has(params.gameId)){
+	if (!gameExist(params.gameId)){
 		console.log("eek!");
 		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
 		return;
@@ -29,7 +29,7 @@ function validateQuestion(req: Request, res: Response, next:NextFunction){
 		res.status(400).send({ ok: false, err: `Question number is required` });
 		return;
 	}
-	const game = games.get(params.gameId)!;
+	const game = getGame(params.gameId);
 	
 	try{
 		parseInt(params.index)
@@ -59,7 +59,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 		try {
 
-			let freshGame = new Game(response.hostId, req.body);
+			let freshGame = new Game(req.body);
 			// req.body is the quiz
 			games.set(response.gameId, freshGame);
 			console.log(response);
