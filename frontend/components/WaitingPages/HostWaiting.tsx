@@ -20,10 +20,10 @@ interface hostProps {
 }
 
 const colors = [
-	'bg-red-300',
-	'bg-green-300',
+	'bg-red-200',
+	'bg-green-200',
 	'bg-purple-350',
-	'bg-blue-300',
+	'bg-blue-200',
 	'bg-purple-300',
 ];
 
