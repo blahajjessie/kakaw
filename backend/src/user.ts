@@ -1,6 +1,6 @@
 import { WebSocket } from 'ws';
 import { gen } from './code';
-import { ResponseData } from './respTypes';
+import { SocketMessage } from './respTypes';
 import { sendMessage } from './connection';
 
 // // for clarity, a gameID is just a string
@@ -27,11 +27,11 @@ export class User {
 		}
 		return this.connection;
 	}
-	send(message: ResponseData){
+	send(message: SocketMessage){
 		if (!this.connection) throw new Error('user not connected');
 
 		if (this.connection.readyState === WebSocket.OPEN) {
-			sendMessage(this.connection, ResponseData.name, message.data);
+			sendMessage(this.connection, SocketMessage.name, message.data);
 		}
 		return;
 	}
