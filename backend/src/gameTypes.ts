@@ -32,19 +32,30 @@ interface Quiz {
 }
 
 class AnswerObj {
+	totalPoints = 0;
+	totalTime = 0;
 	time = -1;
 	answer = -1;
 	correct = false;
 	score = 0;
-	constructor(time?: number, answer?: number) {
+	constructor(
+		totalPoints?: number,
+		totalTime?: number,
+		time?: number,
+		answer?: number
+	) {
+		if (totalPoints) this.totalPoints = totalPoints;
+		if (totalTime) this.totalTime = totalTime;
 		if (time) this.time = time;
 		if (answer) this.answer = answer;
 	}
 	scoreQuestion(answerArray: Array<number>): void {
-		if (answerArray.includes(this.answer)) {
-			this.correct = true;
-			this.score = 100;
-		}
+		this.correct = answerArray.includes(this.answer);
+		const isCorrect = this.correct ? 1 : 0;
+		const ratio = this.time / this.totalTime;
+		const varPoints = 0.9 * this.totalPoints;
+		const setPoints = 0.1 * this.totalPoints;
+		this.score = Math.round((varPoints * (1 - ratio) + setPoints) * isCorrect);
 		return;
 	}
 }
@@ -58,11 +69,185 @@ export type EndResp = {
 };
 
 function quizValidate(q: Quiz): Quiz {
-	// TODO:: Throw an error on invalid quizzes
-	// if the quiz is invalid, its caught by the post request (goofy) and sent up
-	if (!q) throw new Error('Invalid Quiz!');
+	// validate that meta and questions are the only objects
+	const quizKeys = ['meta', 'questions'];
+	const quizInvalidKeys = Object.keys(q).filter(
+		(key) => !quizKeys.includes(key)
+	);
+	if (quizInvalidKeys.length > 0) {
+		throw new Error(
+			`Invalid keys found in Quiz object: ${quizInvalidKeys.join(', ')}`
+		);
+	}
+
+	// validate expected keys in meta object
+	const metaKeys = ['title', 'author', 'pointDefault', 'timeDefault', 'note'];
+	const metaInvalidKeys = Object.keys(q.meta).filter(
+		(key) => !metaKeys.includes(key)
+	);
+	if (metaInvalidKeys.length > 0) {
+		throw new Error(
+			`Invalid keys found in Quiz meta object: ${metaInvalidKeys.join(', ')}`
+		);
+	}
+
+	// validate meta object
+	if (
+		!q.meta ||
+		typeof q.meta !== 'object' ||
+		typeof q.meta.title !== 'string' ||
+		typeof q.meta.author !== 'string' ||
+		typeof q.meta.pointDefault !== 'number' ||
+		typeof q.meta.timeDefault !== 'number'
+	) {
+		throw new Error('Invalid Quiz meta object');
+	}
+
+	if (q.meta.title.length < 1 || q.meta.title.length > 100) {
+		throw new Error(`Invalid Quiz title length`);
+	}
+	if (q.meta.author.length < 1 || q.meta.author.length > 100) {
+		throw new Error(`Invalid Quiz author length`);
+	}
+	if (q.meta.pointDefault < 1 || q.meta.pointDefault > 1000) {
+		throw new Error(`Invalid Quiz pointDefault`);
+	}
+	if (q.meta.timeDefault < 1 || q.meta.timeDefault > 420) {
+		throw new Error(`Invalid Quiz timeDefault`);
+	}
+
+	// validate questions array
+	if (!Array.isArray(q.questions)) {
+		throw new Error('Quiz questions must be an array');
+	}
+	const qArrLen = q.questions.length;
+	if (qArrLen == 0 || qArrLen > 100) {
+		throw new Error(`Invalid Quiz questions array length of ${qArrLen}`);
+	}
+
+	const questionKeys = [
+		'questionText',
+		'answerTexts',
+		'correctAnswers',
+		'note',
+		'time',
+		'points',
+	];
+	for (let qIndex = 0; qIndex < qArrLen; qIndex++) {
+		const question = q.questions[qIndex];
+
+		// validate expected keys in each question object
+		const questionInvalidKeys = Object.keys(question).filter(
+			(key) => !questionKeys.includes(key)
+		);
+		if (questionInvalidKeys.length > 0) {
+			throw new Error(
+				`Invalid keys found in Quiz question object at index ${qIndex}: ${questionInvalidKeys.join(
+					', '
+				)}`
+			);
+		}
+
+		// validate question
+		if (
+			!question ||
+			typeof question.questionText !== 'string' ||
+			!Array.isArray(question.answerTexts) ||
+			!Array.isArray(question.correctAnswers)
+		) {
+			throw new Error(`Invalid Quiz question object at index ${qIndex}`);
+		}
+
+		// validate questionText character length
+		const qTextLen = question.questionText.length;
+		if (qTextLen == 0 || qTextLen > 100) {
+			throw new Error(
+				`Invalid questionText char length of ${qTextLen} at question index ${qIndex}`
+			);
+		}
+
+		// validate answerTexts array length
+		const ansArrLen = question.answerTexts.length;
+		if (ansArrLen < 2 || ansArrLen > 6) {
+			throw new Error(
+				`Invalid answerText array length of ${ansArrLen} at question index ${qIndex}`
+			);
+		}
+
+		// validate answerTexts array elements character length
+		for (let ansIndex = 0; ansIndex < ansArrLen; ansIndex++) {
+			if (typeof question.answerTexts[ansIndex] !== 'string') {
+				throw new Error(
+					`Invalid type in answerText index ${ansIndex} at question index ${qIndex}`
+				);
+			}
+			const ansTextLen = question.answerTexts[ansIndex].length;
+			if (ansTextLen == 0 || ansTextLen > 100) {
+				throw new Error(
+					`Invalid char length in answerText index ${ansIndex} at question index ${qIndex}`
+				);
+			}
+		}
+
+		// validate correctAnswers array length
+		const corrArrLen = question.correctAnswers.length;
+		if (corrArrLen < 1 || corrArrLen > ansArrLen) {
+			throw new Error(
+				`Invalid correctAnswers array length of ${corrArrLen} at question index ${qIndex}`
+			);
+		}
+
+		// validate correctAnswers set
+		const corrAnsSet = new Set(question.correctAnswers);
+		if (corrAnsSet.size !== corrArrLen) {
+			throw new Error(
+				`Duplicate correctAnswers indices at question index ${qIndex}`
+			);
+		}
+
+		// validate correctAnswer array elements value
+		for (let corrIndex = 0; corrIndex < corrArrLen; corrIndex++) {
+			if (typeof question.correctAnswers[corrIndex] !== 'number') {
+				throw new Error(
+					`Invalid type in correctAnswer index ${corrIndex} at question index ${qIndex}`
+				);
+			}
+			const corrAns = question.correctAnswers[corrIndex];
+			if (corrAns < 0 || corrAns >= ansArrLen) {
+				throw new Error(
+					`Invalid value ${corrAns} in correctAnswer index ${corrIndex} at question index ${qIndex}`
+				);
+			}
+		}
+
+		// validate optional time duration and point values
+		if (question.time !== undefined) {
+			if (isNaN(question.time) || question.time > 420 || question.time < 1) {
+				throw new Error(`Invalid time at question index ${qIndex}`);
+			}
+		}
+		if (question.points !== undefined) {
+			if (
+				isNaN(question.points) ||
+				question.points > 10000 ||
+				question.points < 1
+			) {
+				throw new Error(`Invalid points at question index ${qIndex}`);
+			}
+		}
+	}
 	return q;
 }
+
+export function waitTimer(ms: number): Promise<void> {
+	return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+type Timer = {
+	beginTimestamp: number;
+	endTimestamp: number;
+	timeLimit: number;
+};
 
 export class Game {
 	hostId: UserId;
@@ -72,6 +257,7 @@ export class Game {
 	userAnswers = new Map<UserId, Array<AnswerObj>>();
 	quizOpen = false;
 	activeQuestion = -1;
+	timer: Timer = { beginTimestamp: -1, endTimestamp: -1, timeLimit: -1 };
 
 	constructor(hostId: UserId, quiz: Quiz) {
 		this.hostId = hostId;
@@ -177,6 +363,16 @@ export class Game {
 		// 	// if a player has joined late, their previous answers will be undefined
 		// 	user.answers[index] = answer;
 		// }
+	}
+	async runTimer(ms: number) {
+		console.log('Starting timer');
+		await waitTimer(ms); // Wait for 5 seconds
+		console.log('Ending timer');
+	}
+	resetTimer() {
+		this.timer.beginTimestamp = -1;
+		this.timer.endTimestamp = -1;
+		this.timer.timeLimit = -1;
 	}
 	addWs(playerId: UserId, sock: WebSocket) {
 		if (this.getUser(playerId) == invalidUser) throw new Error('Invalid user');

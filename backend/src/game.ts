@@ -21,6 +21,8 @@ function endQuestion(gameId: GameId) {
 	let qAns = game.quizData.questions[game.activeQuestion].correctAnswers;
 	let leaderboard: { name: string; score: number }[] = [];
 	users.forEach(function (playerId: UserId) {
+		// host isn't participating
+		if (playerId == game.hostId) return;
 		let resp = game.addScore(playerId);
 		let playerSocket = game.getWs(playerId);
 		if (playerSocket === undefined) {
@@ -35,7 +37,7 @@ function endQuestion(gameId: GameId) {
 	// host view
 	leaderboard.sort((a, b) => b.score - a.score);
 	let hostResp = {
-		correctAnswers: game.quizData.questions[game.activeQuestion].correctAnswers,
+		correctAnswers: qAns,
 		leaderBoard: leaderboard,
 	};
 	const hostId = game.hostId;
@@ -43,6 +45,8 @@ function endQuestion(gameId: GameId) {
 	if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
 		sendMessage(hostSocket, 'endQuestion', hostResp);
 	}
+
+	game.resetTimer();
 	return;
 }
 
@@ -54,7 +58,35 @@ function beginQuestion(gameId: GameId) {
 	const users = game.getUsers();
 
 	// TODO: only send question data (dont send answers, etc)
-	const question = game.quizData.questions[game.activeQuestion];
+	const question = game.getQuestionData();
+	if (!question) {
+		// TODO: send error
+		return;
+	}
+
+	// remaining time should be timeLimit unless a new player has joined
+	if (game.timer.beginTimestamp == -1) {
+		// check if questionTime is valid, else timeLimit is default time
+		const questionOptionalTime = question.time;
+		if (
+			typeof questionOptionalTime !== 'undefined' &&
+			!isNaN(questionOptionalTime)
+		) {
+			game.timer.timeLimit = questionOptionalTime * 1000;
+		} else {
+			game.timer.timeLimit = game.quizData.meta.timeDefault * 1000;
+		}
+		game.timer.beginTimestamp == Date.now();
+		game.timer.endTimestamp == Date.now() + game.timer.timeLimit;
+	}
+
+	const beginResp = {
+		question: question.questionText,
+		answers: question.answerTexts,
+		time: game.timer.endTimestamp - Date.now(),
+		index: game.activeQuestion,
+	};
+
 	users.forEach(function (playerId: UserId) {
 		let sock = game.getWs(playerId);
 		if (sock === undefined) {
@@ -62,10 +94,11 @@ function beginQuestion(gameId: GameId) {
 		}
 		console.log(sock.readyState);
 		if (sock.readyState === WebSocket.OPEN) {
-			sendMessage(sock, 'startQuestion', question);
+			sendMessage(sock, 'startQuestion', beginResp);
 		}
 		game.initScore(playerId);
 	});
+	game.runTimer(beginResp.time);
 	return;
 }
 
@@ -131,6 +164,7 @@ export default function registerGameRoutes(app: Express) {
 			res.status(400).send('Invalid JSON file');
 			// Todo: further validation
 		}
+		return;
 	});
 
 	app.post('/games/:gameId/questions/:index/start', (req, res) => {
@@ -165,6 +199,8 @@ export default function registerGameRoutes(app: Express) {
 		beginQuestion(gameId);
 
 		res.status(200).send({ ok: true });
+
+		return;
 	});
 
 	app.post('/games/:gameId/questions/:index/end', (req, res) => {
@@ -190,6 +226,7 @@ export default function registerGameRoutes(app: Express) {
 		endQuestion(gameId);
 
 		res.status(200).send({ ok: true });
+		return;
 	});
 
 	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
@@ -216,23 +253,37 @@ export default function registerGameRoutes(app: Express) {
 		const answer = req.body.answer;
 		if (
 			typeof answer != 'number' ||
-			answer >= game.quizData.questions[game.activeQuestion].answerTexts.length
+			answer >= game.getQuestionData().answerTexts.length
 		) {
 			res
 				.status(400)
 				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
+			return;
 		}
 
-		// add answer to userId
+		// validate time
+		const ansTime: number = Date.now() - game.timer.beginTimestamp;
+		if (
+			typeof ansTime != 'number' ||
+			(game.timer.timeLimit !== undefined && ansTime > game.timer.timeLimit) ||
+			ansTime < 0
+		) {
+			res
+				.status(400)
+				.send({ ok: false, err: `Time taken ${ansTime} is not valid.` });
+			return;
+		}
 
 		try {
-			game.answer(userId, 0, answer);
+			game.answer(userId, ansTime, answer);
 		} catch {
 			console.log('answer() failed; the error message might be right');
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
+			return;
 		}
 
 		res.status(200).send({ ok: true });
+		return;
 	});
 
 	app.post('/games/:gameId/players', (req, res) => {
@@ -265,10 +316,7 @@ export default function registerGameRoutes(app: Express) {
 		const gameId = req.params.id;
 		const game = games.get(gameId)!;
 
-		// gets player name with their responding total score and which questions they got right
-
 		// host end results
-
 		const hostId = game.hostId;
 		const hostSocket = game.getWs(hostId);
 		if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
@@ -276,6 +324,18 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		res.status(200).send({ ok: true });
+		return;
+	});
+
+	app.get('/games/:id/export-quiz', (req, res) => {
+		const gameId = req.params.id;
+		const game = games.get(gameId);
+
+		if (!game) {
+			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
+			return;
+		}
+		res.status(200).json(game.quizData);
 		return;
 	});
 }
