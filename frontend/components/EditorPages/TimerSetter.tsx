@@ -69,38 +69,33 @@ export default function TimerSetter({
 		}
 	}
 
-	function stopIncrementing() {
-		setIsIncrementing(false);
-		onChange(timerValue);
-	}
-
 	function startDecrementing() {
 		if (timerValue > MIN_TIMER_VALUE) {
 			setIsDecrementing(true);
 		}
 	}
 
-	function stopDecrementing() {
+	// Handle release of mouse hold, even if release is outside of button
+	window.addEventListener('mouseup', () => {
+		setIsIncrementing(false);
 		setIsDecrementing(false);
 		onChange(timerValue);
-	}
+	});
 
 	return (
 		<div className="h-full bg-gray-100 flex flex-row items-center justify-between font-normal text-base rounded-lg lg:text-lg 2xl:text-xl">
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-red-200 rounded-md ml-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
 				onMouseDown={startDecrementing}
-				onMouseUp={stopDecrementing}
 			>
 				-
 			</button>
 
-			<div className="px-1">{timerValue}</div>
+			<div className="px-1">{timerValue}s</div>
 
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-green-200 rounded-md mr-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
 				onMouseDown={startIncrementing}
-				onMouseUp={stopIncrementing}
 			>
 				+
 			</button>
