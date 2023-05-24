@@ -1,55 +1,58 @@
 import { Express, NextFunction, Request, Response } from 'express';
 import { WebSocket } from 'ws';
 import { sendMessage } from './connection';
-import { GameId, Game, gameExist, getGame} from './game';
-import {Quiz} from './quiz'
+import { GameId, Game, gameExist, getGame } from './game';
+import { Quiz } from './quiz';
 import { UserId } from './user';
 import { newGameResp } from './respTypes';
 
 // first key is gameId
 
-
-
-
-function validateGame(req: Request, res: Response, next:NextFunction){
+function validateGame(req: Request, res: Response, next: NextFunction) {
 	const params = req.params;
-	console.log(params.gameId)
-	if (!gameExist(params.gameId)){
-		console.log("eek!");
+	try {
+		// console.log(params.gameId)
+		if (!gameExist(params.gameId)) {
+			// console.log("eek!");
+			res
+				.status(404)
+				.send({ ok: false, err: `Game ${params.gameId} not found` });
+			return;
+		}
+	} catch {
 		res.status(404).send({ ok: false, err: `Game ${params.gameId} not found` });
 		return;
 	}
-	console.log("valid game")
-	next()
 
+	// console.log("valid game")
+	next();
 }
 
-
-function validateQuestion(req: Request, res: Response, next:NextFunction){
+function validateQuestion(req: Request, res: Response, next: NextFunction) {
 	const params = req.params;
-	if (req.params.gameId === undefined){
+	if (req.params.gameId === undefined) {
 		res.status(400).send({ ok: false, err: `Question number is required` });
 		return;
 	}
 	const game = getGame(params.gameId);
-	
-	try{
-		parseInt(params.index)
-	}
-	catch{
+
+	try {
+		parseInt(params.index);
+	} catch {
 		// should this be a different error
-		res.status(404).send({ ok: false, err: `Question ${params.index} not a number` });
-		return;
-
-	}
-	if (parseInt(params.index) > game.quizData.questions.length){
-		res.status(404).send({ ok: false, err: `Question ${params.index} not found` });
+		res
+			.status(404)
+			.send({ ok: false, err: `Question ${params.index} not a number` });
 		return;
 	}
-	next()
-
+	if (parseInt(params.index) > game.quizData.questions.length) {
+		res
+			.status(404)
+			.send({ ok: false, err: `Question ${params.index} not found` });
+		return;
+	}
+	next();
 }
-
 
 export default function registerGameRoutes(app: Express) {
 	app.use('/games/:gameId/', validateGame);
@@ -57,45 +60,32 @@ export default function registerGameRoutes(app: Express) {
 
 	app.post('/games', (req, res) => {
 		if (!req.body) {
-			console.log(req.body)
+			// console.log(req.body)
 			res.status(400).send('Invalid JSON file');
 		}
 		try {
-			let freshGame = new Game(req.body);		
-			let response:newGameResp = {
+			let freshGame = new Game(req.body);
+			let response: newGameResp = {
 				gameId: freshGame.id,
 				hostId: freshGame.hostId,
-			}
-			console.log(response);
+			};
+			// console.log(response);
 			res.status(201).json(response);
-
 		} catch (e) {
 			// client upload error
 			console.log(e);
 			res.status(400).send('Invalid JSON file');
-			return
+			return;
 		}
 		return;
 	});
 
 	app.post('/games/:gameId/questions/:index/start', (req, res) => {
-		const gameId: GameId = req.params.gameId;
 		const index = parseInt(req.params.index);
-		const game = getGame(gameId)!;
-
-		// client-requested game error
-
-		// TODO: validate this request comes from the host (pending API description)
-		// client permission 403 error
-
-		const quiz = game.quizData;
-		// out-of-bounds error
-		if (index >= quiz.questions.length) {
-			res.status(404).send({ ok: false, err: `Question ${index} not found` });
-			return;
-		}
+		const game = getGame(req.params.gameId)!;
 
 		// start accepting answers for the question index
+
 		if (index != game.activeQuestion + 1) {
 			res.status(400).send({
 				ok: false,
@@ -103,9 +93,8 @@ export default function registerGameRoutes(app: Express) {
 			});
 			return;
 		}
-		game.activeQuestion = index;
-		// show question text and answers on both host and player screens
-		beginQuestion(gameId);
+
+		game.beginQuestion();
 
 		res.status(200).send({ ok: true });
 
@@ -118,8 +107,6 @@ export default function registerGameRoutes(app: Express) {
 		const game = getGame(gameId)!;
 
 		// host-requested game error
-
-		const quiz = game.quizData;
 		// out-of-bounds error
 
 		// stop accepting answers for the question index
@@ -130,9 +117,9 @@ export default function registerGameRoutes(app: Express) {
 			});
 			return;
 		}
-		game.quizOpen = false;
+
 		// show question text and answers on both host and player screens
-		beginQuestion(gameId);
+		game.endQuestion();
 
 		res.status(200).send({ ok: true });
 		return;
@@ -166,11 +153,11 @@ export default function registerGameRoutes(app: Express) {
 
 		// validate time
 		const ansTime: number = Date.now() - game.startTime;
-		
+
 		try {
 			game.getUser(userId).answer(game.activeQuestion, ansTime, answer);
 		} catch {
-			console.log('answer() failed; the error message might be right');
+			// console.log('answer() failed; the error message might be right');
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
 			return;
 		}
@@ -188,16 +175,15 @@ export default function registerGameRoutes(app: Express) {
 		const game = getGame(req.params.gameId);
 
 		const username: string = body.username;
-		let uid:UserId;
-		try{
-			uid = game.addPlayer(username)
-		}
-		catch{
-			res.status(409).send();
+		let uid: UserId;
+		try {
+			uid = game.addPlayer(username);
+		} catch {
+			res.status(409).send('add user fail!');
 			return;
 		}
 		// Generate Code and Set User Entry
-		res.status(201).json({ ok: true, uid });
+		res.status(201).json({ ok: true, id: uid });
 		return;
 	});
 
@@ -205,9 +191,8 @@ export default function registerGameRoutes(app: Express) {
 		const gameId = req.params.id;
 		const game = getGame(gameId)!;
 
-		
 		// host end results
-		game.sendResults()
+		game.sendResults();
 		res.status(200).send({ ok: true });
 		return;
 	});
@@ -220,7 +205,3 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 }
-function beginQuestion(gameId: string) {
-	throw new Error('Function not implemented.');
-}
-
