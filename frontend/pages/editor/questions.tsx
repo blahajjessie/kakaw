@@ -4,8 +4,32 @@ import { useState } from 'react';
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import QuestionEditor from '@/components/EditorPages/QuestionEditor';
 
+import { QuizQuestion } from '../../../backend/src/gameTypes';
+
 export default function EditorQuestionsPage() {
-	const [expandedQuestion, setExpandedQuestion] = useState(-1);
+	const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+
+	function addQuestion() {
+		setQuestions([
+			...questions,
+			{
+				questionText: '',
+				answerTexts: [],
+				correctAnswers: [],
+				// answerExplain: [],
+				time: 15,
+				points: 1000,
+			},
+		]);
+	}
+
+	function editQuestions(newQuestion: QuizQuestion, index: number) {
+		const newQuestions = questions.map((q, i) => {
+			if (i !== index) return q;
+			return newQuestion;
+		});
+		setQuestions(newQuestions);
+	}
 
 	return (
 		<main className="bg-purple-100 h-screen flex flex-col items-center justify-center text-black font-extrabold">
@@ -26,9 +50,22 @@ export default function EditorQuestionsPage() {
 						Back
 					</Link>
 
-					<div className="w-full h-full flex flex-col items-center bg-gray-100 bg-opacity-50 rounded-xl py-4 my-2 shadow-heavy">
-						<QuestionEditor />
-						<QuestionEditor />
+					<div className="w-full h-full flex flex-col items-center bg-gray-100 bg-opacity-50 rounded-xl py-4 my-2 shadow-heavy overflow-y-scroll">
+						{questions.map((question, i) => (
+							<QuestionEditor
+								question={question}
+								number={i + 1}
+								onEdit={(newQuestion) => editQuestions(newQuestion, i)}
+								key={i}
+							/>
+						))}
+
+						<div
+							className="w-4/5 h-12 bg-gray-100 bg-opacity-75 shrink-0 flex items-center justify-center text-center text-white rounded-lg my-2 shadow-heavy cursor-pointer hover:brightness-110 2xl:h-14"
+							onClick={addQuestion}
+						>
+							Add Question
+						</div>
 					</div>
 
 					<div className="w-full flex justify-between 2xl:mt-2">

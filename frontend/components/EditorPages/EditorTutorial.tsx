@@ -20,7 +20,7 @@ export default function EditorTutorial({ tutorialText }: EditorTutorialProps) {
 
 	return (
 		<div className="absolute w-full h-full pointer-events-none">
-			<div className="w-1/4 h-2/5 absolute bottom-[72%] right-[6%] pointer-events-auto">
+			<div className="w-1/4 h-2/5 absolute bottom-[72%] right-[6%]">
 				{showTapHelp && (
 					<div className="absolute bottom-[28%] right-[45%] w-[38%] h-[38%] text-sm z-30 lg:text-base 2xl:text-xl">
 						<Image
