@@ -55,6 +55,12 @@ export default function PlayerQuestionPage() {
         ]}
         selectedAnswerIndex={selectedAnswer}
         onAnswerClick={handleAnswerClick}
+        explanations={[
+          'To successfully complete the course 115a',
+          'To develop a functional and professional application',
+          'To showcase my projects on the popular platform GitHub',
+          'To embark on a legendary and noble quest for the holy grail',
+        ]}
       ></QuestionAnswers>
 
       {/* Render the player question bottom */}

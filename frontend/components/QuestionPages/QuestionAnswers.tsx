@@ -9,27 +9,47 @@ import styles from '@/styles/flip.module.css';
 
 interface QuestionAnswersProps {
   answers: [string, string, string, string];
-  onAnswerClick: (answerIndex: number) => void;
-  selectedAnswerIndex: number | null;
+  explanations: [string, string, string, string];
+  onAnswerClick?: (answerIndex: number) => void;
+  selectedAnswerIndex?: number | null;
 }
 
 export default function QuestionAnswers({
   answers,
+  explanations,
   onAnswerClick,
   selectedAnswerIndex,
 }: QuestionAnswersProps) {
   // State to keep track of selected answers and selected image
   const [selectedAnswers, setSelectedAnswers] = useState<boolean[]>([false, false, false, false]);
-  const [selectedImage, setSelectedImage] = useState(X); // Default image is X
+  const [selectedImage, setSelectedImage] = useState(onAnswerClick ? X : '');
 
   const handleAnswerClick = (index: number) => {
-    // Call the provided onAnswerClick function
-    onAnswerClick(index);
-    // Update all selected answers to true
-    const updatedSelectedAnswers = Array.from({ length: answers.length }, () => true);
+    // Toggle the selectedAnswers state for the clicked answer
+    const updatedSelectedAnswers = [...selectedAnswers];
+    updatedSelectedAnswers[index] = !selectedAnswers[index];
     setSelectedAnswers(updatedSelectedAnswers);
-    // Choose image X or Y based on the index
-    setSelectedImage(index === 0 ? X : Y);
+
+    // Toggle the selectedImage based on the index and selectedAnswers state
+    if (updatedSelectedAnswers[index]) {
+      setSelectedImage(index === 0 ? X : Y);
+    } else {
+      setSelectedImage('');
+    }
+
+    // Call the onAnswerClick function if it exists
+    if (onAnswerClick) {
+      onAnswerClick(index);
+    }
+  };
+
+  const getAnswerText = (index: number) => {
+    // Check if the answer is selected and return the appropriate text
+    if (selectedAnswers[index]) {
+      return explanations[index];
+    } else {
+      return answers[index];
+    }
   };
 
   const mobileContent = (
@@ -57,11 +77,11 @@ export default function QuestionAnswers({
 
           {/* Flip Animation */}
           <div className={`${styles['answer-container']} ${selectedAnswers[index] ? styles.flip : ''}`}>
-            <div className={styles.answer}>{answer}</div>
+            <div className={styles.answer}>{getAnswerText(index)}</div>
           </div>
 
           {/* Display X or Y image if the current index matches selectedAnswerIndex */}
-          {selectedAnswers[index] && (
+          {index === selectedAnswerIndex && (
             <div className="absolute top-0 right-0 h-16 w-16">
               <Image src={selectedImage} alt="Selected Image" className="w-full h-full" />
             </div>
@@ -96,11 +116,11 @@ export default function QuestionAnswers({
 
           {/* Flip Animation */}
           <div className={`${styles['answer-container']} ${selectedAnswers[index] ? styles.flip : ''}`}>
-            <div className={styles.answer}>{answer}</div>
+            <div className={styles.answer}>{getAnswerText(index)}</div>
           </div>
 
           {/* Display X or Y image if the current index matches selectedAnswerIndex */}
-          {selectedAnswers[index] && (
+          {index === selectedAnswerIndex && (
             <div className="absolute top-0 right-0 h-16 w-16">
               <Image src={selectedImage} alt="Selected Image" className="w-full h-full" />
             </div>
