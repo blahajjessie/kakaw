@@ -6,24 +6,46 @@ export abstract class ResponseData {
     data!: responseData;
 }
 
-export type responseData = newGameResp | beginResp | endResp;
+export type responseData = string | BeginResp | EndResp | ActionResp;
 
-export class newGameData implements ResponseData {
-    name = "endQuestion";
-    data: newGameResp;
-    constructor(data: newGameResp) {
+
+export class closeConnection implements ResponseData {
+    name = "end";
+    data: string;
+    constructor(data: string) {
         this.data = data;
     };
 };
 
-export class beginQuestionData implements ResponseData {
+
+export class EndData implements ResponseData {
+    name = "endQuestion";
+    data: EndResp;
+    constructor(data: EndResp) {
+        this.data = data;
+    };
+};
+
+export class BeginData implements ResponseData {
     name = "beginQuestion";
-    data: beginResp;
-    constructor(data: beginResp) {
+    data: BeginResp;
+    constructor(data: BeginResp) {
         this.data = data;
     };
 
 }
+
+
+export class ActionData implements ResponseData {
+    name = "playerAction";
+    data: ActionResp;
+    constructor(data: ActionResp) {
+        this.data = data;
+    };
+
+}
+
+// HTTP responses:
 
 export interface newGameResp {
     gameId: GameId;
@@ -31,7 +53,14 @@ export interface newGameResp {
 }
 
 
-export type beginResp = {
+export type createResp = {
+    id: number
+    index: number
+}
+
+// Socket data fields: 
+
+export type BeginResp = {
     question: string, // question.questionText,
     answers: string[], // question.answerTexts,
     time: number, // game.timer.endTimestamp - Date.now(),
@@ -39,15 +68,17 @@ export type beginResp = {
 };
 
 
-export type endResp = {
-    correct: boolean;
+export type EndResp = {
     correctAnswers: Array<number>;
     score: number;
     scoreChange: number;
+    correct: boolean;
+    leaderboard: {name:string, score:number}[];
     time: number;
 };
 
-export type createResp = {
-    id: number
-    index: number
+
+
+export type ActionResp = {
+    player: {id:UserId, username:string}
 }
