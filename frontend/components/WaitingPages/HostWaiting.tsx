@@ -88,7 +88,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 						<div className="text-4xl xl:text-5xl mb-2">Settings:</div>
 						<div className="flex flex-row mt-2">
 							<div className="flex flex-row p-1">
-								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap mt-2 mr-2">
+								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap mt-2">
 									<div className="mb-4">Time Limit:</div>
 									<div className="mb-4">Max Players:</div>
 								</div>
@@ -107,12 +107,12 @@ export default function HostWaiting({ gameId }: hostProps) {
 					</div>
 				</div>
 			</div>
-			<div className="hidden sm:block w-max sm:w-full h-full py-2">
+			<div className="hidden sm:block w-max sm:w-full h-3/6 2xl:h-4/6 py-2 pr-2">
 				<div className="absolute rounded-xl shadow-heavy bg-purple-50 text-4xl font-extrabold py-4 px-6 w-fit up-2">
 					Participants
 				</div>
-				<div className="flex flex-col w-full h-full shadow-heavy rounded-xl bg-gray-100 bg-opacity-50 my-4 z-0">
-					<div className="w-full h-full p-4">
+				<div className="flex flex-col w-full h-full shadow-heavy rounded-xl bg-gray-100 bg-opacity-50 my-4">
+					<div className="w-full h-full max-h-full p-4 overflow-auto">
 						<table className="w-full border-separate border-spacing-y-3 text-2xl font-extrabold mt-14">
 							<tbody>
 								{displayPlayers.map((subArray, index) => (
