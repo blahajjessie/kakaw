@@ -3,13 +3,10 @@ import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
 import { ChangeEvent, useState, useContext } from 'react';
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
+import { currentPlayersState } from '@/lib/useKakawGame';
 
 import logo2 from '@/public/logo2.png';
-import {
-	playerListContextType,
-	playerListContext,
-} from '@/components/Context/ShareContext';
-
+import { useRecoilValue } from 'recoil';
 const inter = Inter({
 	subsets: ['latin'],
 });
@@ -21,7 +18,7 @@ interface hostProps {
 export default function HostWaiting({ gameId }: hostProps) {
 	const [timeLimit, setTimeLimit] = useState<string | null>(null);
 	const [maxPlayers, setMaxPlayers] = useState<string | null>(null);
-	const playerList = useContext(playerListContext) as playerListContextType;
+	const currentPlayers = useRecoilValue(currentPlayersState);
 
 	// Alters State of timeLimit for every change
 	function handleTimeChange(e: ChangeEvent<HTMLInputElement>) {
@@ -50,9 +47,12 @@ export default function HostWaiting({ gameId }: hostProps) {
 			});
 	}
 
-	const displayPlayers: string[][] = [];
-	for (let i = 0; i < playerList.length; i += 4) {
-		const row = playerList.slice(i, i + 4);
+	const playersArray = [...currentPlayers.entries()];
+	const displayPlayers: { username: string; id: string }[][] = [];
+	for (let i = 0; i < playersArray.length; i += 4) {
+		const row = playersArray
+			.slice(i, i + 4)
+			.map(([id, username]) => ({ username, id }));
 		displayPlayers.push(row);
 	}
 
@@ -151,14 +151,14 @@ export default function HostWaiting({ gameId }: hostProps) {
 			/>
 			<div className="flex flex-col items-start justify-start p-10">
 				<div className="text-4xl font-extrabold py-4">
-					Participants ({playerList.length})
+					Participants ({currentPlayers.size})
 				</div>
 				<table className="w-full text-2xl font-extrabold">
 					{displayPlayers.map((subArray, index) => (
 						<tr key={index}>
-							{subArray.map((player, i) => (
-								<td className="py-4" key={index + i}>
-									{player}
+							{subArray.map((player) => (
+								<td className="py-4" key={player.id}>
+									{player.username}
 								</td>
 							))}
 						</tr>

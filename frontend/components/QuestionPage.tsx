@@ -17,7 +17,7 @@ export default function QuestionPage(props: QuestionPageProps) {
 			<QuestionTop
 				qNum={props.index + 1}
 				qText={props.question.questionText}
-				qTime={props.question.time}
+				qTime={props.question.endTime}
 			></QuestionTop>
 			<QuestionAnswers
 				answers={props.question.answerTexts}

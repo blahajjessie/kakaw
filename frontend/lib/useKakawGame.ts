@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { atom, selector, useRecoilState, useResetRecoilState } from 'recoil';
 
 import useConnection from './useConnection';
 
@@ -12,14 +13,12 @@ export enum Stage {
 export interface Question {
 	questionText: string;
 	answerTexts: string[];
-	time: number;
+	endTime: number;
 }
 
 export type KakawGame =
 	| {
 			stage: Stage.WaitingRoom;
-			// id -> username
-			players: Map<string, string>;
 	  }
 	| {
 			stage: Stage.Question;
@@ -28,7 +27,26 @@ export type KakawGame =
 	  }
 	| {
 			stage: Stage.PostQuestion;
+			questionIndex: number;
+			currentQuestion: Question;
+			scoreChange: number;
+			correct: boolean;
+			correctAnswers: number[];
 	  };
+
+const kakawGameState = atom<KakawGame>({
+	key: 'kakawGameState',
+	default: { stage: Stage.WaitingRoom },
+});
+
+export const currentPlayersState = atom<Map<string, string>>({
+	key: 'currentPlayersState',
+	default: new Map(),
+});
+
+export const usernameState = atom({ key: 'usernameState', default: '' });
+
+export const scoreState = atom({ key: 'scoreState', default: 0 });
 
 export default function useKakawGame(): {
 	connected: boolean;
@@ -38,10 +56,11 @@ export default function useKakawGame(): {
 	const [connected, setConnected] = useState(false);
 	const [error, setError] = useState<string | undefined>(undefined);
 
-	const [game, setGame] = useState<KakawGame>({
-		stage: Stage.WaitingRoom,
-		players: new Map(),
-	});
+	const [game, setGame] = useRecoilState(kakawGameState);
+	const [currentPlayers, setCurrentPlayers] =
+		useRecoilState(currentPlayersState);
+	const [username, setUsername] = useRecoilState(usernameState);
+	const [score, setScore] = useRecoilState(scoreState);
 
 	useConnection({
 		onOpen() {
@@ -59,28 +78,38 @@ export default function useKakawGame(): {
 						currentQuestion: {
 							questionText: event.questionText,
 							answerTexts: event.answerTexts,
-							time: event.time,
+							// We store the timestamp when the question will end, NOT the amount of
+							// time remaining. This should make timers easier to implement.
+							endTime: Date.now() + event.time,
 						},
 					});
+					setUsername(event.username);
+					setScore(event.score);
 					break;
 				case 'endQuestion':
 					setGame({
 						stage: Stage.PostQuestion,
+						questionIndex: event.index,
+						currentQuestion: {
+							questionText: event.questionText,
+							answerTexts: event.answerTexts,
+							endTime: Infinity,
+						},
+						scoreChange: event.scoreChange,
+						correct: event.correct,
+						correctAnswers: event.correctAnswers,
 					});
+					setUsername(event.username);
+					setScore(event.score);
 					break;
 
-				// TODO: change to playerAction
-				case 'lobby':
-					const currentPlayers =
-						game.stage == Stage.WaitingRoom ? game.players.entries() : [];
-
-					setGame({
-						stage: Stage.WaitingRoom,
-						players: new Map([
-							...currentPlayers,
-							...Object.entries(event.players as Record<string, string>),
-						]),
-					});
+				case 'playerAction':
+					setCurrentPlayers(
+						new Map([
+							...currentPlayers.entries(),
+							...Object.entries(event.player as Record<string, string>),
+						])
+					);
 					break;
 			}
 		},
