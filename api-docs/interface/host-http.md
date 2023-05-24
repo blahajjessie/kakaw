@@ -1,6 +1,6 @@
 # Game Host (teacher) API's
 
-### Create game
+## Create game
 Endpoint: `POST /games`: create a game (does not start it yet)
 
 `body:` JSON file of the questions and answers
@@ -13,7 +13,7 @@ The game opens on the server side, and is now accepting players via the join cod
 
 Upon recept of this, the host should display a screen showing a list of players. 
 
-### Start a question
+## Start a question
 
 Endpoint : `POST /games/:id/questions/:index/start`
 
@@ -28,7 +28,7 @@ response: `{ok: bool, err?: string}`
 Send this with index 0 to start the game, then 1, 2, 3, etc. until you are out of questions.
 
 
-### Skip a question
+## Skip a question
 
 Endpoint: `POST /games/:id/questions/:index/end`
 
@@ -41,8 +41,8 @@ Skips question timer if not ended yet
 no request body here (we will work on host authentication later)
 
 
-### Show results
-endpoint: `GET /games/:id/results`: 
+## Show results
+endpoint: `GET /games/:id/results`:
 
 Description: Returns all player names with their respective score and all their correct answers after the game has finished.
 
@@ -57,4 +57,14 @@ where a leaderboard is
 Response: `{ok: bool, err?: string, results: Leaderboard[]}`
 
 
+## Kick player
 
+endpoint: `DELETE /games/:gameId/players/:playerId`
+
+Description: Removes the specified player from the game. Can be called at any time.
+
+Server Event: close the connection for the specified player.
+
+The host will not receive a WS message. Instead, they remove the player from their local Map of players upon hearing the successful response for this request.
+
+Response: `{ok: bool, err?: string}`
