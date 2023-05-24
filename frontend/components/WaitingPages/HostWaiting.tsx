@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import TimerSetter from '@/components/Fixtures/TimerSetter';
 import { useRouter } from 'next/router';
 import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
@@ -32,40 +33,6 @@ export default function HostWaiting({ gameId }: hostProps) {
 	const [maxPlayers, setMaxPlayers] = useState<number>(5);
 	const playerList = useContext(playerListContext) as playerListContextType;
 	const router = useRouter();
-
-	// timeLimit Modifiers for every change
-	function incrementTime() {
-		if (timeLimit < 420) {
-			const newValue = timeLimit + 1;
-			setTimeLimit(newValue);
-		}
-		return;
-	}
-
-	function decrementTime() {
-		if (timeLimit > 1) {
-			const newValue = timeLimit - 1;
-			setTimeLimit(newValue);
-		}
-		return;
-	}
-
-	// Alters State of maxPlayers for every change
-	function incrementPlayers() {
-		if (maxPlayers < 420) {
-			const newValue = maxPlayers + 1;
-			setMaxPlayers(newValue);
-		}
-		return;
-	}
-
-	function decrementPlayers() {
-		if (maxPlayers > 1) {
-			const newValue = maxPlayers - 1;
-			setMaxPlayers(newValue);
-		}
-		return;
-	}
 
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
@@ -125,44 +92,14 @@ export default function HostWaiting({ gameId }: hostProps) {
 									<div className="mb-4">Max Players:</div>
 								</div>
 								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
-									<div className="flex flex-row bg-gray-100 justify-between items-center rounded-xl border-2 border-gray-200 mb-2 mx-2 w-28 h-11">
-										<button
-											className="bg-white border-1 border-gray-200 rounded text-red-400 text-center w-7 h-8 mx-1"
-											onClick={() => {
-												decrementTime();
-											}}
-										>
-											-
-										</button>
-										<div className="text-lg">{timeLimit}s</div>
-										<button
-											className="bg-white border-1 border-gray-200 rounded text-green-400 text-center w-7 h-8 mx-1"
-											onClick={() => {
-												incrementTime();
-											}}
-										>
-											+
-										</button>
-									</div>
-									<div className="flex flex-row bg-gray-100 justify-between items-center rounded-xl border-2 border-gray-200 mb-2 mx-2 w-28 h-11">
-										<button
-											className="bg-white border-1 border-gray-200 rounded text-red-400 text-center w-7 h-8 mx-1"
-											onClick={() => {
-												decrementPlayers();
-											}}
-										>
-											-
-										</button>
-										<div className="text-lg">{maxPlayers}</div>
-										<button
-											className="bg-white border-1 border-gray-200 rounded text-green-400 text-center w-7 h-8 mx-1"
-											onClick={() => {
-												incrementPlayers();
-											}}
-										>
-											+
-										</button>
-									</div>
+									<TimerSetter
+										initTimerValue={timeLimit}
+										onChange={(v) => setTimeLimit(v)}
+									/>
+									<TimerSetter
+										initTimerValue={maxPlayers}
+										onChange={(v) => setMaxPlayers(v)}
+									/>
 								</div>
 							</div>
 						</div>
