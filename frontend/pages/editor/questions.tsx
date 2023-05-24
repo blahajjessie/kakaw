@@ -24,10 +24,9 @@ export default function EditorQuestionsPage() {
 	}
 
 	function editQuestions(newQuestion: QuizQuestion, index: number) {
-		const newQuestions = questions.map((q, i) => {
-			if (i !== index) return q;
-			return newQuestion;
-		});
+		const newQuestions = questions.map((question, i) =>
+			i === index ? newQuestion : question
+		);
 		setQuestions(newQuestions);
 	}
 
@@ -54,18 +53,18 @@ export default function EditorQuestionsPage() {
 						{questions.map((question, i) => (
 							<QuestionEditor
 								question={question}
-								number={i + 1}
+								questionNumber={i + 1}
 								onEdit={(newQuestion) => editQuestions(newQuestion, i)}
 								key={i}
 							/>
 						))}
 
-						<div
-							className="w-4/5 h-12 bg-gray-100 bg-opacity-75 shrink-0 flex items-center justify-center text-center text-white rounded-lg my-2 shadow-heavy cursor-pointer hover:brightness-110 2xl:h-14"
+						<button
+							className="w-4/5 h-12 bg-gray-100 bg-opacity-75 shrink-0 flex items-center justify-center text-center text-white rounded-xl my-2 shadow-heavy cursor-pointer hover:brightness-110 2xl:h-14"
 							onClick={addQuestion}
 						>
 							Add Question
-						</div>
+						</button>
 					</div>
 
 					<div className="w-full flex justify-between 2xl:mt-2">
