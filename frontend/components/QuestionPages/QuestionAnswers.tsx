@@ -70,10 +70,10 @@ export default function QuestionAnswers({
           {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
           {index === selectedAnswerIndex && (
             <div
-            className="absolute bottom-0 left-0 w-588px h-59px flex justify-center items-center"
+            className="absolute bottom-0 left-0 flex justify-center items-center"
             style={{
-              width: '588px',
-              height: '59px',
+              width: '100%',
+              height: '25%',
               background: '#FF7200',
               boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
               borderRadius: '15px',
@@ -118,14 +118,14 @@ export default function QuestionAnswers({
           {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
           {index === selectedAnswerIndex && (
             <div
-              className="absolute bottom-0 left-0 w-588px h-59px flex justify-center items-center"
-              style={{
-                width: '588px',
-                height: '59px',
-                background: '#FF7200',
-                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-                borderRadius: '15px',
-              }}
+            className="absolute bottom-0 left-0 flex justify-center items-center"
+            style={{
+              width: '100%',
+              height: '25%',
+              background: '#FF7200',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+              borderRadius: '15px',
+            }}
             >
               <p style={{ color: 'white', fontSize: '30px' }}>You Answered</p>
             </div>
