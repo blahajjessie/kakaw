@@ -12,7 +12,8 @@ export default function PlayerQuestionPage() {
 	const [showModal, setShowModal] = useState(false); // Modal visibility state
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // Selected answer state
 	const [selectedImage, setSelectedImage] = useState(GoodJob); // Default image is GoodJob
-	const [firstClickedAnswer, setFirstClickedAnswer] = useState<number | null>(null
+	const [firstClickedAnswer, setFirstClickedAnswer] = useState<number | null>(
+		null
 	); // First clicked answer state
 
 	// Toggle modal visibility
