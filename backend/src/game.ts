@@ -1,6 +1,6 @@
 
 import { Quiz } from './quiz';
-import { BeginData, BeginResp, EndResp, LeaderBoard } from './respTypes';
+import { BeginData, BeginResp, EndResp, LeaderBoard, LeaderboardData } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
 
@@ -98,9 +98,14 @@ export class Game {
 		return this.getUsers().map(f);	
 	}
 
-	addPlayer(id: UserId, username: string) {
-		let u = new User (this.iterateUsers((u:User)=> u.name), username);
+	addPlayer(username: string):UserId {
+		// check if the username is taken
+		let names = this.iterateUsers(u=>u.name);
+		if (names.includes(username)) throw new Error("Username is taken")
+		// add a new user
+		let u = new User (this.iterateUsers((u:User)=> u.id), username);
 		this.players.set(u.id, u);
+		return u.id;
 	}
 
 	getLeaderboard(): LeaderBoard[]{
@@ -115,6 +120,9 @@ export class Game {
 		leaderboard.sort((a, b) => b.score - a.score);	
 	return leaderboard;
 }
+	sendResults(){
+		this.host.send(new LeaderboardData(this.getLeaderboard()));
+	}
 
 }
 

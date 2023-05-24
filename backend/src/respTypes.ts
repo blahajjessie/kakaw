@@ -6,7 +6,7 @@ export abstract class socketData {
     data!: responseData;
 }
 
-export type responseData = string | BeginResp | EndResp | ActionResp;
+export type responseData = string | BeginResp | EndResp | ActionResp | LeaderBoard[];
 
 
 export class closeConnection implements socketData {
@@ -43,6 +43,14 @@ export class ActionData implements socketData {
         this.data = data;
     };
 
+}
+
+export class LeaderboardData implements socketData{
+    name = "results"
+    data: LeaderBoard[]
+    constructor(data:LeaderBoard[]){
+        this.data = data;
+    }
 }
 
 // HTTP responses:
