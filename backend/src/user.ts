@@ -28,12 +28,16 @@ export class User {
 		}, new Array<number>());
 		
 	}
+	answer(qn: number, time:number, choice:number){
+		this.scores[qn].time = time
+		this.scores[qn].answer = choice
+	}
 	scorePlayer(qn:number, data:QuizQuestion) {
 		const correct = data.correctAnswers
 		this.scores[qn].scoreQuestion(correct);
 	}
-	initScore(qn:number) {
-		this.scores[qn] = new AnswerObj;
+	initScore(qn:number,qPoints:number, qTime:number) {
+		this.scores[qn] = new AnswerObj(qPoints, qTime);
 	}
 	getLeaderboardComponent():LeaderBoard{
 		return {name: this.name,

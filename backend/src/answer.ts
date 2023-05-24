@@ -7,8 +7,8 @@ class AnswerObj {
 	correct = false;
 	score = 0;
 	constructor(
-		totalPoints?: number,
-		totalTime?: number,
+		totalPoints: number,
+		totalTime: number,
 		time?: number,
 		answer?: number
 	) {

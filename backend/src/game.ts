@@ -40,14 +40,15 @@ export class Game {
 	players = new Map<UserId, User>();
 	quizOpen = false;
 	activeQuestion = -1;
+	startTime = -1;
 	timer: NodeJS.Timeout | undefined  = undefined;
 
-	constructor( quiz: Quiz) {
+	constructor( quiz: any) {
 		this.id = gen(5, [...games.keys()])
-		this.quizData = quiz;
+		this.quizData = new Quiz(quiz);
 		this.hostId = gen(8, []);
-		quiz.quizValidate();
 		this.host = new User([], this.quizData.meta.author); 
+		games.set(this.id, this);
 
 	}
 
@@ -69,12 +70,16 @@ export class Game {
 	// beginQuestion sends each player and host the current active question
 	beginQuestion(gameId: GameId) {
 		const question = this.quizData.getQuestionMessage(this.activeQuestion);
-		this.timer = setTimeout(this.endQuestion, question.time * 1000);
+		const pts = this.quizData.getPoints(this.activeQuestion);
+		
 		const message = new BeginData(question)
 		this.getUsers().forEach((p:User)=>{
 			p.send(message)
-			p.initScore(this.activeQuestion);
+			p.initScore(this.activeQuestion, pts, question.time);
 		});
+		this.quizOpen = true;
+		this.timer = setTimeout(this.endQuestion, question.time * 1000);
+		this.startTime = Date.now();
 		return;
 	}
 

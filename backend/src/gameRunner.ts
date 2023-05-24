@@ -2,7 +2,9 @@ import { Express, NextFunction, Request, Response } from 'express';
 import { WebSocket } from 'ws';
 import { sendMessage } from './connection';
 import { GameId, Game, gameExist, getGame} from './game';
-import {QuizQuestion} from './quiz'
+import {Quiz} from './quiz'
+import { UserId } from './user';
+import { newGameResp } from './respTypes';
 
 // first key is gameId
 
@@ -55,20 +57,23 @@ export default function registerGameRoutes(app: Express) {
 
 	app.post('/games', (req, res) => {
 		if (!req.body) {
+			console.log(req.body)
 			res.status(400).send('Invalid JSON file');
 		}
 		try {
-
-			let freshGame = new Game(req.body);
-			// req.body is the quiz
-			games.set(response.gameId, freshGame);
+			let freshGame = new Game(req.body);		
+			let response:newGameResp = {
+				gameId: freshGame.id,
+				hostId: freshGame.hostId,
+			}
 			console.log(response);
 			res.status(201).json(response);
+
 		} catch (e) {
 			// client upload error
 			console.log(e);
 			res.status(400).send('Invalid JSON file');
-			// Todo: further validation
+			return
 		}
 		return;
 	});
@@ -76,7 +81,7 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/questions/:index/start', (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		const index = parseInt(req.params.index);
-		const game = games.get(gameId)!;
+		const game = getGame(gameId)!;
 
 		// client-requested game error
 
@@ -99,8 +104,6 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 		game.activeQuestion = index;
-		game.quizOpen = true;
-
 		// show question text and answers on both host and player screens
 		beginQuestion(gameId);
 
@@ -112,7 +115,7 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/questions/:index/end', (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		const index = parseInt(req.params.index);
-		const game = games.get(gameId)!;
+		const game = getGame(gameId)!;
 
 		// host-requested game error
 
@@ -129,7 +132,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 		game.quizOpen = false;
 		// show question text and answers on both host and player screens
-		endQuestion(gameId);
+		beginQuestion(gameId);
 
 		res.status(200).send({ ok: true });
 		return;
@@ -140,7 +143,7 @@ export default function registerGameRoutes(app: Express) {
 		// TODO change this to match whatever method we use to authenticate users
 		const userId: UserId = req.body.userId;
 		const index = parseInt(req.params.index);
-		const game = games.get(gameId)!;
+		const game = getGame(gameId)!;
 
 		// check if question is open
 		if (game.activeQuestion != index && game.quizOpen) {
@@ -162,20 +165,10 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		// validate time
-		const ansTime: number = Date.now() - game.timer.beginTimestamp;
-		if (
-			typeof ansTime != 'number' ||
-			(game.timer.timeLimit !== undefined && ansTime > game.timer.timeLimit) ||
-			ansTime < 0
-		) {
-			res
-				.status(400)
-				.send({ ok: false, err: `Time taken ${ansTime} is not valid.` });
-			return;
-		}
-
+		const ansTime: number = Date.now() - game.startTime;
+		
 		try {
-			game.answer(userId, ansTime, answer);
+			game.getUser(userId).answer(game.activeQuestion, ansTime, answer);
 		} catch {
 			console.log('answer() failed; the error message might be right');
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
@@ -188,54 +181,46 @@ export default function registerGameRoutes(app: Express) {
 
 	app.post('/games/:gameId/players', (req, res) => {
 		const body = req.body;
-		const gameId: GameId = req.params.gameId;
-
 		if (typeof body.username != 'string') {
 			res.status(400).send();
 			return;
 		}
-
-		const game = games.get(gameId)!;
-
+		const game = getGame(req.params.gameId);
 
 		const username: string = body.username;
-		// EW disgusting.... Gets the usernames from the users list
-		if (game.getUserNames().includes(username)) {
+		let uid:UserId;
+		try{
+			uid = game.addPlayer(username)
+		}
+		catch{
 			res.status(409).send();
 			return;
 		}
-
 		// Generate Code and Set User Entry
-		const id = gen(8, game.getUsers());
-		game.addPlayer(id, username);
-		res.status(201).json({ ok: true, id });
+		res.status(201).json({ ok: true, uid });
 		return;
 	});
 
 	app.get('/games/:id/results', (req, res) => {
 		const gameId = req.params.id;
-		const game = games.get(gameId)!;
+		const game = getGame(gameId)!;
 
+		
 		// host end results
-		const hostId = game.hostId;
-		const hostSocket = game.getWs(hostId);
-		if (hostSocket !== undefined && hostSocket.readyState === WebSocket.OPEN) {
-			sendMessage(hostSocket, 'results', game.getLeaderboard());
-		}
-
+		game.sendResults()
 		res.status(200).send({ ok: true });
 		return;
 	});
 
 	app.get('/games/:id/export-quiz', (req, res) => {
 		const gameId = req.params.id;
-		const game = games.get(gameId);
+		const game = getGame(gameId);
 
-		if (!game) {
-			res.status(404).send({ ok: false, err: `Game ${gameId} not found` });
-			return;
-		}
 		res.status(200).json(game.quizData);
 		return;
 	});
 }
+function beginQuestion(gameId: string) {
+	throw new Error('Function not implemented.');
+}
+

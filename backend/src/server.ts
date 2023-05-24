@@ -5,7 +5,8 @@ import { handleConnection } from './connection';
 const app = express();
 app.use(express.json());
 
-import registerGameRoutes, { getGame } from './gameRunner';
+import registerGameRoutes from './gameRunner';
+import { getGame } from './game';
 import { Game } from './game';
 registerGameRoutes(app);
 

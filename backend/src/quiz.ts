@@ -22,9 +22,12 @@ export class Quiz {
     meta: QuizMeta
 	questions: QuizQuestion[];
 
-    constructor(meta:QuizMeta, questions: QuizQuestion[]){
-        this.meta = meta;
-        this.questions = questions;
+    constructor(body:any){
+        // this.quizValidate(body);
+        console.log(body)
+        this.meta = body.meta;
+        this.questions = body.questions;
+
     }
 
 	getQuestionData(qn:number): QuizQuestion {
@@ -42,6 +45,9 @@ export class Quiz {
     getQuestionTime(qn: number): number{
         return this.questions[qn].time || this.meta.timeDefault;
     }
+    getPoints(qn: number): number{
+        return this.questions[qn].points || this.meta.pointDefault;
+    }
     getQuestionMessage(qn:number): BeginResp{
         const q = this.getQuestionData(qn);
         return {
@@ -52,10 +58,10 @@ export class Quiz {
         }
     }
     // flamin hot mess
-    quizValidate(){
+    quizValidate(quiz:any){
         // validate that meta and questions are the only objects
         const quizKeys = ['meta', 'questions'];
-        const quizInvalidKeys = Object.keys(this).filter(
+        const quizInvalidKeys = Object.keys(quiz).filter(
             (key) => !quizKeys.includes(key)
         );
         if (quizInvalidKeys.length > 0) {
@@ -66,7 +72,7 @@ export class Quiz {
     
         // validate expected keys in meta object
         const metaKeys = ['title', 'author', 'pointDefault', 'timeDefault', 'note'];
-        const metaInvalidKeys = Object.keys(this.meta).filter(
+        const metaInvalidKeys = Object.keys(quiz.meta).filter(
             (key) => !metaKeys.includes(key)
         );
         if (metaInvalidKeys.length > 0) {
@@ -77,34 +83,34 @@ export class Quiz {
     
         // validate meta object
         if (
-            !this.meta ||
-            typeof this.meta !== 'object' ||
-            typeof this.meta.title !== 'string' ||
-            typeof this.meta.author !== 'string' ||
-            typeof this.meta.pointDefault !== 'number' ||
-            typeof this.meta.timeDefault !== 'number'
+            !quiz.meta ||
+            typeof quiz.meta !== 'object' ||
+            typeof quiz.meta.title !== 'string' ||
+            typeof quiz.meta.author !== 'string' ||
+            typeof quiz.meta.pointDefault !== 'number' ||
+            typeof quiz.meta.timeDefault !== 'number'
         ) {
             throw new Error('Invalid Quiz meta object');
         }
     
-        if (this.meta.title.length < 1 || this.meta.title.length > 100) {
+        if (quiz.meta.title.length < 1 || quiz.meta.title.length > 100) {
             throw new Error(`Invalid Quiz title length`);
         }
-        if (this.meta.author.length < 1 || this.meta.author.length > 100) {
+        if (quiz.meta.author.length < 1 || quiz.meta.author.length > 100) {
             throw new Error(`Invalid Quiz author length`);
         }
-        if (this.meta.pointDefault < 1 || this.meta.pointDefault > 1000) {
+        if (quiz.meta.pointDefault < 1 || quiz.meta.pointDefault > 1000) {
             throw new Error(`Invalid Quiz pointDefault`);
         }
-        if (this.meta.timeDefault < 1 || this.meta.timeDefault > 420) {
+        if (quiz.meta.timeDefault < 1 || quiz.meta.timeDefault > 420) {
             throw new Error(`Invalid Quiz timeDefault`);
         }
     
         // validate questions array
-        if (!Array.isArray(this.questions)) {
+        if (!Array.isArray(quiz.questions)) {
             throw new Error('Quiz questions must be an array');
         }
-        const qArrLen = this.questions.length;
+        const qArrLen = quiz.questions.length;
         if (qArrLen == 0 || qArrLen > 100) {
             throw new Error(`Invalid Quiz questions array length of ${qArrLen}`);
         }
@@ -118,7 +124,7 @@ export class Quiz {
             'points',
         ];
         for (let qIndex = 0; qIndex < qArrLen; qIndex++) {
-            const question = this.questions[qIndex];
+            const question = quiz.questions[qIndex];
     
             // validate expected keys in each question object
             const questionInvalidKeys = Object.keys(question).filter(
