@@ -37,13 +37,7 @@ export class User {
 		this.scores[qn].scoreQuestion(correct);
 	}
 	initScore(qn: number, qPoints: number, qTime: number) {
-		try {
-			this.scores[qn] = new AnswerObj(qPoints, qTime, 0, 0);
-		} catch (e) {
-			console.log('error e!' + e);
-			console.log('poopy');
-			throw e;
-		}
+		this.scores[qn] = new AnswerObj(qPoints, qTime, 0, 0);
 	}
 	getLeaderboardComponent(): LeaderBoard {
 		return {

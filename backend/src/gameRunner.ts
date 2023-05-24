@@ -87,7 +87,7 @@ export default function registerGameRoutes(app: Express) {
 		// start accepting answers for the question index
 
 		if (index != game.activeQuestion + 1) {
-			res.status(400).send({
+			res.status(404).send({
 				ok: false,
 				err: `Question ${index} is not next`,
 			});
