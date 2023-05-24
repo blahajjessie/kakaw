@@ -47,14 +47,17 @@ Fields:
 - `correctAnswers` (numeric array) : 
 - `score` (number) = the player’s current score, the host will recieve garbage
 - `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
-- `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbagae
+- `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbage
 - `leaderboard`: sorted array of [{name: string, score: number }, …]
 
 
-## `lobby`
+## `playerAction`
 
-Only sent to host before the game starts; this has all the players who have joined so far
+Every time a player completes an action (join, answer) the host is sent this message
+It will contain a player id and username that has completed the most recent action.
+
+This may be sent many times rapidly on the case of a host just conneccting. 
 
 Fields: 
-- `players`: map(`id`, `username`) 
+- `player`: {`id`, `username`}
 
