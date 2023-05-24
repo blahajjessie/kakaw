@@ -19,32 +19,29 @@ export default function QuestionAnswers({
   onAnswerClick,
   selectedAnswerIndex,
 }: QuestionAnswersProps) {
-  // State to keep track of selected answers and selected image
-  const [selectedAnswers, setSelectedAnswers] = useState<boolean[]>([false, false, false, false]);
-  const [selectedImage, setSelectedImage] = useState(onAnswerClick ? XMarkImage : '');
+  // State to keep track of selected answer and selected image
+  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(selectedAnswerIndex ?? null);
+  const [selectedImage, setSelectedImage] = useState(selectedAnswerIndex === 0 ? XMarkImage : '');
 
   const handleAnswerClick = (index: number) => {
-    // Toggle the selectedAnswers state for the clicked answer
-    const updatedSelectedAnswers = [...selectedAnswers];
-    updatedSelectedAnswers[index] = !selectedAnswers[index];
-    setSelectedAnswers(updatedSelectedAnswers);
-
-    // Toggle the selectedImage based on the index and selectedAnswers state
-    if (updatedSelectedAnswers[index]) {
-      setSelectedImage(index === 0 ? XMarkImage : CheckMarkImage);
-    } else {
+    // Toggle the selectedAnswer state for the clicked answer
+    if (selectedAnswer === index) {
+      setSelectedAnswer(null);
       setSelectedImage('');
+    } else {
+      setSelectedAnswer(index);
+      setSelectedImage(index === 0 ?  XMarkImage : CheckMarkImage);
     }
-
+  
     // Call the onAnswerClick function if it exists
     if (onAnswerClick) {
       onAnswerClick(index);
     }
-  };
+  };  
 
   const getAnswerText = (index: number) => {
     // Check if the answer is selected and return the appropriate text
-    if (selectedAnswers[index]) {
+    if (selectedAnswer === index) {
       return explanations[index];
     } else {
       return answers[index];
@@ -68,32 +65,32 @@ export default function QuestionAnswers({
           onClick={() => handleAnswerClick(index)}
         >
           {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
-          {index === selectedAnswerIndex && (
-            <div
-            className="absolute bottom-0 left-0 flex justify-center items-center"
-            style={{
-              width: '100%',
-              height: '25%',
-              background: '#FF7200',
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-              borderRadius: '15px',
-            }}
-            >
-              <p style={{ color: 'white', fontSize: '18px' }}>You Answered</p>
-            </div>
-          )}
+{index === selectedAnswer && onAnswerClick && selectedAnswerIndex !== undefined && (
+  <div
+    className="absolute bottom-0 left-0 flex justify-center items-center"
+    style={{
+      width: '100%',
+      height: '25%',
+      background: '#FF7200',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      borderRadius: '15px',
+    }}
+  >
+    <p style={{ color: 'white', fontSize: '30px' }}>You Answered</p>
+  </div>
+)}
 
           {/* Flip Animation */}
-          <div className={`${styles['answer-container']} ${selectedAnswers[index] ? styles.flip : ''}`}>
+          <div className={`${styles['answer-container']} ${selectedAnswer === index ? styles.flip : ''}`}>
             <div className={styles.answer}>{getAnswerText(index)}</div>
           </div>
 
           {/* Display X or Y image if the current index matches selectedAnswerIndex */}
-          {index === selectedAnswerIndex && (
-            <div className="absolute top-0 right-0 h-16 w-16">
-              <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
-            </div>
-          )}
+          {selectedAnswer !== null && onAnswerClick && selectedAnswerIndex !== undefined && (
+  <div className="absolute top-0 right-0 h-16 w-16">
+    <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
+  </div>
+)}
         </div>
       ))}
     </div>
@@ -116,32 +113,32 @@ export default function QuestionAnswers({
           onClick={() => handleAnswerClick(index)}
         >
           {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
-          {index === selectedAnswerIndex && (
-            <div
-            className="absolute bottom-0 left-0 flex justify-center items-center"
-            style={{
-              width: '100%',
-              height: '25%',
-              background: '#FF7200',
-              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-              borderRadius: '15px',
-            }}
-            >
-              <p style={{ color: 'white', fontSize: '30px' }}>You Answered</p>
-            </div>
-          )}
+{index === selectedAnswer && onAnswerClick && selectedAnswerIndex !== undefined && (
+  <div
+    className="absolute bottom-0 left-0 flex justify-center items-center"
+    style={{
+      width: '100%',
+      height: '25%',
+      background: '#FF7200',
+      boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+      borderRadius: '15px',
+    }}
+  >
+    <p style={{ color: 'white', fontSize: '30px' }}>You Answered</p>
+  </div>
+)}
 
           {/* Flip Animation */}
-          <div className={`${styles['answer-container']} ${selectedAnswers[index] ? styles.flip : ''}`}>
+          <div className={`${styles['answer-container']} ${selectedAnswer === index ? styles.flip : ''}`}>
             <div className={styles.answer}>{getAnswerText(index)}</div>
           </div>
 
           {/* Display X or Y image if the current index matches selectedAnswerIndex */}
-          {index === selectedAnswerIndex && (
-            <div className="absolute top-0 right-0 h-16 w-16">
-              <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
-            </div>
-          )}
+          {selectedAnswer !== null && onAnswerClick && selectedAnswerIndex !== undefined && (
+  <div className="absolute top-0 right-0 h-16 w-16">
+    <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
+  </div>
+)}
         </div>
       ))}
     </div>
