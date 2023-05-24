@@ -87,7 +87,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 						<div className="text-4xl xl:text-5xl mb-2">Settings:</div>
 						<div className="flex flex-row mt-2">
 							<div className="flex flex-row p-1">
-								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap mt-2">
+								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap mt-2 mr-2">
 									<div className="mb-4">Time Limit:</div>
 									<div className="mb-4">Max Players:</div>
 								</div>
@@ -106,7 +106,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 					</div>
 				</div>
 			</div>
-			<div className="hidden sm:block w-max lg:w-full h-3/6 py-2">
+			<div className="hidden sm:block w-max sm:w-full h-full py-2">
 				<div className="absolute rounded-xl shadow-heavy bg-purple-50 text-4xl font-extrabold py-4 px-6 w-fit up-2">
 					Participants
 				</div>
@@ -144,7 +144,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 			</div>
 			<div className="flex flex-row justify-center items-center mt-4">
 				<button
-					className="bg-purple-50 hover:bg-gray-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-2xl shadow-heavy w-1/4 h-fit"
+					className="bg-purple-50 hover:bg-gray-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-2xl shadow-heavy w-1/4 h-fit py-3"
 					type="button"
 					onClick={() => {
 						router.back();
@@ -153,7 +153,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 					Back
 				</button>
 				<button
-					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-2xl shadow-heavy w-2/3 h-fit"
+					className="bg-orange-200 hover:bg-orange-100 border-1 border-gray-200 rounded-xl mx-2 text-white text-center text-2xl shadow-heavy w-2/3 h-fit py-3"
 					type="button"
 					onClick={() => {
 						startQuiz();
