@@ -4,8 +4,8 @@ import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import PlayerQuestionBottom from '@/components/QuestionPages/PlayerQuestionBottom';
 
 import Image from 'next/image';
-import GoodJob from 'public/GoodJob.png';
-import NoLuck from 'public/NoLuck.png';
+import GoodJob from 'public/goodjob.png';
+import NoLuck from 'public/noluck.png';
 
 export default function PlayerQuestionPage() {
   // State variables

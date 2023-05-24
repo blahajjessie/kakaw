@@ -1,8 +1,8 @@
 import { useState } from 'react';
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
-import Image from 'next/image';
-import X from 'public/remove 1.png';
-import Y from 'public/check-mark 1.png';
+import SelectedImage from 'next/image';
+import XMarkImage from 'public/remove1.png';
+import CheckMarkImage from 'public/checkmark1.png';
 
 import styles from '@/styles/flip.module.css';
 
@@ -21,7 +21,7 @@ export default function QuestionAnswers({
 }: QuestionAnswersProps) {
   // State to keep track of selected answers and selected image
   const [selectedAnswers, setSelectedAnswers] = useState<boolean[]>([false, false, false, false]);
-  const [selectedImage, setSelectedImage] = useState(onAnswerClick ? X : '');
+  const [selectedImage, setSelectedImage] = useState(onAnswerClick ? XMarkImage : '');
 
   const handleAnswerClick = (index: number) => {
     // Toggle the selectedAnswers state for the clicked answer
@@ -31,7 +31,7 @@ export default function QuestionAnswers({
 
     // Toggle the selectedImage based on the index and selectedAnswers state
     if (updatedSelectedAnswers[index]) {
-      setSelectedImage(index === 0 ? X : Y);
+      setSelectedImage(index === 0 ? XMarkImage : CheckMarkImage);
     } else {
       setSelectedImage('');
     }
@@ -91,7 +91,7 @@ export default function QuestionAnswers({
           {/* Display X or Y image if the current index matches selectedAnswerIndex */}
           {index === selectedAnswerIndex && (
             <div className="absolute top-0 right-0 h-16 w-16">
-              <Image src={selectedImage} alt="Selected Image" className="w-full h-full" />
+              <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
             </div>
           )}
         </div>
@@ -139,7 +139,7 @@ export default function QuestionAnswers({
           {/* Display X or Y image if the current index matches selectedAnswerIndex */}
           {index === selectedAnswerIndex && (
             <div className="absolute top-0 right-0 h-16 w-16">
-              <Image src={selectedImage} alt="Selected Image" className="w-full h-full" />
+              <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
             </div>
           )}
         </div>
