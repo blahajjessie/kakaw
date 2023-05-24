@@ -1,7 +1,7 @@
 import { GameId } from "./game";
 import { UserId } from "./user";
 
-export abstract class ResponseData {
+export abstract class socketData {
     name!: string;
     data!: responseData;
 }
@@ -9,7 +9,7 @@ export abstract class ResponseData {
 export type responseData = string | BeginResp | EndResp | ActionResp;
 
 
-export class closeConnection implements ResponseData {
+export class closeConnection implements socketData {
     name = "end";
     data: string;
     constructor(data: string) {
@@ -18,7 +18,7 @@ export class closeConnection implements ResponseData {
 };
 
 
-export class EndData implements ResponseData {
+export class EndData implements socketData {
     name = "endQuestion";
     data: EndResp;
     constructor(data: EndResp) {
@@ -26,7 +26,7 @@ export class EndData implements ResponseData {
     };
 };
 
-export class BeginData implements ResponseData {
+export class BeginData implements socketData {
     name = "beginQuestion";
     data: BeginResp;
     constructor(data: BeginResp) {
@@ -36,7 +36,7 @@ export class BeginData implements ResponseData {
 }
 
 
-export class ActionData implements ResponseData {
+export class ActionData implements socketData {
     name = "playerAction";
     data: ActionResp;
     constructor(data: ActionResp) {
@@ -47,16 +47,17 @@ export class ActionData implements ResponseData {
 
 // HTTP responses:
 
-export interface newGameResp {
+export type newGameResp = {
     gameId: GameId;
     hostId: UserId
 }
 
 
-export type createResp = {
-    id: number
-    index: number
-}
+
+// export type createResp = {
+//     id: number
+//     index: number
+// }
 
 // Socket data fields: 
 
@@ -73,7 +74,7 @@ export type EndResp = {
     score: number;
     scoreChange: number;
     correct: boolean;
-    leaderboard: {name:string, score:number}[];
+    leaderboard: LeaderBoard[];
     time: number;
 };
 
@@ -81,4 +82,10 @@ export type EndResp = {
 
 export type ActionResp = {
     player: {id:UserId, username:string}
+}
+
+export type LeaderBoard = {
+    name: string;
+    score: number;
+    correctAnswers: number[];
 }

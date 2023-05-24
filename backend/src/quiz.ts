@@ -1,3 +1,5 @@
+import { BeginData, BeginResp } from "./respTypes";
+
 export interface QuizQuestion {
 	questionText: string;
 	answerTexts: string[];
@@ -36,6 +38,18 @@ export class Quiz {
 	}
     getAnswerChoices(qn:number){
         return this.questions[qn].answerTexts;
+    }
+    getQuestionTime(qn: number): number{
+        return this.questions[qn].time || this.meta.timeDefault;
+    }
+    getQuestionMessage(qn:number): BeginResp{
+        const q = this.getQuestionData(qn);
+        return {
+            question: q.questionText,
+            answers: q.answerTexts,
+            time: this.getQuestionTime(qn),
+            index: qn
+        }
     }
     // flamin hot mess
     quizValidate(){
