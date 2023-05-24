@@ -19,7 +19,7 @@ export type KakawGame =
 	| {
 			stage: Stage.WaitingRoom;
 			// id -> username
-			players?: Map<string, string>;
+			players: Map<string, string>;
 	  }
 	| {
 			stage: Stage.Question;
@@ -40,6 +40,7 @@ export default function useKakawGame(): {
 
 	const [game, setGame] = useState<KakawGame>({
 		stage: Stage.WaitingRoom,
+		players: new Map(),
 	});
 
 	useConnection({
@@ -67,10 +68,18 @@ export default function useKakawGame(): {
 						stage: Stage.PostQuestion,
 					});
 					break;
+
+				// TODO: change to playerAction
 				case 'lobby':
+					const currentPlayers =
+						game.stage == Stage.WaitingRoom ? game.players.entries() : [];
+
 					setGame({
 						stage: Stage.WaitingRoom,
-						players: new Map(Object.entries(event.players)),
+						players: new Map([
+							...currentPlayers,
+							...Object.entries(event.players as Record<string, string>),
+						]),
 					});
 					break;
 			}
