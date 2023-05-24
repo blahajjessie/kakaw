@@ -8,26 +8,31 @@ import GoodJob from 'public/goodjob.png';
 import NoLuck from 'public/noluck.png';
 
 export default function PlayerQuestionPage() {
-  // State variables
-  const [showModal, setShowModal] = useState(false); // Modal visibility state
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // Selected answer state
-  const [selectedImage, setSelectedImage] = useState(GoodJob); // Default image is GoodJob
+// State variables
+const [showModal, setShowModal] = useState(false); // Modal visibility state
+const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // Selected answer state
+const [selectedImage, setSelectedImage] = useState(GoodJob); // Default image is GoodJob
+const [firstClickedAnswer, setFirstClickedAnswer] = useState<number | null>(null); // First clicked answer state
 
-  // Toggle modal visibility
-  const toggleModal = () => {
-    setShowModal(!showModal);
-  };
+// Toggle modal visibility
+const toggleModal = () => {
+ setShowModal(!showModal);
+};
 
-  // Handle answer click event
-  const handleAnswerClick = (answerIndex: number) => {
-    setSelectedAnswer(answerIndex);
+// Handle answer click event
+const handleAnswerClick = (answerIndex: number) => {
+ setSelectedAnswer(answerIndex);
 
-    // Determine the selected image path based on your conditions
-    const imagePath = determineSelectedImagePath(answerIndex);
-    setSelectedImage(imagePath);
+ // Determine the selected image path based on your conditions
+ const imagePath = determineSelectedImagePath(answerIndex);
+ setSelectedImage(imagePath);
 
-    toggleModal();
-  };
+ // Update the firstClickedAnswer state if it is currently null
+ if (firstClickedAnswer === null) {
+ setFirstClickedAnswer(answerIndex);
+ toggleModal();
+ }
+};
 
   // Function to determine the selected image path based on conditions
   const determineSelectedImagePath = (answerIndex: number) => {

@@ -22,50 +22,73 @@ export default function QuestionAnswers({
   // State to keep track of selected answer and selected image
   const [selectedAnswer, setSelectedAnswer] = useState<number | null>(selectedAnswerIndex ?? null);
   const [selectedImage, setSelectedImage] = useState(selectedAnswerIndex === 0 ? XMarkImage : '');
+  const [isHovering, setIsHovering] = useState(false);
+  const [firstClickedAnswer, setFirstClickedAnswer] = useState<number | null>(null);
 
   const handleAnswerClick = (index: number) => {
-    // Toggle the selectedAnswer state for the clicked answer
-    if (selectedAnswer === index) {
-      setSelectedAnswer(null);
-      setSelectedImage('');
-    } else {
-      setSelectedAnswer(index);
-      setSelectedImage(index === 0 ?  XMarkImage : CheckMarkImage);
+    // Update the firstClickedAnswer state if it is currently null
+    if (firstClickedAnswer === null) {
+    setFirstClickedAnswer(index);
+    setSelectedImage(index === 0 ? XMarkImage : CheckMarkImage);
     }
-  
+    
+    // Always update the selectedAnswer state for the clicked answer
+    setSelectedAnswer(index);
+    
     // Call the onAnswerClick function if it exists
     if (onAnswerClick) {
-      onAnswerClick(index);
+    onAnswerClick(index);
     }
-  };  
+   };   
 
-  const getAnswerText = (index: number) => {
-    // Check if the answer is selected and return the appropriate text
+   const getAnswerText = (index: number) => {
+    // Check if the clicked answer matches the selectedAnswer state and return the appropriate text
     if (selectedAnswer === index) {
-      return explanations[index];
+    return explanations[index];
     } else {
-      return answers[index];
+    return answers[index];
+    }
+   };   
+
+  //Handling hover feature
+  const handleMouseEnter = (index: number) => {
+    if (index === firstClickedAnswer) {
+      setIsHovering(true);
     }
   };
+  
+  const handleMouseLeave = (index: number) => {
+    if (index === firstClickedAnswer) {
+      setIsHovering(false);
+    }
+  };
+  
 
   const mobileContent = (
     <div className="w-11/12 h-2/3 flex flex-col justify-between font-extrabold text-lg my-2">
       {answers.map((answer, index) => (
         <div
-          key={index}
-          className={`relative w-full h-1/4 ${
-            index === 0
-              ? 'bg-red-400'
-              : index === 1
-              ? 'bg-green-400'
-              : index === 2
-              ? 'bg-blue-400'
-              : 'bg-yellow-400'
-          } grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110`}
-          onClick={() => handleAnswerClick(index)}
-        >
-          {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
-{index === selectedAnswer && onAnswerClick && selectedAnswerIndex !== undefined && (
+  key={index}
+  className={`relative ${
+    index === 0
+      ? 'bg-red-400'
+      : index === 1
+      ? 'bg-green-400'
+      : index === 2
+      ? 'bg-blue-400'
+      : 'bg-yellow-400'
+  } grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
+  onClick={() => handleAnswerClick(index)}
+  onMouseEnter={() => handleMouseEnter(index)}
+  onMouseLeave={() => handleMouseLeave(index)}
+>
+  {/* Flip Animation */}
+  <div className={`${styles['answer-container']} ${selectedAnswer === index ? styles.flip : ''}`}>
+    <div className={styles.answer}>{getAnswerText(index)}</div>
+  </div>
+
+  {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
+  {index === firstClickedAnswer && onAnswerClick && selectedAnswerIndex !== undefined && !isHovering && (
   <div
     className="absolute bottom-0 left-0 flex justify-center items-center"
     style={{
@@ -80,18 +103,13 @@ export default function QuestionAnswers({
   </div>
 )}
 
-          {/* Flip Animation */}
-          <div className={`${styles['answer-container']} ${selectedAnswer === index ? styles.flip : ''}`}>
-            <div className={styles.answer}>{getAnswerText(index)}</div>
-          </div>
-
-          {/* Display X or Y image if the current index matches selectedAnswerIndex */}
-          {selectedAnswer !== null && onAnswerClick && selectedAnswerIndex !== undefined && (
-  <div className="absolute top-0 right-0 h-16 w-16">
-    <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
-  </div>
-)}
-        </div>
+  {/* Display X or Y image if the current index matches selectedAnswerIndex */}
+  {selectedAnswer !== null && onAnswerClick && selectedAnswerIndex !== undefined && (
+    <div className="absolute top-0 right-0 h-16 w-16">
+      <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
+    </div>
+  )}
+</div>
       ))}
     </div>
   );
@@ -100,20 +118,27 @@ export default function QuestionAnswers({
     <div className="flex flex-wrap items-center justify-center grow gap-x-16 w-full font-extrabold text-3xl my-2 2xl:text-4xl">
       {answers.map((answer, index) => (
         <div
-          key={index}
-          className={`relative ${
-            index === 0
-              ? 'bg-red-400'
-              : index === 1
-              ? 'bg-green-400'
-              : index === 2
-              ? 'bg-blue-400'
-              : 'bg-yellow-400'
-          } grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
-          onClick={() => handleAnswerClick(index)}
-        >
-          {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
-{index === selectedAnswer && onAnswerClick && selectedAnswerIndex !== undefined && (
+  key={index}
+  className={`relative ${
+    index === 0
+      ? 'bg-red-400'
+      : index === 1
+      ? 'bg-green-400'
+      : index === 2
+      ? 'bg-blue-400'
+      : 'bg-yellow-400'
+  } grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
+  onClick={() => handleAnswerClick(index)}
+  onMouseEnter={() => handleMouseEnter(index)}
+  onMouseLeave={() => handleMouseLeave(index)}
+>
+  {/* Flip Animation */}
+  <div className={`${styles['answer-container']} ${selectedAnswer === index ? styles.flip : ''}`}>
+    <div className={styles.answer}>{getAnswerText(index)}</div>
+  </div>
+
+  {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
+  {index === firstClickedAnswer && onAnswerClick && selectedAnswerIndex !== undefined && !isHovering && (
   <div
     className="absolute bottom-0 left-0 flex justify-center items-center"
     style={{
@@ -128,17 +153,12 @@ export default function QuestionAnswers({
   </div>
 )}
 
-          {/* Flip Animation */}
-          <div className={`${styles['answer-container']} ${selectedAnswer === index ? styles.flip : ''}`}>
-            <div className={styles.answer}>{getAnswerText(index)}</div>
-          </div>
-
-          {/* Display X or Y image if the current index matches selectedAnswerIndex */}
-          {selectedAnswer !== null && onAnswerClick && selectedAnswerIndex !== undefined && (
-  <div className="absolute top-0 right-0 h-16 w-16">
-    <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
-  </div>
-)}
+  {/* Display X or Y image if the current index matches selectedAnswerIndex */}
+  {selectedAnswer !== null && onAnswerClick && selectedAnswerIndex !== undefined && (
+    <div className="absolute top-0 right-0 h-16 w-16">
+      <SelectedImage src={selectedImage} alt="Selected Image" className="w-full h-full" />
+    </div>
+  )}
         </div>
       ))}
     </div>
