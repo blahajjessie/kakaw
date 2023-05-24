@@ -32,7 +32,7 @@ Whoever sends this message is closing the connection for the specified reason. E
 Fields: 
 - reason (string)
 
-## `beginQuestion`
+## `startQuestion`
 
 Sent by server whenever a new question is available
 
