@@ -3,7 +3,7 @@ import TimerSetter from '@/components/Fixtures/TimerSetter';
 import { useRouter } from 'next/router';
 import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
-import qr from '@/components/qrCode';
+import Qr from '@/components/QrCodeGeneration';
 import { useState, useContext } from 'react';
 
 import logo2 from '@/public/logo2.png';
@@ -55,7 +55,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 		displayPlayers.push(row);
 	}
 
-	const qrCode = qr(gameId);
+	const qrCode = Qr(gameId);
 
 	return (
 		<main

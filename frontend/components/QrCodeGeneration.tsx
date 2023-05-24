@@ -1,7 +1,7 @@
 import React from 'react';
 import { useQRCode } from 'next-qrcode';
 
-export default function qr(gameId: string) {
+export default function Qr(gameId: string) {
 	const { Canvas } = useQRCode();
 	return (
 		<Canvas
