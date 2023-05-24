@@ -1,9 +1,9 @@
 import { useState } from 'react';
+import Image from 'next/image';
 import QuestionTop from '@/components/QuestionPages/QuestionTop';
 import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import PlayerQuestionBottom from '@/components/QuestionPages/PlayerQuestionBottom';
 
-import Image from 'next/image';
 import GoodJob from 'public/goodjob.png';
 import NoLuck from 'public/noluck.png';
 
@@ -71,11 +71,14 @@ export default function PlayerQuestionPage() {
         <div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
           {/* Render the selected image if selectedAnswer is not null */}
           {selectedAnswer !== null && (
-            <Image
-              src={selectedImage}
-              alt="Popup Image"
-              className="max-w-full max-h-full"
-            />
+            <div className="w-11/12 h-full flex flex-col items-center justify-center">
+              <Image
+                alt="Popup Image"
+                src={selectedImage}
+                width={400}
+                className="-mb-6"
+              />
+            </div>
           )}
 
           {/* Close button */}
