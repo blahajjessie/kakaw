@@ -35,7 +35,7 @@ Fields:
 - `questionText`: The text for the question
 - `answerTexts`: The answer texts (same as in JSON)
 - `time` (number): The number of *miliseconds* that are left in the question (where 0 is the end of the question)
-- `score` (number): player’s current score
+- `score` (number): player’s current score, the host will recieve garbage
 - `username`: the name of the player. 
 
 ## `endQuestion`
@@ -44,14 +44,10 @@ Sent by server when the timer on a question runs out or the host clicks “End n
 The same message is sent to the host too except with only the correctAnswers field (maybe a leaderboard later).
 
 Fields: 
-- `correct` (boolean) : if the question is correct
 - `correctAnswers` (numeric array) : 
-
-Only sent to users: 
-- `score` (number) = the player’s current score, 
-- `scoreChange` (number) = how much their score increased due to this question, 
-
-Only sent to host:
+- `score` (number) = the player’s current score, the host will recieve garbage
+- `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
+- `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbagae
 - `leaderboard`: sorted array of [{name: string, score: number }, …]
 
 
