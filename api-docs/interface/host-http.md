@@ -38,4 +38,12 @@ Server Event: Show it on the host’s screen
 results: [{name: string, score: number, correctAnswers: number[] }, …],
 Response: {ok: bool, err?: string}
 
+### Get Export
+endpoint: `GET /games/:id/export-quiz`
+
+description: sends the quiz data to export 
+
+parameters:
+- `id` : the game id
+response: a complete [`quiz` Json file](../backend/Quiz.md)
 
