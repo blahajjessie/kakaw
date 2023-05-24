@@ -3,7 +3,6 @@ import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import Image from 'next/image';
 import X from 'public/remove 1.png';
 import Y from 'public/check-mark 1.png';
-import YourAnswer from 'public/YouAnswered.png';
 
 import styles from '@/styles/flip.module.css';
 
@@ -68,10 +67,19 @@ export default function QuestionAnswers({
           } grid items-center justify-center text-center rounded-xl p-4 my-2 overflow-y-auto shadow-heavy hover:brightness-110`}
           onClick={() => handleAnswerClick(index)}
         >
-          {/* Display Your Answer Image if the current index matches selectedAnswerIndex */}
+          {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
           {index === selectedAnswerIndex && (
-            <div className="absolute bottom-0 left-0 w-full flex justify-center items-end">
-              <Image src={YourAnswer} alt="Your Answer Image" className="w-full h-full" />
+            <div
+            className="absolute bottom-0 left-0 w-588px h-59px flex justify-center items-center"
+            style={{
+              width: '588px',
+              height: '59px',
+              background: '#FF7200',
+              boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+              borderRadius: '15px',
+            }}
+            >
+              <p style={{ color: 'white', fontSize: '18px' }}>You Answered</p>
             </div>
           )}
 
@@ -107,10 +115,19 @@ export default function QuestionAnswers({
           } grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
           onClick={() => handleAnswerClick(index)}
         >
-          {/* Display Your Answer Image if the current index matches selectedAnswerIndex */}
+          {/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
           {index === selectedAnswerIndex && (
-            <div className="absolute bottom-0 left-0 w-full flex justify-center items-end">
-              <Image src={YourAnswer} alt="Your Answer Image" className="w-full h-full" />
+            <div
+              className="absolute bottom-0 left-0 w-588px h-59px flex justify-center items-center"
+              style={{
+                width: '588px',
+                height: '59px',
+                background: '#FF7200',
+                boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
+                borderRadius: '15px',
+              }}
+            >
+              <p style={{ color: 'white', fontSize: '30px' }}>You Answered</p>
             </div>
           )}
 
