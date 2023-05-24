@@ -1,9 +1,10 @@
 import Image from 'next/image';
 import TimerSetter from '@/components/Fixtures/TimerSetter';
+import Qr from '@/components/Fixtures/QrCodeGeneration';
+import { WEBPAGE_BASE_URL } from '@/lib/baseUrl';
 import { useRouter } from 'next/router';
 import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
-import Qr from '@/components/QrCodeGeneration';
 import { useState, useContext } from 'react';
 
 import logo2 from '@/public/logo2.png';
@@ -80,7 +81,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 						</div>
 						<div className="text-8xl 2xl:text-9xl">{gameId}</div>
 						<div className="text-2xl 2xl:text-3xl whitespace-nowrap">
-							at https://www.kakaw.com
+							at {WEBPAGE_BASE_URL}
 						</div>
 					</div>
 					<div className="bg-white flex flex-col justify-center items-center rounded-xl p-4">
