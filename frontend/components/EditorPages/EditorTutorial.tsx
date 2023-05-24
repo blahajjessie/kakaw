@@ -20,9 +20,9 @@ export default function EditorTutorial({ tutorialText }: EditorTutorialProps) {
 
 	return (
 		<div className="absolute w-full h-full pointer-events-none">
-			<div className="w-1/4 h-2/5 absolute bottom-[68%] right-[8%] pointer-events-auto">
+			<div className="w-1/4 h-2/5 absolute bottom-[72%] right-[6%] pointer-events-auto">
 				{showTapHelp && (
-					<div className="absolute bottom-[30%] right-[55%] w-[40%] h-[40%] text-sm p-2 z-30 lg:text-base 2xl:text-xl">
+					<div className="absolute bottom-[28%] right-[45%] w-[38%] h-[38%] text-sm z-30 lg:text-base 2xl:text-xl">
 						<Image
 							alt="small speech bubble"
 							src={speech_small}
@@ -49,7 +49,7 @@ export default function EditorTutorial({ tutorialText }: EditorTutorialProps) {
 						position: 'absolute',
 						bottom: '0%',
 						right: '0%',
-						width: '65%',
+						width: '55%',
 						cursor: 'pointer',
 						pointerEvents: 'auto',
 						zIndex: '20',
@@ -60,7 +60,7 @@ export default function EditorTutorial({ tutorialText }: EditorTutorialProps) {
 
 			{showTutorial && (
 				<div className="absolute w-full h-full">
-					<div className="absolute top-[22%] left-[34%] w-[43%] h-1/2 pointer-events-auto">
+					<div className="absolute top-[22%] left-[32%] w-[48%] h-1/2 pointer-events-auto">
 						<Image
 							alt="big speech bubble"
 							src={speech_big}

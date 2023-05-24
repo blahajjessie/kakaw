@@ -4,7 +4,7 @@ import { useState } from 'react';
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import TimerSetter from '@/components/EditorPages/TimerSetter';
 
-export default function EditorPage() {
+export default function EditorNewPage() {
 	const [timerValue, setTimerValue] = useState(15);
 
 	return (
@@ -14,7 +14,7 @@ export default function EditorPage() {
 					Create your own Quiz!
 				</div>
 
-				<div className="w-full h-3/4 bg-purple-500 flex flex-col items-center justify-center p-6 text-base rounded-3xl z-10 xl:text-xl 2xl:text-2xl">
+				<div className="w-full h-4/5 bg-purple-500 flex flex-col items-center justify-center p-6 text-base rounded-3xl z-10 xl:text-xl 2xl:text-2xl">
 					<EditorGuide
 						tutorialText={`On this page you can pick a name for your quiz and set a default timer
 					(You can change the timer for each individual question later)`}
@@ -49,12 +49,12 @@ export default function EditorPage() {
 						</div>
 					</div>
 
-					<button
+					<Link
+						href="/editor/questions"
 						className="bg-orange-200 hover:brightness-110 border-1 border-gray-200 rounded-lg px-4 py-1 mt-1 text-white text-center shadow-heavy 2xl:mt-2"
-						type="button"
 					>
 						Add Questions
-					</button>
+					</Link>
 				</div>
 			</div>
 		</main>
