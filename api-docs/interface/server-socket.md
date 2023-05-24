@@ -10,6 +10,10 @@ Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}`
 
 - When a client connects to the server and the game has already started, the server immediately sends a question or endQuestion (or lobby if client is the host) message to catch them up to the current state of the game. Before then, the client just displays “Waiting for the host to start the game” or something. This way the same logic handles both “client joined and is waiting for game to start” and “client joined late and is waiting for the server to respond to them.”
 
+- Leaderboard
+    - `name` (string) : the player's username 
+    - `score` (number) : the score of the player
+
 # Types
 
 These are all defined in `respTypes.ts` with 
@@ -38,28 +42,34 @@ Fields:
 - `time` (number): The number of *miliseconds* that are left in the question (where 0 is the end of the question)
 - `score` (number): player’s current score, the host will recieve garbage
 - `username`: the name of the player. 
+future:
+- `questionIndex` : the index of the question started.
 
 ## `endQuestion`
 
 Sent by server when the timer on a question runs out or the host clicks “End now,” and moves clients to the screen to review results
-The same message is sent to the host too except with only the correctAnswers field (maybe a leaderboard later).
+The same message is sent to the host, but the information about the answer choice may be inacurate. 
 
 Fields: 
 - `correctAnswers` (numeric array) : 
 - `score` (number) = the player’s current score, the host will recieve garbage
 - `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbage
-- `leaderboard`: sorted array of [{name: string, score: number }, …]
+- `leaderboard`: sorted array of `Leaderboard` objects. 
 - `time` : number: the ammount of time the player took to answer the question
 
+future:
+- `questionIndex` : the index of the question started.
 
 ## `playerAction`
 
-Every time a player completes an action (join, answer) the host is sent this message
-It will contain a player id and username that has completed the most recent action.
+future: 
 
-This may be sent many times rapidly on the case of a host just conneccting. 
+Every time a player completes an action (join, answer) the host is sent this message
+It will contain a player id and username that has completed the most recent action. 
 
 Fields: 
-- `player`: {`id`, `username`}
+- `playerId`: The playerid who completed the action
+- `username`: the username of the player who complteted the action
+
 

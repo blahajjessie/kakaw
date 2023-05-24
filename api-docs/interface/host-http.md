@@ -35,7 +35,14 @@ no request body here (we will work on host authentication later)
 endpoint: `GET /games/:id/results`: 
 Description: Returns all player names with their respective score and all their correct answers after the game has finished.
 Server Event: Show it on the host’s screen
-results: [{name: string, score: number, correctAnswers: number[] }, …],
-Response: {ok: bool, err?: string}
+results: `Leaderboard[]`,
+where a leaderboard is 
+#### Leaderboard
+- `name` (string) : the player's username 
+- `score` (number) : the score of the player
+
+
+Response: `{ok: bool, err?: string}`
+
 
 
