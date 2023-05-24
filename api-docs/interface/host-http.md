@@ -16,8 +16,8 @@ Description : start accepting answers for the next question
 Server event: Show the question on all user screens (via a websocket #TODO)
 response: {ok: bool, err?: string}
 
-`:id:` the id of the game that the question should be started on
-`:index` : the question number that should be started. 
+- `:id:` the id of the game that the question should be started on
+- `:index` : the question number that should be started. 
 Send this with index 0 to start the game, then 1, 2, 3, etc. until you are out of questions.
 
 
