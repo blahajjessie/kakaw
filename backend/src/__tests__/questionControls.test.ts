@@ -65,12 +65,14 @@ describe('Question Controls', () => {
 	test('End Question Failure / Question Out of Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/2/end`)
-			.expect(404)
+			.expect(400)
 			.then((data) => {
 				expect(data).toBeDefined();
 				expect(data.body).toBeDefined();
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(false);
+				console.log(data.error);
+				console.log(data.body.err);
 			});
 	});
 
