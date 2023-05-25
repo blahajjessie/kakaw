@@ -16,6 +16,8 @@ module.exports = {
 				purple: {
 					50: '#988DB5',
 					100: '#674EA7',
+					300: '#B497FF',
+					350: '#E086FF',
 					500: '#584290',
 				},
 				orange: {
@@ -28,6 +30,18 @@ module.exports = {
 					300: '#4B5563',
 					400: '#CCCCCC',
 					500: '#B9B9B9',
+				},
+				red: {
+					200: '#FF6663',
+				},
+				blue: {
+					200: '#9EC1CF',
+				},
+				green: {
+					200: '#9EE09E',
+				},
+				yellow: {
+					200: '#FDFD97',
 				},
 			},
 			boxShadow: {
