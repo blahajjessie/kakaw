@@ -1,4 +1,5 @@
-import { Game, UserId } from './gameTypes';
+import { Game } from './game';
+import { User, UserId } from './user';
 import { WebSocket } from 'ws';
 // first key is game ID, second key is player ID
 // export const connections: Map<string, Map<string, WebSocket>> = new Map();
@@ -18,8 +19,14 @@ export function handleConnection(
 	playerId: UserId
 ) {
 	console.log(
-		`player ${playerId} attempting connection to game ${game.getQuizName()}`
+		`player ${playerId} attempting connection to game ${game.quizData.getName()}`
 	);
+	let user: User;
+	try {
+		user = game.getUser(playerId);
+	} catch {
+		throw new Error('User get failed for ' + playerId);
+	}
 
 	// TODO: re-enable this condition, but refer to the games that currently exist, not the store of
 	// clients connected to games. a game may still exist even if nobody is connected to it.
@@ -27,10 +34,10 @@ export function handleConnection(
 	// 	return killConnection(connection, 'That game does not exist');
 	// }
 
-	if (game.getWs(playerId)) {
+	if (user.getWs()) {
 		return killConnection(connection, 'You are already connected to this game');
 	}
-	game.addWs(playerId, connection);
+	user.addWs(connection);
 
 	connection.on('message', (data) => {
 		console.log(`player ${playerId} says: ${data}`);
@@ -38,6 +45,6 @@ export function handleConnection(
 	// handle when the player leaves or we close the connection
 	connection.on('close', () => {
 		console.log(`player ${playerId} disconnected`);
-		game.removeWs(playerId);
+		user.removeWs();
 	});
 }
