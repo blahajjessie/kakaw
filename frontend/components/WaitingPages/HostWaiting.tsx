@@ -60,7 +60,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 
 	return (
 		<main
-			className={`${inter.className} w-screen h-screen font-sans bg-purple-100 flex flex-col justify-between p-4`}
+			className={`${inter.className} w-screen h-screen font-sans bg-purple-100 flex flex-col p-4`}
 		>
 			<div className="flex flex-row items-center justify-center sm:justify-start">
 				<Image
@@ -107,7 +107,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 					</div>
 				</div>
 			</div>
-			<div className="hidden sm:block w-max sm:w-full h-3/6 2xl:h-4/6 py-2 pr-2">
+			<div className="hidden sm:block w-max sm:w-full h-3/6 py-4 pr-2">
 				<div className="absolute rounded-xl shadow-heavy bg-purple-50 text-4xl font-extrabold py-4 px-6 w-fit up-2">
 					Participants
 				</div>
