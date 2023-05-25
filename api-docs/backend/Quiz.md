@@ -22,7 +22,7 @@ takes in a question number, returns the answer choice options
 returns the ammount of time for the question, or the default if it doesnt exist
 
 ## `getPoints` (qn: number)
-takes in a question number, returns the ammount of points for the question, or the default if it isnt defined
+takes in a question number, returns the amount of points for the question, or the default if it is not defined
 
 ## `getQuestionMessage` (qn: number)
 returns the `BeginResp` for the question, to be sent to users when the question starts
