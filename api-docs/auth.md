@@ -6,7 +6,7 @@ The player create and game create endpoints now return an additional `token` fie
 
 ## Server-side: generating a token
 
-The server uses [HMAC](https://en.wikipedia.org/wiki/HMAC)-SHA256, which combines a secret and some input to create a hash that could only have been created by someone knowing both values.
+The server uses [HMAC](https://en.wikipedia.org/wiki/HMAC)-SHA256, which combines a secret and some input to create a hash that could only have been created by someone knowing both values. The advantage of this is that the server doesn't actually have to store players' tokens, as it can just verify any token that it receives by recomputing what the token for that player should be and checking that they are equal.
 
 The server has a secret which is never revealed to anyone. When a player is created (either for the host because a game was created, or when a normal player joins), the server creates the string `gameId.playerId` and computes the HMAC of that in hexadecimal:
 
