@@ -39,11 +39,11 @@ Sent by server whenever a new question is available
 Fields: 
 - `questionText`: The text for the question
 - `answerTexts`: The answer texts (same as in JSON)
-- `time` (number): The number of *miliseconds* that are left in the question (where 0 is the end of the question)
-- `score` (number): player’s current score, the host will recieve garbage
+- `time` (number): The number of *milliseconds* that are left in the question (where 0 is the end of the question)
+- `index` (number): the number of the question being started.
+- `score` (number): player’s current score, the host will receive garbage
 - `username`: the name of the player. 
-future:
-- `questionIndex` : the index of the question started.
+
 
 ## `endQuestion`
 
@@ -52,21 +52,18 @@ The same message is sent to the host, but the information about the answer choic
 
 Fields: 
 - `correctAnswers` (numeric array) : 
-- `score` (number) = the player’s current score, the host will recieve garbage
-- `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
-- `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbage
-- `leaderboard`: sorted array of `Leaderboard` objects. 
-- `time` : number: the ammount of time the player took to answer the question
-
-future:
-- `questionIndex` : the index of the question started.
+- `score` (number) = the player’s current score, the host will receive garbage
+- `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
+- `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
+- `leaderboard`: sorted array of [{name: string, score: number }, …]
+- `responseTime` : number: the amount of time the player took to answer the question (ms)
+- `index` : the index of the question started.
 
 ## `playerAction`
 
 future: 
 
-Every time a player completes an action (join, answer) the host is sent this message
-It will contain a player id and username that has completed the most recent action. 
+This may be sent many times rapidly on the case of a host just connecting. 
 
 Fields: 
 - `playerId`: The playerid who completed the action
