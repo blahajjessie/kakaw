@@ -28,7 +28,7 @@ Whoever sends this message is closing the connection for the specified reason. E
 Fields: 
 - reason (string)
 
-## `beginQuestion`
+## `startQuestion`
 
 Sent by server whenever a new question is available
 
@@ -62,4 +62,5 @@ This may be sent many times rapidly on the case of a host just conneccting.
 
 Fields: 
 - `player`: {`id`, `username`}
+
 
