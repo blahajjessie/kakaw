@@ -43,7 +43,12 @@ httpServer.on('upgrade', (request, socket, head) => {
 	const gameId = url.searchParams.get('gameId')!;
 	const playerId = url.searchParams.get('playerId')!;
 	if (!gameExist(gameId)) {
-		console.log('Invalid game while trying to upgrade ws. PlayerId: ' + playerId + " GameId:" + gameId);
+		console.log(
+			'Invalid game while trying to upgrade ws. PlayerId: ' +
+				playerId +
+				' GameId:' +
+				gameId
+		);
 		socket.destroy();
 		return;
 	}
@@ -53,14 +58,11 @@ httpServer.on('upgrade', (request, socket, head) => {
 			webSocketServer.emit('connection', client, request);
 			handleConnection(client, game, playerId);
 		});
-	}
-	catch (e){
+	} catch (e) {
 		console.log(e);
 		socket.destroy();
 		return;
 	}
-	
-
 });
 
 export default httpServer;
