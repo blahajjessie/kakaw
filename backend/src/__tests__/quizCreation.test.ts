@@ -1,6 +1,6 @@
 import httpServer from '../server';
 import supertest from 'supertest';
-import correct from './testTools/correct.json';
+import correct from './testTools/quizzes/correct.json';
 
 let request: supertest.SuperTest<supertest.Test>;
 
@@ -26,6 +26,12 @@ const noMeta = {
 	questions: correct.questions,
 };
 
+const injection = {
+	meta: correct.meta,
+	questions: correct.questions,
+	injection: 'I have the high ground!',
+};
+
 const wrongMetaTypes = {
 	meta: {
 		title: correct.meta.title,
@@ -34,6 +40,38 @@ const wrongMetaTypes = {
 		timeDefault: '10',
 	},
 	questions: correct.questions,
+};
+
+const metaInjection = {
+	meta: {
+		title: correct.meta.title,
+		author: correct.meta.author,
+		pointDefault: 15,
+		timeDefault: 10,
+		kenobi: 'I am old Lol',
+	},
+	questions: correct.questions,
+};
+
+const injectedQuestion = {
+	questionText: 'Are we human?',
+	answerTexts: [
+		'Yes',
+		'No',
+		'NONONONONOWAITWAITWAIT',
+		'idunno man I just work here',
+	],
+	correctAnswers: [1],
+	time: 10,
+	anakin: 'you underestimate my power.',
+};
+
+const injectedList = { questions: [injectedQuestion] };
+
+const questionInjectionQuiz = {
+	meta: correct.meta,
+	questions: injectedList,
+	injection: 'I have the high ground!',
 };
 
 test('GET Invalid URL', async () => {
@@ -77,4 +115,16 @@ test('Wrong Quiz Format / No Meta Data', async () => {
 
 test('Wrong Quiz Format / Wrong Meta Data', async () => {
 	await request.post('/games').send(wrongMetaTypes).expect(400);
+});
+
+test('Wrong Quiz Format / Injection', async () => {
+	await request.post('/games').send(injection).expect(400);
+});
+
+test('Wrong Quiz Format / Meta Injection', async () => {
+	await request.post('/games').send(metaInjection).expect(400);
+});
+
+test('Wrong Quiz Format / Quiz Question Injection', async () => {
+	await request.post('/games').send(questionInjectionQuiz).expect(400);
 });

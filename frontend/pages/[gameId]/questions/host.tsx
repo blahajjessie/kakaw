@@ -1,10 +1,6 @@
-import { Inter } from 'next/font/google';
-
 import QuestionTop from '@/components/QuestionPages/QuestionTop';
 import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import HostQuestionBottom from '@/components/QuestionPages/HostQuestionBottom';
-
-const inter = Inter({ subsets: ['latin'] });
 
 export default function HostQuestionPage() {
 	return (
@@ -20,6 +16,12 @@ export default function HostQuestionPage() {
 					'To make a real app',
 					'To have something to put on my GitHub',
 					'To seek the holy grail',
+				]}
+				explanations={[
+					'To successfully complete the course 115a',
+					'To develop a functional and professional application',
+					'To showcase my projects on the popular platform GitHub',
+					'To embark on a legendary and noble quest for the holy grail',
 				]}
 			></QuestionAnswers>
 			<HostQuestionBottom numAnswered={2} numPlayers={5}></HostQuestionBottom>
