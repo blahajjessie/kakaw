@@ -70,6 +70,6 @@ It will contain a player id and username that has completed the most recent acti
 
 Fields: 
 - `playerId`: The playerid who completed the action
-- `username`: the username of the player who complteted the action
+- `username`: the username of the player who completed the action
 
 
