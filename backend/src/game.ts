@@ -57,10 +57,9 @@ export class Game {
 
 	endQuestion() {
 		const qn = this.activeQuestion;
-		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
 		this.getUsers().forEach((u) => {
-			u.send(u.getEndData(board, this.activeQuestion, this.quizData));
+			u.send(u.getEndData(board, qn, this.quizData));
 		});
 		this.quizOpen = false;
 		return;
