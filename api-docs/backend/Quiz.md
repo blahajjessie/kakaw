@@ -19,7 +19,7 @@ takes in a question number, returns the data for that question
 takes in a question number, returns the answer choice options
 
 ## `getQuestionTime` (qn: number)
-returns the ammount of time for the question, or the default if it doesnt exist
+returns the amount of time for the question, or the default if it does not exist
 
 ## `getPoints` (qn: number)
 takes in a question number, returns the amount of points for the question, or the default if it is not defined
