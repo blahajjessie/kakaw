@@ -1,4 +1,4 @@
-import QuestionPage from '@/components/QuestionPage';
+import PlayerQuestionPage from '@/components/PlayerQuestionPage';
 import PlayerWaiting from '@/components/WaitingPages/PlayerWaiting';
 import { apiCall } from '@/lib/api';
 import useKakawGame, { Stage } from '@/lib/useKakawGame';
@@ -50,12 +50,13 @@ const PlayerGameRouter: NextPage<{}> = () => {
 			return <PlayerWaiting />;
 		case Stage.Question:
 			return (
-				<QuestionPage
-					scope="player"
-					question={game.currentQuestion}
-					index={game.questionIndex}
-					onAnswer={sendAnswer}
-				/>
+				// TODO: pass props in here
+				// <PlayerQuestionPage
+				// 	question={game.currentQuestion}
+				// 	index={game.questionIndex}
+				// 	onAnswer={sendAnswer}
+				// />
+				<></>
 			);
 	}
 	throw new Error('unreachable');

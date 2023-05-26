@@ -5,6 +5,15 @@ import XMarkImage from 'public/remove1.png';
 import CheckMarkImage from 'public/checkmark1.png';
 import styles from '@/styles/flip.module.css';
 
+const colors = [
+	'bg-red-400',
+	'bg-green-400',
+	'bg-blue-400',
+	'bg-yellow-400',
+	'bg-purple-400',
+	'bg-pink-400',
+];
+
 type StyledAnswersProps = QuestionAnswersProps & {
 	containerClass: string;
 };
@@ -46,7 +55,7 @@ function StyledAnswers({
 
 	const getAnswerText = (index: number) => {
 		// Check if the clicked answer matches the selectedAnswer state and return the appropriate text
-		if (selectedAnswer === index) {
+		if (selectedAnswer === index && explanations) {
 			return explanations[index];
 		} else {
 			return answers[index];
@@ -71,15 +80,7 @@ function StyledAnswers({
 			{answers.map((answer, index) => (
 				<div
 					key={index}
-					className={`relative ${
-						index === 0
-							? 'bg-red-400'
-							: index === 1
-							? 'bg-green-400'
-							: index === 2
-							? 'bg-blue-400'
-							: 'bg-yellow-400'
-					} grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
+					className={`relative ${colors[index]} grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
 					onClick={() => handleAnswerClick(index)}
 					onMouseEnter={() => handleMouseEnter(index)}
 					onMouseLeave={() => handleMouseLeave(index)}
@@ -131,10 +132,10 @@ function StyledAnswers({
 }
 
 interface QuestionAnswersProps {
-	answers: [string, string, string, string];
-	explanations: [string, string, string, string];
-	onAnswerClick?: (answerIndex: number) => void;
-	selectedAnswerIndex?: number | null;
+	answers: string[];
+	explanations?: string[];
+	onAnswerClick?: (answerIndex: number) => void | Promise<void>;
+	selectedAnswerIndex?: number;
 }
 
 export default function QuestionAnswers(props: QuestionAnswersProps) {

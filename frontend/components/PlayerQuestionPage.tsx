@@ -10,11 +10,13 @@ import NoLuck from 'public/noluck.png';
 export default function PlayerQuestionPage() {
 	// State variables
 	const [showModal, setShowModal] = useState(false); // Modal visibility state
-	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null); // Selected answer state
+	const [selectedAnswer, setSelectedAnswer] = useState<number | undefined>(
+		undefined
+	); // Selected answer state
 	const [selectedImage, setSelectedImage] = useState(GoodJob); // Default image is GoodJob
-	const [firstClickedAnswer, setFirstClickedAnswer] = useState<number | null>(
-		null
-	); // First clicked answer state
+	const [firstClickedAnswer, setFirstClickedAnswer] = useState<
+		number | undefined
+	>(undefined); // First clicked answer state
 
 	// Toggle modal visibility
 	const toggleModal = () => {

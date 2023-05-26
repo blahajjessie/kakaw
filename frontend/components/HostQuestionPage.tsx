@@ -7,8 +7,7 @@ import HostQuestionBottom from './QuestionPages/HostQuestionBottom';
 export interface QuestionPageProps {
 	question: Question;
 	index: number;
-	scope: 'host' | 'player';
-	onAnswer?: (answer: number) => void | Promise<void>;
+	onAnswerClick?: (answer: number) => void | Promise<void>;
 }
 
 export default function QuestionPage(props: QuestionPageProps) {
@@ -21,14 +20,9 @@ export default function QuestionPage(props: QuestionPageProps) {
 			></QuestionTop>
 			<QuestionAnswers
 				answers={props.question.answerTexts}
-				onAnswer={props.onAnswer ?? ((answer) => undefined)}
+				onAnswerClick={props.onAnswerClick}
 			></QuestionAnswers>
-			{props.scope == 'host' ? (
-				<HostQuestionBottom numAnswered={5} numPlayers={5} />
-			) : (
-				// TODO this is hardcoded, get from startQuestion message
-				<PlayerQuestionBottom name="your name" score={5000} />
-			)}
+			<HostQuestionBottom numAnswered={5} numPlayers={5} />
 		</main>
 	);
 }

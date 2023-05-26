@@ -4,7 +4,7 @@ import { NextPage } from 'next';
 import HostWaiting from '@/components/WaitingPages/HostWaiting';
 import { useRouter } from 'next/router';
 import useKakawGame, { Stage } from '@/lib/useKakawGame';
-import QuestionPage from '@/components/QuestionPage';
+import HostQuestionPage from '@/components/HostQuestionPage';
 
 const HostGameRouter: NextPage<{}> = () => {
 	const router = useRouter();
@@ -20,8 +20,7 @@ const HostGameRouter: NextPage<{}> = () => {
 			return <HostWaiting gameId={gameId} />;
 		case Stage.Question:
 			return (
-				<QuestionPage
-					scope="host"
+				<HostQuestionPage
 					question={game.currentQuestion}
 					index={game.questionIndex}
 				/>
