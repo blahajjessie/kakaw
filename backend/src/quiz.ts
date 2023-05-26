@@ -216,14 +216,6 @@ export class Quiz {
 	getPoints(qn: number): number {
 		return this.questions[qn].points || this.meta.pointDefault;
 	}
-	getQuestionMessage(qn: number): BeginResp {
-		const q = this.getQuestionData(qn);
-		return {
-			question: q.questionText,
-			answers: q.answerTexts,
-			time: this.getQuestionTime(qn),
-			index: qn,
-		};
-	}
+
 	// flamin hot mess
 }

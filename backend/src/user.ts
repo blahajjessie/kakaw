@@ -2,8 +2,8 @@ import { WebSocket } from 'ws';
 import { gen } from './code';
 
 import { sendMessage } from './connection';
-import { QuizQuestion } from './quiz';
-import { EndData, EndResp, LeaderBoard, socketData } from './respTypes';
+import { Quiz, QuizQuestion } from './quiz';
+import { BeginResp, EndData, EndResp, LeaderBoard, socketData } from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -46,13 +46,24 @@ export class User {
 			correctAnswers: this.getCorrect(),
 		};
 	}
+	getStartData(qn: number, quiz: Quiz): BeginResp {
+		const question = quiz.getQuestionData(qn);
+		return {
+			questionText: question.questionText,
+			answerTexts: question.answerTexts,
+			time: quiz.getQuestionTime(qn),
+			index: qn,
+			username: this.name,
+			score: quiz.getPoints(qn)
+		};
+	}
 	getEndData(leaderBoard: LeaderBoard[], qn: number): EndData {
 		return new EndData({
 			correctAnswers: this.getCorrect(),
 			score: this.totalScore(),
 			scoreChange: this.scores[qn].score,
 			correct: this.scores[qn].correct,
-			time: this.scores[qn].time,
+			time: this.scores[qn].time * 1000,
 			leaderboard: leaderBoard,
 		});
 	}
