@@ -5,13 +5,22 @@ import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import TimerSetter from '@/components/EditorPages/TimerSetter';
 import QuestionEditor from '@/components/EditorPages/QuestionEditor';
 
-import { QuizQuestion } from '../../backend/src/quiz';
+import { Quiz, QuizMeta, QuizQuestion } from '../../backend/src/quiz';
 
 export default function EditorNewPage() {
 	const [page, setPage] = useState(0);
 	const [timerValue, setTimerValue] = useState(15);
 
+	const [quiz, setQuiz] = useState<Quiz | null>(null);
+	const [quizMeta, setQuizMeta] = useState<QuizMeta | null>(null);
 	const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+
+	const initialQuizMeta = {
+		title: '',
+		author: '',
+		pointDefault: 1000,
+		timeDefault: 15,
+	};
 
 	function addQuestion() {
 		setQuestions([
