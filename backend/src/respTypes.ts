@@ -79,10 +79,14 @@ export type BeginResp = {
 export type EndResp = {
 	correctAnswers: Array<number>;
 	score: number;
+	questionText: string; // question.questionText,
+	answerTexts: string[]; // question.answerTexts,
+	index: number; // game.activeQuestion,
 	scoreChange: number;
 	correct: boolean;
 	leaderboard: LeaderBoard[];
 	time: number;
+	username: string;
 };
 
 export type ActionResp = {

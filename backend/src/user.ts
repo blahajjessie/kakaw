@@ -57,7 +57,9 @@ export class User {
 			score: quiz.getPoints(qn)
 		};
 	}
-	getEndData(leaderBoard: LeaderBoard[], qn: number): EndData {
+	getEndData(leaderBoard: LeaderBoard[], qn: number, quiz: Quiz): EndData {
+		const question = quiz.getQuestionData(qn);
+
 		return new EndData({
 			correctAnswers: this.getCorrect(),
 			score: this.totalScore(),
@@ -65,6 +67,10 @@ export class User {
 			correct: this.scores[qn].correct,
 			time: this.scores[qn].time * 1000,
 			leaderboard: leaderBoard,
+			questionText: question.questionText,
+			answerTexts: question.answerTexts,
+			index: qn,
+			username: this.name
 		});
 	}
 	addWs(sock: WebSocket) {
