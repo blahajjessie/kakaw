@@ -7,26 +7,35 @@ import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 interface QuestionTopProps {
 	qNum: number;
 	qText: string;
-	qTime: number;
+	endTime: number;
 }
 
-export default function QuestionTop({ qNum, qText, qTime }: QuestionTopProps) {
-	const [minutes, setMinutes] = useState(Math.floor((qTime / 60) % 60));
-	const [seconds, setSeconds] = useState(Math.floor(qTime % 60));
+export default function QuestionTop({
+	qNum,
+	qText,
+	endTime,
+}: QuestionTopProps) {
+	const delta = (Date.now() - endTime) / 1000;
+	const [minutes, setMinutes] = useState(Math.floor((delta / 60) % 60));
+	const [seconds, setSeconds] = useState(Math.floor(delta % 60));
 
 	useEffect(() => {
-		const interval = setInterval(() => {
-			if (seconds === 0) {
-				if (minutes !== 0) {
-					setMinutes(minutes - 1);
-					setSeconds(59);
-				}
-			} else {
-				setSeconds(seconds - 1);
+		let interval: ReturnType<typeof setInterval> | undefined = undefined;
+		// wait for a fraction of a second
+		const timeout = setTimeout(() => {
+			interval = setInterval(() => {
+				const delta = (Date.now() - endTime) / 1000;
+				setMinutes(Math.floor((delta / 60) % 60));
+				setSeconds(Math.floor(delta % 60));
+			}, 1000);
+		}, delta % 1);
+		return () => {
+			clearTimeout(timeout);
+			if (interval !== undefined) {
+				clearInterval(interval);
 			}
-		}, 1000);
-		return () => clearInterval(interval);
-	}, [seconds, minutes]);
+		};
+	}, [endTime, delta]);
 
 	const mobileContent = (
 		<div className="w-11/12 h-2/5 flex flex-col items-center justify-center font-extrabold text-xl">

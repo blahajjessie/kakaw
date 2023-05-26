@@ -3,11 +3,23 @@ import Image from 'next/image';
 import QuestionTop from '@/components/QuestionPages/QuestionTop';
 import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import PlayerQuestionBottom from '@/components/QuestionPages/PlayerQuestionBottom';
+import { useRecoilValue } from 'recoil';
+import { useRouter } from 'next/router';
 
 import GoodJob from 'public/goodjob.png';
 import NoLuck from 'public/noluck.png';
+import { Question, usernameState, scoreState } from '@/lib/useKakawGame';
+import { useRequest } from '@/lib/api';
 
-export default function PlayerQuestionPage() {
+export interface PlayerQuestionPageProps {
+	question: Question;
+	index: number;
+}
+
+export default function PlayerQuestionPage({
+	question,
+	index,
+}: PlayerQuestionPageProps) {
 	// State variables
 	const [showModal, setShowModal] = useState(false); // Modal visibility state
 	const [selectedAnswer, setSelectedAnswer] = useState<number | undefined>(
@@ -17,6 +29,25 @@ export default function PlayerQuestionPage() {
 	const [firstClickedAnswer, setFirstClickedAnswer] = useState<
 		number | undefined
 	>(undefined); // First clicked answer state
+
+	const username = useRecoilValue(usernameState);
+	const score = useRecoilValue(scoreState);
+
+	const router = useRouter();
+	const { gameId, playerId } = router.query as {
+		gameId: string;
+		playerId: string;
+	};
+
+	// TODO TODO TODO send this request
+	const { state, response, error, trigger } = useRequest(
+		'POST',
+		`/games/${gameId}/questions/${index}/answers`,
+		{
+			userId: playerId,
+			answer: firstClickedAnswer,
+		}
+	);
 
 	// Toggle modal visibility
 	const toggleModal = () => {
@@ -40,6 +71,8 @@ export default function PlayerQuestionPage() {
 
 	// Function to determine the selected image path based on conditions
 	const determineSelectedImagePath = (answerIndex: number) => {
+		// TODO this has to get correct answer from server
+		throw 'unimplemented';
 		// Add your conditions here to choose between GoodJob and NoLuck images
 		// For example:
 		if (answerIndex === 0) {
@@ -53,33 +86,23 @@ export default function PlayerQuestionPage() {
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
 			{/* Render the question header */}
 			<QuestionTop
-				qNum={1}
-				qText={'What is your quest?'}
-				qTime={75}
+				qNum={index + 1}
+				qText={question.questionText}
+				endTime={question.endTime}
 			></QuestionTop>
 
 			{/* Render the question answers */}
 			<QuestionAnswers
-				answers={[
-					'To pass 115a',
-					'To make a real app',
-					'To have something to put on my GitHub',
-					'To seek the holy grail',
-				]}
+				answers={question.answerTexts}
 				selectedAnswerIndex={selectedAnswer}
-				onAnswerClick={handleAnswerClick}
-				explanations={[
-					'To successfully complete the course 115a',
-					'To develop a functional and professional application',
-					'To showcase my projects on the popular platform GitHub',
-					'To embark on a legendary and noble quest for the holy grail',
-				]}
+				onAnswerClick={trigger}
+				// TODO explanations?
 			></QuestionAnswers>
 
 			{/* Render the player question bottom */}
 			<PlayerQuestionBottom
-				name={'Student Name'}
-				score={5100}
+				name={username}
+				score={score}
 			></PlayerQuestionBottom>
 
 			{/* Render the modal when showModal is true */}

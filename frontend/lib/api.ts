@@ -72,6 +72,7 @@ export function useRequest(
 		response,
 		error,
 		trigger() {
+			if (state == RequestState.InProgress) return;
 			setState(RequestState.InProgress);
 			sendRequest();
 		},
