@@ -73,7 +73,7 @@ export type startResp = {
 	time: number; // game.timer.endTimestamp - Date.now(),
 	index: number; // game.activeQuestion,
 	score: number;
-	username:string;
+	username: string;
 };
 
 export type EndResp = {
@@ -82,7 +82,7 @@ export type EndResp = {
 	correct: boolean;
 	leaderboard: LeaderBoard[];
 	responseTime: number;
-	
+
 	score: number;
 	questionText: string; // question.questionText,
 	answerTexts: string[]; // question.answerTexts,
@@ -91,8 +91,8 @@ export type EndResp = {
 };
 
 export type ActionResp = {
-	id: UserId,
-	username: string 
+	id: UserId;
+	username: string;
 };
 
 export type LeaderBoard = {

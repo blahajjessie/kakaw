@@ -81,9 +81,10 @@ export class Game {
 		const qt = this.quizData.getQuestionTime(qn);
 		pts = this.quizData.getPoints(this.activeQuestion);
 
-
 		this.getUsers().forEach((p: User) => {
-			const message = new BeginData(p.getStartData(this.activeQuestion, this.quizData));
+			const message = new BeginData(
+				p.getStartData(this.activeQuestion, this.quizData)
+			);
 			p.send(message);
 			p.initScore(this.activeQuestion, pts, qt);
 		});
