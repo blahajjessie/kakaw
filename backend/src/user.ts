@@ -51,7 +51,7 @@ export class User {
 		return {
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
-			time: quiz.getQuestionTime(qn),
+			time: quiz.getQuestionTime(qn) * 1000,
 			index: qn,
 			username: this.name,
 			score: quiz.getPoints(qn)
@@ -65,7 +65,7 @@ export class User {
 			score: this.totalScore(),
 			scoreChange: this.scores[qn].score,
 			correct: this.scores[qn].correct,
-			responseTime: this.scores[qn].time * 1000,
+			responseTime: this.scores[qn].time,
 			leaderboard: leaderBoard,
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,

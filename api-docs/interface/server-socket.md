@@ -51,7 +51,7 @@ Fields:
 - `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbagae
 - `leaderboard`: sorted array of [{name: string, score: number }, …]
-- `responseTime` : number: the ammount of time the player took to answer the question
+- `responseTime` : number: the ammount of time the player took to answer the question (ms)
 
 
 ## `playerAction`
