@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { QuizQuestion } from '@/../backend/src/gameTypes';
+import { QuizQuestion } from '@/../backend/src/quiz';
 
 import editor_plus from '@/public/editor_plus.svg';
 import editor_minus from '@/public/editor_minus.svg';
@@ -26,8 +26,9 @@ export default function AnswerEditor({
 	const isCorrect = answerIndex in question.correctAnswers;
 
 	function editAnswerText(newAnswerText: string) {
-		const newAnswerTexts = question.answerTexts.map((answer, i) =>
-			i === answerIndex ? newAnswerText : answer
+		const newAnswerTexts = question.answerTexts.map(
+			(answer: string, i: number) =>
+				i === answerIndex ? newAnswerText : answer
 		);
 		onEdit({
 			...question,
@@ -50,7 +51,7 @@ export default function AnswerEditor({
 
 		if (isCorrect) {
 			newCorrectAnswers = question.correctAnswers.filter(
-				(indexValue) => indexValue !== answerIndex
+				(indexValue: number) => indexValue !== answerIndex
 			);
 		} else {
 			newCorrectAnswers = [...question.correctAnswers, answerIndex];
