@@ -1,4 +1,4 @@
-import { BeginData, BeginResp } from './respTypes';
+import { BeginData, startResp } from './respTypes';
 
 export interface QuizQuestion {
 	questionText: string;

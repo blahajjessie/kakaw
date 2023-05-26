@@ -36,6 +36,7 @@ Fields:
 - `questionText`: The text for the question
 - `answerTexts`: The answer texts (same as in JSON)
 - `time` (number): The number of *miliseconds* that are left in the question (where 0 is the end of the question)
+- `index` (number): the number of the question being started.
 - `score` (number): player’s current score, the host will recieve garbage
 - `username`: the name of the player. 
 
@@ -50,7 +51,7 @@ Fields:
 - `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbagae
 - `leaderboard`: sorted array of [{name: string, score: number }, …]
-- `time` : number: the ammount of time the player took to answer the question
+- `responseTime` : number: the ammount of time the player took to answer the question
 
 
 ## `playerAction`
@@ -61,6 +62,7 @@ It will contain a player id and username that has completed the most recent acti
 This may be sent many times rapidly on the case of a host just conneccting. 
 
 Fields: 
-- `player`: {`id`, `username`}
+- `id` (userId): the player's user ID
+- `username` (string): the name of the player
 
 

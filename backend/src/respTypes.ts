@@ -8,7 +8,7 @@ export abstract class socketData {
 
 export type responseData =
 	| string
-	| BeginResp
+	| startResp
 	| EndResp
 	| ActionResp
 	| LeaderBoard[];
@@ -31,8 +31,8 @@ export class EndData implements socketData {
 
 export class BeginData implements socketData {
 	name = 'startQuestion';
-	data: BeginResp;
-	constructor(data: BeginResp) {
+	data: startResp;
+	constructor(data: startResp) {
 		this.data = data;
 	}
 }
@@ -67,7 +67,7 @@ export type newGameResp = {
 
 // Socket data fields:
 
-export type BeginResp = {
+export type startResp = {
 	questionText: string; // question.questionText,
 	answerTexts: string[]; // question.answerTexts,
 	time: number; // game.timer.endTimestamp - Date.now(),
@@ -78,14 +78,15 @@ export type BeginResp = {
 
 export type EndResp = {
 	correctAnswers: Array<number>;
+	scoreChange: number;
+	correct: boolean;
+	leaderboard: LeaderBoard[];
+	responseTime: number;
+	
 	score: number;
 	questionText: string; // question.questionText,
 	answerTexts: string[]; // question.answerTexts,
 	index: number; // game.activeQuestion,
-	scoreChange: number;
-	correct: boolean;
-	leaderboard: LeaderBoard[];
-	time: number;
 	username: string;
 };
 

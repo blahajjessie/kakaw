@@ -1,7 +1,7 @@
 import { Quiz, QuizQuestion } from './quiz';
 import {
 	BeginData,
-	BeginResp,
+	startResp,
 	EndResp,
 	LeaderBoard,
 	LeaderboardData,
@@ -72,7 +72,7 @@ export class Game {
 	// Input: Game Object
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
-		let question: BeginResp;
+		let question: startResp;
 		let pts: number;
 
 		this.activeQuestion++;

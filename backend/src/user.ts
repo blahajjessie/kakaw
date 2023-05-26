@@ -3,7 +3,7 @@ import { gen } from './code';
 
 import { sendMessage } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
-import { BeginResp, EndData, EndResp, LeaderBoard, socketData } from './respTypes';
+import { startResp, EndData, EndResp, LeaderBoard, socketData } from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -46,7 +46,7 @@ export class User {
 			correctAnswers: this.getCorrect(),
 		};
 	}
-	getStartData(qn: number, quiz: Quiz): BeginResp {
+	getStartData(qn: number, quiz: Quiz): startResp {
 		const question = quiz.getQuestionData(qn);
 		return {
 			questionText: question.questionText,
@@ -65,7 +65,7 @@ export class User {
 			score: this.totalScore(),
 			scoreChange: this.scores[qn].score,
 			correct: this.scores[qn].correct,
-			time: this.scores[qn].time * 1000,
+			responseTime: this.scores[qn].time * 1000,
 			leaderboard: leaderBoard,
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
