@@ -58,8 +58,8 @@ export class Game {
 	endQuestion() {
 		if (this.timer) {
 			clearTimeout(this.timer);
-			this.timer = undefined
-		};
+			this.timer = undefined;
+		}
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
@@ -68,7 +68,7 @@ export class Game {
 		});
 		this.host.send(this.host.getEndData(board, this.activeQuestion, qd));
 		this.quizOpen = false;
-		
+
 		return;
 	}
 	getQuestionData() {
@@ -93,10 +93,9 @@ export class Game {
 				p.getStartData(this.activeQuestion, this.quizData)
 			);
 			p.send(message);
-
 		});
 		this.quizOpen = true;
-		this.timer = setTimeout(()=>this.endQuestion(), qt * 1000);
+		this.timer = setTimeout(() => this.endQuestion(), qt * 1000);
 		this.startTime = Date.now();
 
 		return;
