@@ -201,7 +201,7 @@ export class Quiz {
 	getName() {
 		return this.meta.title;
 	}
-	
+
 	getQuestionData(qn: number): QuizQuestion {
 		return this.questions[qn];
 	}

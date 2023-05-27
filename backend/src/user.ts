@@ -80,7 +80,7 @@ export class User {
 			answerTexts: question.answerTexts,
 			index: qn,
 			username: this.name,
-			yourAnswer: this.answers[qn].answer
+			yourAnswer: this.answers[qn].answer,
 		});
 	}
 	addWs(sock: WebSocket) {
