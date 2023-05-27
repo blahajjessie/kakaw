@@ -73,6 +73,12 @@ TODO: send from backend
 Sends usernames and IDs when a player completes an action. 
 
 Fields: 
-- `players`: `Map<playerId, username>`
-    - Where playerId is the id of the player who completed the action
-    - and username is the username of the player who completed the action
+- `players`: an object with keys of playerId's and values of usernames.
+
+Example:
+```
+players:{
+    "42069420" : "Alissa",
+    "69420420" : "ray"
+}
+```
