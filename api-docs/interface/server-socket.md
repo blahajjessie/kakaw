@@ -67,12 +67,11 @@ Fields:
 
 ## `playerAction`
 
-future: 
+TODO: send from backend
 
-This may be sent many times rapidly on the case of a host just connecting. 
+Sends usernames and IDs when a player completes an action. 
 
 Fields: 
-- `id` (userId): the player's user ID
-- `username` (string): the name of the player
-
-
+- `players`: `Map<playerId, username>`
+    - Where playerId is the id of the player who completed the action
+    - and username is the username of the player who completed the action
