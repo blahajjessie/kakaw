@@ -54,7 +54,7 @@ export class User {
 			time: quiz.getQuestionTime(qn) * 1000,
 			index: qn,
 			username: this.name,
-			score: quiz.getPoints(qn),
+			score: this.totalScore(),
 		};
 	}
 	getEndData(leaderBoard: LeaderBoard[], qn: number, question: QuizQuestion): EndData {
@@ -70,7 +70,7 @@ export class User {
 			answerTexts: question.answerTexts,
 			index: qn,
 			username: this.name,
-			time: this.scores[qn].time
+		
 		});
 	}
 	addWs(sock: WebSocket) {

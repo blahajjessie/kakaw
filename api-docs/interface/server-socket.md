@@ -35,9 +35,9 @@ Sent by server whenever a new question is available
 Fields: 
 - `questionText`: The text for the question
 - `answerTexts`: The answer texts (same as in JSON)
-- `time` (number): The number of *miliseconds* that are left in the question (where 0 is the end of the question)
+- `time` (number): The number of *milliseconds* that are left in the question (where 0 is the end of the question)
 - `index` (number): the number of the question being started.
-- `score` (number): player’s current score, the host will recieve garbage
+- `score` (number): player’s current score, the host will receive garbage
 - `username`: the name of the player. 
 
 ## `endQuestion`
@@ -47,11 +47,11 @@ The same message is sent to the host too except with only the correctAnswers fie
 
 Fields: 
 - `correctAnswers` (numeric array) : 
-- `score` (number) = the player’s current score, the host will recieve garbage
-- `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
-- `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbagae
+- `score` (number) = the player’s current score, the host will receive garbage
+- `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
+- `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
 - `leaderboard`: sorted array of [{name: string, score: number }, …]
-- `responseTime` : number: the ammount of time the player took to answer the question (ms)
+- `responseTime` : number: the amount of time the player took to answer the question (ms)
 
 
 ## `playerAction`
@@ -59,7 +59,7 @@ Fields:
 Every time a player completes an action (join, answer) the host is sent this message
 It will contain a player id and username that has completed the most recent action.
 
-This may be sent many times rapidly on the case of a host just conneccting. 
+This may be sent many times rapidly on the case of a host just connecting. 
 
 Fields: 
 - `id` (userId): the player's user ID

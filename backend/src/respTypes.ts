@@ -87,7 +87,6 @@ export type EndResp = {
 	answerTexts: string[]; // question.answerTexts,
 	index: number; // game.activeQuestion,
 	username: string;
-	time: number;
 	explanations:string[]
 };
 
