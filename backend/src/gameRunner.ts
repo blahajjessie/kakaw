@@ -125,6 +125,44 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
+	app.get('/games/:id/results', (req, res) => {
+		const gameId = req.params.id;
+		const game = getGame(gameId)!;
+
+		// host end results
+		game.sendResults();
+		res.status(200).send({ ok: true });
+		return;
+	});
+
+	app.get('/games/:id/export-quiz', (req, res) => {
+		const gameId = req.params.id;
+		const game = getGame(gameId);
+		res.status(200).json(game.quizData);
+		return;
+	});
+
+	app.post('/games/:gameId/players', (req, res) => {
+		const body = req.body;
+		if (typeof body.username != 'string') {
+			res.status(400).send();
+			return;
+		}
+		const game = getGame(req.params.gameId);
+
+		const username: string = body.username;
+		let uid: UserId;
+		try {
+			uid = game.addPlayer(username);
+		} catch {
+			res.status(409).send('add user fail!');
+			return;
+		}
+		// Generate Code and Set User Entry
+		res.status(201).json({ ok: true, id: uid });
+		return;
+	});
+
 	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		// TODO change this to match whatever method we use to authenticate users
@@ -150,7 +188,6 @@ export default function registerGameRoutes(app: Express) {
 				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
 			return;
 		}
-
 		// validate time
 		const ansTime: number = Date.now() - game.startTime;
 
@@ -163,45 +200,6 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		res.status(200).send({ ok: true });
-		return;
-	});
-
-	app.post('/games/:gameId/players', (req, res) => {
-		const body = req.body;
-		if (typeof body.username != 'string') {
-			res.status(400).send();
-			return;
-		}
-		const game = getGame(req.params.gameId);
-
-		const username: string = body.username;
-		let uid: UserId;
-		try {
-			uid = game.addPlayer(username);
-		} catch {
-			res.status(409).send('add user fail!');
-			return;
-		}
-		// Generate Code and Set User Entry
-		res.status(201).json({ ok: true, id: uid });
-		return;
-	});
-
-	app.get('/games/:id/results', (req, res) => {
-		const gameId = req.params.id;
-		const game = getGame(gameId)!;
-
-		// host end results
-		game.sendResults();
-		res.status(200).send({ ok: true });
-		return;
-	});
-
-	app.get('/games/:id/export-quiz', (req, res) => {
-		const gameId = req.params.id;
-		const game = getGame(gameId);
-
-		res.status(200).json(game.quizData);
 		return;
 	});
 }
