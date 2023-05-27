@@ -95,7 +95,7 @@ export class Game {
 			p.initScore(this.activeQuestion, pts, qt);
 		});
 		this.quizOpen = true;
-		this.timer = setTimeout(this.endQuestion, qt * 1000);
+		this.timer = setTimeout(()=>this.endQuestion, qt * 1000);
 		this.startTime = Date.now();
 
 		return;
