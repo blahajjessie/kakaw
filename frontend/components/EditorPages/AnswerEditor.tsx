@@ -23,7 +23,6 @@ export default function AnswerEditor({
 
 	const answerText = question.answerTexts[answerIndex];
 	// const answerExplanation = question.answerExplanations[answerIndex];
-	const isCorrect = answerIndex in question.correctAnswers;
 
 	function editAnswerText(newAnswerText: string) {
 		const newAnswerTexts = question.answerTexts.map(
@@ -49,7 +48,7 @@ export default function AnswerEditor({
 	function toggleIsCorrect() {
 		let newCorrectAnswers;
 
-		if (isCorrect) {
+		if (question.correctAnswers.includes(answerIndex)) {
 			newCorrectAnswers = question.correctAnswers.filter(
 				(indexValue: number) => indexValue !== answerIndex
 			);
@@ -71,8 +70,8 @@ export default function AnswerEditor({
 					color
 				}
 			>
-				<div className="flex flex-row items-center">
-					<div
+				<div className="w-3/4 flex flex-row items-center">
+					{/* <div
 						className="relative w-4 h-4 mr-4 cursor-pointer 2xl:w-5 2xl:h-5"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
@@ -82,12 +81,13 @@ export default function AnswerEditor({
 						{!isExpanded && (
 							<Image alt="editor expand" src={editor_plus} fill />
 						)}
-					</div>
+					</div> */}
 
 					<input
-						className="bg-transparent border border-white px-1 placeholder:text-black placeholder:opacity-50"
+						className="grow bg-transparent border border-white px-1 placeholder:text-black placeholder:opacity-50"
 						type="text"
 						placeholder="Answer"
+						maxLength={100}
 						value={answerText}
 						onChange={(e) => editAnswerText(e.target.value)}
 					/>
@@ -98,7 +98,7 @@ export default function AnswerEditor({
 					<input
 						className="cursor-pointer"
 						type="checkbox"
-						checked={isCorrect}
+						checked={question.correctAnswers.includes(answerIndex)}
 						onChange={() => toggleIsCorrect()}
 					/>
 				</div>

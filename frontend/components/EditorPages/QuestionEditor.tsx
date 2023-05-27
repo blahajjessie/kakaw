@@ -75,6 +75,7 @@ export default function QuestionEditor({
 							className="w-full p-2 border border-black text-black"
 							name="questionText"
 							placeholder="Add your question body here"
+							maxLength={100}
 							value={question.questionText}
 							onChange={(e) => editQuestion({ questionText: e.target.value })}
 						/>
