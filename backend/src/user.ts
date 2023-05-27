@@ -2,8 +2,14 @@ import { WebSocket } from 'ws';
 import { gen } from './code';
 
 import { sendMessage } from './connection';
-import { QuizQuestion } from './quiz';
-import { EndData, EndResp, LeaderBoard, socketData } from './respTypes';
+import { Quiz, QuizQuestion } from './quiz';
+import {
+	EndData,
+	EndResp,
+	LeaderBoard,
+	socketData,
+	startResp,
+} from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -12,32 +18,32 @@ export type UserId = string;
 export class User {
 	name: string;
 	id: UserId;
-	scores: Array<AnswerObj> = new Array<AnswerObj>();
+	answers: Array<AnswerObj> = new Array<AnswerObj>();
 	connection: WebSocket | undefined = undefined;
 	constructor(used: UserId[], name: string) {
 		this.id = gen(8, used);
 		this.name = name;
 	}
 	totalScore(): number {
-		let scores = this.scores.map((s: AnswerObj) => s.score);
+		let scores = this.answers.map((s: AnswerObj) => s.score);
 		return scores.reduce((a, b) => a + b);
 	}
 	getCorrect(): number[] {
-		return this.scores.reduce((indices, ans, i) => {
+		return this.answers.reduce((indices, ans, i) => {
 			if (ans.correct) indices.push(i);
 			return indices;
 		}, new Array<number>());
 	}
 	answer(qn: number, time: number, choice: number) {
-		this.scores[qn].time = time;
-		this.scores[qn].answer = choice;
+		this.answers[qn].time = time;
+		this.answers[qn].answer = choice;
 	}
 	scorePlayer(qn: number, data: QuizQuestion) {
 		const correct = data.correctAnswers;
-		this.scores[qn].scoreQuestion(correct);
+		this.answers[qn].scoreQuestion(correct);
 	}
 	initScore(qn: number, qPoints: number, qTime: number) {
-		this.scores[qn] = new AnswerObj(qPoints, qTime, 0, 0);
+		this.answers[qn] = new AnswerObj(qPoints, qTime, 0, 0);
 	}
 	getLeaderboardComponent(): LeaderBoard {
 		return {
@@ -46,14 +52,35 @@ export class User {
 			correctAnswers: this.getCorrect(),
 		};
 	}
-	getEndData(leaderBoard: LeaderBoard[], qn: number): EndData {
-		return new EndData({
-			correctAnswers: this.getCorrect(),
+	getStartData(qn: number, quiz: Quiz): startResp {
+		const question = quiz.getQuestionData(qn);
+		return {
+			questionText: question.questionText,
+			answerTexts: question.answerTexts,
+			time: quiz.getQuestionTime(qn) * 1000,
+			index: qn,
+			username: this.name,
 			score: this.totalScore(),
-			scoreChange: this.scores[qn].score,
-			correct: this.scores[qn].correct,
-			time: this.scores[qn].time,
+		};
+	}
+	getEndData(
+		leaderBoard: LeaderBoard[],
+		qn: number,
+		question: QuizQuestion
+	): EndData {
+		return new EndData({
+			correctAnswers: question.correctAnswers,
+			explanations: [],
+			score: this.totalScore(),
+			scoreChange: this.answers[qn].score,
+			correct: this.answers[qn].correct,
+			responseTime: this.answers[qn].time,
 			leaderboard: leaderBoard,
+			questionText: question.questionText,
+			answerTexts: question.answerTexts,
+			index: qn,
+			username: this.name,
+			yourAnswer: this.answers[qn].answer,
 		});
 	}
 	addWs(sock: WebSocket) {

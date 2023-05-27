@@ -133,7 +133,7 @@ export default function registerGameRoutes(app: Express) {
 		const game = getGame(gameId)!;
 
 		// check if question is open
-		if (game.activeQuestion != index && game.quizOpen) {
+		if (game.activeQuestion != index || !game.quizOpen) {
 			res
 				.status(400)
 				.send({ ok: false, err: `Question ${index} is not open for answers` });

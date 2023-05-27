@@ -1,4 +1,4 @@
-import { BeginData, BeginResp } from './respTypes';
+import { BeginData, startResp } from './respTypes';
 
 export interface QuizQuestion {
 	questionText: string;
@@ -198,14 +198,15 @@ export class Quiz {
 		this.questions = body.questions;
 	}
 
+	getName() {
+		return this.meta.title;
+	}
+
 	getQuestionData(qn: number): QuizQuestion {
 		return this.questions[qn];
 	}
 	getAnswers(qn: number) {
 		return this.questions[qn].correctAnswers;
-	}
-	getName() {
-		return this.meta.title;
 	}
 	getAnswerChoices(qn: number) {
 		return this.questions[qn].answerTexts;
@@ -216,14 +217,6 @@ export class Quiz {
 	getPoints(qn: number): number {
 		return this.questions[qn].points || this.meta.pointDefault;
 	}
-	getQuestionMessage(qn: number): BeginResp {
-		const q = this.getQuestionData(qn);
-		return {
-			question: q.questionText,
-			answers: q.answerTexts,
-			time: this.getQuestionTime(qn),
-			index: qn,
-		};
-	}
+
 	// flamin hot mess
 }
