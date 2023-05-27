@@ -82,12 +82,13 @@ export type EndResp = {
 	correct: boolean;
 	leaderboard: LeaderBoard[];
 	responseTime: number;
-
 	score: number;
 	questionText: string; // question.questionText,
 	answerTexts: string[]; // question.answerTexts,
 	index: number; // game.activeQuestion,
 	username: string;
+	time: number;
+	explanations:string[]
 };
 
 export type ActionResp = {
