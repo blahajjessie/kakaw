@@ -217,6 +217,4 @@ export class Quiz {
 	getPoints(qn: number): number {
 		return this.questions[qn].points || this.meta.pointDefault;
 	}
-
-	// flamin hot mess
 }
