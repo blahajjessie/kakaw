@@ -50,8 +50,14 @@ Fields:
 - `score` (number) = the player’s current score, the host will receive garbage
 - `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
-- `leaderboard`: sorted array of [{name: string, score: number }, …]
-- `responseTime` : number: the amount of time the player took to answer the question (ms)
+- `leaderboard`: sorted array of [{name: string, score: number }, …] to represent the player score
+- `responseTime` (number) : the amount of time the player took to answer the question (ms)
+- `questionText` (string) : The question
+- `answerTexts` (string[]) : string[] of the answer choices
+- `index` (number) : the number of the question that just ended
+- `username` (string) : the name of the player
+- `explanation` (string[]) : The explanations for right ans wrong answers. TODO (Currently sends an empty array)
+
 
 
 ## `playerAction`
