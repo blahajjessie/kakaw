@@ -2,7 +2,7 @@
 
 ### Join game
 `POST /games/:gameId/players`: join a game
-body: `{name: string}`
+body: `{username: string}`
 
 response: {ok: boolean, id?: string, err?: string}
 where id is the userId of the player (just generated)
