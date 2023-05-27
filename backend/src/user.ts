@@ -70,7 +70,7 @@ export class User {
 	): EndData {
 		return new EndData({
 			correctAnswers: question.correctAnswers,
-			explanations: [],
+			explanations: null,
 			score: this.totalScore(),
 			scoreChange: this.answers[qn].score,
 			correct: this.answers[qn].correct,
