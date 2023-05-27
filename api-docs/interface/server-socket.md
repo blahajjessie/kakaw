@@ -10,6 +10,10 @@ Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}`
 
 - When a client connects to the server and the game has already started, the server immediately sends a question or endQuestion (or lobby if client is the host) message to catch them up to the current state of the game. Before then, the client just displays “Waiting for the host to start the game” or something. This way the same logic handles both “client joined and is waiting for game to start” and “client joined late and is waiting for the server to respond to them.”
 
+- Leaderboard
+    - `name` (string) : the player's username 
+    - `score` (number) : the score of the player
+
 # Types
 
 These are all defined in `respTypes.ts` with 
@@ -40,10 +44,11 @@ Fields:
 - `score` (number): player’s current score, the host will receive garbage
 - `username`: the name of the player. 
 
+
 ## `endQuestion`
 
 Sent by server when the timer on a question runs out or the host clicks “End now,” and moves clients to the screen to review results
-The same message is sent to the host too except with only the correctAnswers field (maybe a leaderboard later).
+The same message is sent to the host, but the information about the answer choice may be inacurate. 
 
 Fields: 
 - `correctAnswers` (numeric array) : 
@@ -62,8 +67,7 @@ Fields:
 
 ## `playerAction`
 
-Every time a player completes an action (join, answer) the host is sent this message
-It will contain a player id and username that has completed the most recent action.
+future: 
 
 This may be sent many times rapidly on the case of a host just connecting. 
 

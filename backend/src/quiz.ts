@@ -198,14 +198,15 @@ export class Quiz {
 		this.questions = body.questions;
 	}
 
+	getName() {
+		return this.meta.title;
+	}
+	
 	getQuestionData(qn: number): QuizQuestion {
 		return this.questions[qn];
 	}
 	getAnswers(qn: number) {
 		return this.questions[qn].correctAnswers;
-	}
-	getName() {
-		return this.meta.title;
 	}
 	getAnswerChoices(qn: number) {
 		return this.questions[qn].answerTexts;
