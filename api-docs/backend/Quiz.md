@@ -24,5 +24,3 @@ returns the amount of time (in *seconds*) for the question, or the default if it
 ## `getPoints` (qn: number)
 takes in a question number, returns the amount of points for the question, or the quiz default if it is not defined
 
-
-
