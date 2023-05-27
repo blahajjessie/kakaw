@@ -5,7 +5,7 @@
 body: `{name: string}`
 
 response: {ok: boolean, id?: string, err?: string}
-where id is the userid of the player (just generated)
+where id is the userId of the player (just generated)
 future: 
 and err is an error representing what may have happened
 

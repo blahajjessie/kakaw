@@ -48,13 +48,15 @@ Description: Returns all player names with their respective score and all their 
 Server Event: Show it on the host’s screen
 where a leaderboard is 
 
+Response: `{ok: bool, err?: string, results: Leaderboard[]}`
+
 #### Leaderboard
 - `name` (string) : the player's username 
 - `score` (number) : the score of the player
 
 ### Get Export
 
-Response: `{ok: bool, err?: string, results: Leaderboard[]}`
+
 
 
 ## Kick player

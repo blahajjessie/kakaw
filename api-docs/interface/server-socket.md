@@ -48,7 +48,7 @@ Fields:
 ## `endQuestion`
 
 Sent by server when the timer on a question runs out or the host clicks “End now,” and moves clients to the screen to review results
-The same message is sent to the host, but the information about the answer choice may be inacurate. 
+The same message is sent to the host, but the information about the answer choice may be inaccurate. 
 
 Fields: 
 - `correctAnswers` (numeric array) : 
@@ -61,7 +61,8 @@ Fields:
 - `answerTexts` (string[]) : string[] of the answer choices
 - `index` (number) : the number of the question that just ended
 - `username` (string) : the name of the player
-- `explanation` (string[]) : The explanations for right ans wrong answers. TODO (Currently sends an empty array)
+- `explanations` (string[]) : The explanations for right ans wrong answers. TODO (Currently sends an empty array)
+- `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
 
 
 

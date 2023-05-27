@@ -89,6 +89,7 @@ export type EndResp = {
 	index: number; // game.activeQuestion,
 	username: string;
 	explanations: string[];
+	yourAnswer: number;
 };
 
 export type ActionResp = {
