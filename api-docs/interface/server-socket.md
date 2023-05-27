@@ -63,7 +63,7 @@ Fields:
 - `username` (string) : the name of the player
 - `explanations` (string[] | null) : The explanations for right and wrong answers. 
         Sends `null` if there are no explanations in the quiz, otherwise an array of strings
-        TODO (Currently sends an array of empty strings)
+        TODO (Currently sends only null)
 - `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
 
 
