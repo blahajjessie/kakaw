@@ -1,6 +1,6 @@
 export class AnswerObj {
-	totalPoints = 0;
-	totalTime = 0;
+	totalPoints:number;
+	totalTime:number;
 	time = -1;
 	answer = -1;
 	correct = false;
@@ -12,7 +12,7 @@ export class AnswerObj {
 		answer?: number
 	) {
 		this.totalPoints = totalPoints;
-		this.totalPoints = totalTime;
+		this.totalTime= totalTime;
 		if (time) this.time = time;
 		if (answer) this.answer = answer;
 	}
