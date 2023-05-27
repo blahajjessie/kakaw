@@ -7,7 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"test": "jest --runInBand --coverage",
+		"test": "jest --runInBand --coverage --silent",
+		"test-verbose": "jest --runInBand --coverage",
 		"format": "prettier -w --no-error-on-unmatched-pattern pages public styles components",
 		"check-format": "prettier -c --no-error-on-unmatched-pattern pages public styles components"
 	},
