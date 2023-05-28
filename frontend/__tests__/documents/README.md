@@ -15,6 +15,56 @@ All testing suites must be put in the corresponding folder in source.
 
 ## General Convention
 
+### Test Runner
+
+Tests that can be completed without multiple operation set-up, or at least
+little set-up, can use Jest's test function.
+
+Components should be rendered inside of 
+
+```ts
+test('Test Name', async () => {
+    render(
+		<Component />
+	);
+	await screen.findByText('Text');
+});
+```
+
+The necessary variables and types can be defined outside of the test calls.
+
+### Screen Searching
+
+To search a component, React-Testing-Library provides a series of callable functions on the screen object.
+
+These functions will only work properly when a component is currently rendered.
+
+#### Text
+
+Searching for static text is primarily important for ensuring a component has rendered, a component receives 
+context or parameters correctly, or to wait for a component to re-render upon enacting a change in state.
+
+```ts
+await screen.findByText('Text');
+```
+
+The findByText function, and all other React-Testing-Library findBy functions, is asynchronous, and should be called along 
+with await as shown above.  A failure will result in a timeout on that test.
+
+To operate on components, a getBy function can be utilized.
+
+```ts
+const component = screen.getByText('Button');
+```
+
+getBy functions are NOT asynchronous and will fail if the required component is not yet rendered.
+To ensure stability of a test, a component in the render should by wait on before using a getBy.
+
+```ts
+await screen.findByText('Text');
+const component = screen.getByText('Button');
+```
+
 ### Mocking REST APIs
 
 The isolation of frontend components requires testing to separate pages from connecting to the backend, but the API calls 
