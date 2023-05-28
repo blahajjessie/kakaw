@@ -15,7 +15,7 @@ export default function QuestionTop({
 	qText,
 	endTime,
 }: QuestionTopProps) {
-	const delta = (Date.now() - endTime) / 1000;
+	const delta = (endTime - Date.now()) / 1000;
 	const [minutes, setMinutes] = useState(Math.floor((delta / 60) % 60));
 	const [seconds, setSeconds] = useState(Math.floor(delta % 60));
 
@@ -24,7 +24,7 @@ export default function QuestionTop({
 		// wait for a fraction of a second
 		const timeout = setTimeout(() => {
 			interval = setInterval(() => {
-				const delta = (Date.now() - endTime) / 1000;
+				const delta = (endTime - Date.now()) / 1000;
 				setMinutes(Math.floor((delta / 60) % 60));
 				setSeconds(Math.floor(delta % 60));
 			}, 1000);
