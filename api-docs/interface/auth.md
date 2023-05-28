@@ -4,7 +4,7 @@
 
 The player create and game create endpoints now return an additional `token` field, of type `string`. Every client stores this token somehow (probably local storage or session storage). Clients do not care what the value is, they just pass it to the server. For any endpoint that requires authentication (really just any endpoint), clients include the header `Authorization: Bearer <token>`. Servers reply with HTTP 401 if the token is missing and 403 if it is incorrect.
 
-When the client opens its WebSocket connection, it includes the token as a querystring parameter `token`, such as: `/connect?gameId=12345&playerId=00000000&token=xyz`. This has to be used since you can't specify headers when opening a websocket.
+When the client opens its WebSocket connection, it includes the token as a querystring parameter `token`, such as: `/connect?gameId=12345&playerId=00000000&token=xyz`. This has to be used since you can't specify headers when opening a websocket. If the authentication is missing or incorrect, the server should immediately close the connection with an appropriate error.
 
 ## Server-side: generating a token
 
