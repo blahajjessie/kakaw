@@ -1,7 +1,7 @@
 # Websockets
 
 ## Server.ts
-Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}`
+Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}&token={authentication token}`
 - Calls handleConnection()
 
 ### Data Structs:
