@@ -6,7 +6,7 @@ const app = express();
 app.use(express.json());
 
 import registerGameRoutes from './gameRunner';
-import { getGame } from './game';
+import { getGame, gameExist } from './game';
 import { Game } from './game';
 registerGameRoutes(app);
 
@@ -42,11 +42,27 @@ httpServer.on('upgrade', (request, socket, head) => {
 	}
 	const gameId = url.searchParams.get('gameId')!;
 	const playerId = url.searchParams.get('playerId')!;
-	const game = getGame(gameId);
-	webSocketServer.handleUpgrade(request, socket, head, (client, request) => {
-		webSocketServer.emit('connection', client, request);
-		handleConnection(client, game, playerId);
-	});
+	if (!gameExist(gameId)) {
+		console.log(
+			'Invalid game while trying to upgrade ws. PlayerId: ' +
+				playerId +
+				' GameId:' +
+				gameId
+		);
+		socket.destroy();
+		return;
+	}
+	try {
+		const game = getGame(gameId);
+		webSocketServer.handleUpgrade(request, socket, head, (client, request) => {
+			webSocketServer.emit('connection', client, request);
+			handleConnection(client, game, playerId);
+		});
+	} catch (e) {
+		console.log(e);
+		socket.destroy();
+		return;
+	}
 });
 
 export default httpServer;

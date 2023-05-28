@@ -10,6 +10,10 @@ Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}&toke
 
 - When a client connects to the server and the game has already started, the server immediately sends a question or endQuestion (or lobby if client is the host) message to catch them up to the current state of the game. Before then, the client just displays “Waiting for the host to start the game” or something. This way the same logic handles both “client joined and is waiting for game to start” and “client joined late and is waiting for the server to respond to them.”
 
+- Leaderboard
+    - `name` (string) : the player's username 
+    - `score` (number) : the score of the player
+
 # Types
 
 These are all defined in `respTypes.ts` with 
@@ -35,32 +39,47 @@ Sent by server whenever a new question is available
 Fields: 
 - `questionText`: The text for the question
 - `answerTexts`: The answer texts (same as in JSON)
-- `time` (number): The number of *miliseconds* that are left in the question (where 0 is the end of the question)
-- `score` (number): player’s current score, the host will recieve garbage
+- `time` (number): The number of *milliseconds* that are left in the question (where 0 is the end of the question)
+- `index` (number): the number of the question being started.
+- `score` (number): player’s current score, the host will receive garbage
 - `username`: the name of the player. 
+
 
 ## `endQuestion`
 
 Sent by server when the timer on a question runs out or the host clicks “End now,” and moves clients to the screen to review results
-The same message is sent to the host too except with only the correctAnswers field (maybe a leaderboard later).
+The same message is sent to the host, but the information about the answer choice may be inaccurate. 
 
 Fields: 
 - `correctAnswers` (numeric array) : 
-- `score` (number) = the player’s current score, the host will recieve garbage
-- `scoreChange` (number) = how much their score increased due to this question, The host will recieve garbage
-- `correct` (boolean) : if the player's answer to the question is correct. The host will recieve garbagae
-- `leaderboard`: sorted array of [{name: string, score: number }, …]
-- `time` : number: the ammount of time the player took to answer the question
+- `score` (number) = the player’s current score, the host will receive garbage
+- `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
+- `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
+- `leaderboard`: sorted array of [{name: string, score: number }, …] to represent the player score
+- `responseTime` (number) : the amount of time the player took to answer the question (ms)
+- `questionText` (string) : The question
+- `answerTexts` (string[]) : string[] of the answer choices
+- `index` (number) : the number of the question that just ended
+- `username` (string) : the name of the player
+- `explanations` (string[] | null) : The explanations for right and wrong answers. 
+        Sends `null` if there are no explanations in the quiz, otherwise an array of strings
+- `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
+
 
 
 ## `playerAction`
 
-Every time a player completes an action (join, answer) the host is sent this message
-It will contain a player id and username that has completed the most recent action.
+TODO: send from backend
 
-This may be sent many times rapidly on the case of a host just conneccting. 
+Sends usernames and IDs when a player completes an action. 
 
 Fields: 
-- `player`: {`id`, `username`}
+- `players`: an object with keys of playerId's and values of usernames.
 
-
+Example:
+```
+players:{
+    "42069420" : "Alissa",
+    "69420420" : "ray"
+}
+```
