@@ -5,22 +5,18 @@ import { useRouter } from 'next/router';
 
 import logo from 'public/logo.png';
 import { apiCall } from '@/lib/api';
+import { GetServerSideProps } from 'next';
 
-export default function Home() {
+export interface HomeProps {
+	code: string | null;
+}
+
+export default function Home({ code }: HomeProps) {
 	const router = useRouter();
 	const [username, setUsername] = useState('');
 	const [joining, setJoining] = useState(false);
 	const [error, setError] = useState('');
-	const [gameId, setGameId] = useState('');
-
-	useEffect(() => {
-		if (!router.isReady) return;
-		setGameId(
-			Array.isArray(router.query.code)
-				? router.query.code[0]
-				: router.query.code ?? ''
-		);
-	}, [router.isReady]);
+	const [gameId, setGameId] = useState(code ?? '');
 
 	function isGameJoinable(): boolean {
 		return /[0-9]{5}/g.test(gameId) && username.length > 0;
@@ -122,3 +118,13 @@ export default function Home() {
 		</main>
 	);
 }
+
+export const getServerSideProps: GetServerSideProps<{
+	code: string | null;
+}> = async (context) => {
+	return {
+		props: {
+			code: typeof context.query.code == 'string' ? context.query.code : null,
+		},
+	};
+};
