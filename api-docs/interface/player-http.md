@@ -3,7 +3,7 @@
 ## Join game
 
 #### Description: 
-Allows a player ot join a game
+Allows a player to join a game
 
 #### Endpoint: 
 `POST /games/:gameId/players`: 
