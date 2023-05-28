@@ -7,6 +7,7 @@ export interface QuizQuestion {
 	note?: string;
 	time?: number;
 	points?: number;
+	explanations?: string[];
 }
 
 export interface QuizMeta {
@@ -81,6 +82,7 @@ function quizValidate(quiz: any) {
 		'note',
 		'time',
 		'points',
+		'explanations',
 	];
 	for (let qIndex = 0; qIndex < qArrLen; qIndex++) {
 		const question = quiz.questions[qIndex];
@@ -184,6 +186,23 @@ function quizValidate(quiz: any) {
 				throw new Error(`Invalid points at question index ${qIndex}`);
 			}
 		}
+		if (question.explanations) {
+			if (!(question.explanations instanceof Array<string>)) {
+				throw new Error(
+					`Answer choice for ${qIndex} must be an array of strings`
+				);
+			}
+			if (question.explanations.length != question.answerTexts.length) {
+				throw new Error(
+					`Number of explanations must match the number of answer choices ${qIndex}`
+				);
+			}
+			question.explanations.forEach((element: string) => {
+				if (!element) {
+					throw new Error(`Explanation must exist ${qIndex}`);
+				}
+			});
+		}
 	}
 }
 
@@ -217,6 +236,4 @@ export class Quiz {
 	getPoints(qn: number): number {
 		return this.questions[qn].points || this.meta.pointDefault;
 	}
-
-	// flamin hot mess
 }

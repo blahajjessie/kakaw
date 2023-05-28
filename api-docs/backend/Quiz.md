@@ -1,30 +1,26 @@
-Currently Implimented in `quiz.ts`
+Currently Implemented in `quiz.ts`
+
+
+# `QuizValidate` function
+Validates json to figure out if its a quiz. Throws an error if the json is invalid. 
 
 # `Quiz` Class
-- `meta`: The same as it is in json
-- `questions` (QuizQuestion[]) : The array of quiz questions
+- `meta`: The same as it is in json. The interface for this is called `QuizQuestion`
+- `questions` (QuizQuestion[]) : The array of quiz questions, as reflected in json. The interface for this is called `QuizMeta`
 
-
-
-## `QuizValidate` function
-Validates json to fiugre out if its a quiz
 
 ## `getName` ()
 takes in a question number, returns the title of the quiz
 
 ## `getQuestionData` (qn: number)
-takes in a question number, returns the data for that question
+takes in a question number (`qn`), returns the data for that question as a `QuizQuestion` object
 
 ## `getAnswers` (qn: number)
-takes in a question number, returns the answer choice options
+takes in a question number, returns the answer choice options as an array of numbers
 
 ## `getQuestionTime` (qn: number)
-returns the amount of time for the question, or the default if it does not exist
+returns the amount of time (in *seconds*) for the question, or the default if it does not exist
 
 ## `getPoints` (qn: number)
-takes in a question number, returns the amount of points for the question, or the default if it is not defined
-
-## `getQuestionMessage` (qn: number)
-returns the `BeginResp` for the question, to be sent to users when the question starts
-
+takes in a question number, returns the amount of points for the question, or the quiz default if it is not defined
 

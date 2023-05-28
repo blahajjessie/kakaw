@@ -1,7 +1,7 @@
 # Websockets
 
 ## Server.ts
-Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}`
+Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}&token={authentication token}`
 - Calls handleConnection()
 
 ### Data Structs:
@@ -61,7 +61,8 @@ Fields:
 - `answerTexts` (string[]) : string[] of the answer choices
 - `index` (number) : the number of the question that just ended
 - `username` (string) : the name of the player
-- `explanations` (string[]) : The explanations for right ans wrong answers. TODO (Currently sends an empty array)
+- `explanations` (string[] | null) : The explanations for right and wrong answers. 
+        Sends `null` if there are no explanations in the quiz, otherwise an array of strings
 - `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
 
 
