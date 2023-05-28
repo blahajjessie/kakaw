@@ -5,8 +5,6 @@
 ## Simple definitions
 - `UserId` : String 
 - `GameId` : String
-- `invalidUser` : a dummy user, part of no game //TODO REMOVE
-
 
 ## Answer
 ### Data Types

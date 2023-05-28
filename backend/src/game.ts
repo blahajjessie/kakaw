@@ -1,7 +1,7 @@
 import { Quiz, QuizQuestion } from './quiz';
 import {
 	BeginData,
-	BeginResp,
+	startResp,
 	EndResp,
 	LeaderBoard,
 	LeaderboardData,
@@ -56,14 +56,19 @@ export class Game {
 	}
 
 	endQuestion() {
+		if (this.timer) {
+			clearTimeout(this.timer);
+			this.timer = undefined;
+		}
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
 		this.players.forEach((u) => {
-			u.send(u.getEndData(board, this.activeQuestion));
+			u.send(u.getEndData(board, this.activeQuestion, qd));
 		});
-		this.host.send(this.host.getEndData(board, this.activeQuestion));
+		this.host.send(this.host.getEndData(board, this.activeQuestion, qd));
 		this.quizOpen = false;
+
 		return;
 	}
 	getQuestionData() {
@@ -73,22 +78,25 @@ export class Game {
 	// Input: Game Object
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
-		let question: BeginResp;
+		let question: startResp;
 		let pts: number;
 
 		this.activeQuestion++;
 		console.log(this.activeQuestion);
-
-		question = this.quizData.getQuestionMessage(this.activeQuestion);
+		const qn = this.activeQuestion;
+		const qt = this.quizData.getQuestionTime(qn);
 		pts = this.quizData.getPoints(this.activeQuestion);
 
-		const message = new BeginData(question);
 		this.getUsers().forEach((p: User) => {
+			p.initScore(this.activeQuestion, pts, qt);
+			const message = new BeginData(
+				p.getStartData(this.activeQuestion, this.quizData)
+			);
 			p.send(message);
-			p.initScore(this.activeQuestion, pts, question.time);
 		});
 		this.quizOpen = true;
-		this.timer = setTimeout(this.endQuestion, question.time * 1000);
+
+		this.timer = setTimeout(() => this.endQuestion(), qt * 1000);
 		this.startTime = Date.now();
 
 		return;
