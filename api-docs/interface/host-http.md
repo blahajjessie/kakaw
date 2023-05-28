@@ -11,7 +11,7 @@ response: `{gameId: string, hostId: string}`
 
 The game opens on the server side, and is now accepting players via the join code (which is the game ID)
 
-Upon recept of this, the host should display a screen showing a list of players. 
+Upon receipt of this, the host should display a screen showing a list of players. 
 
 ## Start a question
 
