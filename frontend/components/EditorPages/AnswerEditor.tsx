@@ -38,13 +38,15 @@ export default function AnswerEditor({
 	}
 
 	function editExplanation(newExplanation: string) {
-		const newExplanations = question.answerTexts.map((explanation, i) =>
-			i === answerIndex ? newExplanation : explanation
-		);
-		onEdit({
-			...question,
-			explanations: newExplanations,
-		});
+		if (question.explanations) {
+			const newExplanations = question.explanations.map((explanation, i) =>
+				i === answerIndex ? newExplanation : explanation
+			);
+			onEdit({
+				...question,
+				explanations: newExplanations,
+			});
+		}
 	}
 
 	function toggleIsCorrect() {
@@ -72,16 +74,22 @@ export default function AnswerEditor({
 					color
 				}
 			>
+				{/* Expand/collapse and editable answer text */}
 				<div className="w-3/4 flex flex-row items-center">
 					<div
 						className="relative w-4 h-4 mr-4 cursor-pointer 2xl:w-5 2xl:h-5"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
 						{isExpanded && (
-							<Image alt="editor collapse" src={editor_minus} fill />
+							<Image
+								alt="editor collapse"
+								src={editor_minus}
+								fill
+								sizes="5vw"
+							/>
 						)}
 						{!isExpanded && (
-							<Image alt="editor expand" src={editor_plus} fill />
+							<Image alt="editor expand" src={editor_plus} fill sizes="5vw" />
 						)}
 					</div>
 
@@ -95,6 +103,7 @@ export default function AnswerEditor({
 					/>
 				</div>
 
+				{/* Checkbox input to toggle correct/incorrect */}
 				<div>
 					<span className="px-2">Correct?</span>
 					<input

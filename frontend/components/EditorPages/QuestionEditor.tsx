@@ -4,7 +4,7 @@ import { useState } from 'react';
 import TimerSetter from '@/components/EditorPages/TimerSetter';
 import AnswerEditor from '@/components/EditorPages/AnswerEditor';
 
-import { QuizQuestion } from '../../../backend/src/quiz';
+import { QuizQuestion } from '@/../backend/src/quiz';
 
 import editor_plus from '@/public/editor_plus.svg';
 import editor_minus from '@/public/editor_minus.svg';
@@ -34,21 +34,28 @@ export default function QuestionEditor({
 	return (
 		<div className="w-4/5 h-fit bg-gray-100 bg-opacity-50 flex flex-col font-extrabold text-white text-base rounded-xl my-2 lg:text-lg 2xl:text-xl">
 			<div className="w-full h-12 bg-gray-100 bg-opacity-50 flex flex-row items-center justify-between rounded-xl px-4 shadow-heavy 2xl:h-14">
+				{/* Expand/collapse and question number */}
 				<div
 					className="flex flex-row items-center cursor-pointer"
 					onClick={() => setIsExpanded(!isExpanded)}
 				>
 					<div className="relative w-4 h-4 mr-4 2xl:w-5 2xl:h-5">
 						{isExpanded && (
-							<Image alt="editor collapse" src={editor_minus} fill />
+							<Image
+								alt="editor collapse"
+								src={editor_minus}
+								fill
+								sizes="5vw"
+							/>
 						)}
 						{!isExpanded && (
-							<Image alt="editor expand" src={editor_plus} fill />
+							<Image alt="editor expand" src={editor_plus} fill sizes="5vw" />
 						)}
 					</div>
 					<span>Question {questionNumber}</span>
 				</div>
 
+				{/* Individual question timer */}
 				<div className="w-40 bg-gray-100 flex items-center justify-between border border-gray-200 rounded-xl px-2 py-0.5 lg:w-44 2xl:w-52">
 					<span>Timer:</span>
 					<TimerSetter
@@ -61,6 +68,7 @@ export default function QuestionEditor({
 			{/* Show detailed editor view for expanded question */}
 			{isExpanded && (
 				<div className="w-full flex flex-col items-center justify-center p-4">
+					{/* Question input text box */}
 					<div className="w-full bg-white flex items-center justify-center mb-2 p-2 2xl:p-3">
 						<textarea
 							className="w-full p-2 border border-black text-black"
@@ -72,6 +80,7 @@ export default function QuestionEditor({
 						/>
 					</div>
 
+					{/* Expandable answers */}
 					{question.answerTexts.map((_, i) => (
 						<AnswerEditor
 							question={question}
@@ -82,7 +91,7 @@ export default function QuestionEditor({
 						/>
 					))}
 
-					{/* Show "Add Answer" button only if there are available colors */}
+					{/* Add Answer button, show only if there are available colors */}
 					{question.answerTexts.length < colors.length && (
 						<button
 							className={
