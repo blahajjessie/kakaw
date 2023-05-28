@@ -8,7 +8,10 @@ import { QuizMeta, QuizQuestion } from '../../backend/src/quiz';
 import { Quiz } from '../../backend/dist/quiz';
 
 export default function EditorPage() {
+	// Title editor page (0) or questions editor page (1)
 	const [page, setPage] = useState(0);
+
+	// Quiz information
 	const [meta, setMeta] = useState<QuizMeta>({
 		title: '',
 		author: 'Host',
@@ -16,6 +19,8 @@ export default function EditorPage() {
 		timeDefault: 15,
 	});
 	const [questions, setQuestions] = useState<QuizQuestion[]>([]);
+
+	// Editor tutorial state -- see toggleTutorialState()
 	const [tutorialState, setTutorialState] = useState('tap');
 
 	function addQuestion() {
@@ -25,7 +30,6 @@ export default function EditorPage() {
 				questionText: '',
 				answerTexts: [],
 				correctAnswers: [],
-				// answerExplain: [],
 				time: meta.timeDefault,
 			},
 		]);
@@ -92,6 +96,7 @@ export default function EditorPage() {
 					toggleState={() => toggleTutorialState()}
 				/>
 
+				{/* Title and default timer editor view */}
 				{page === 0 && (
 					<>
 						<div className="w-fit bg-gray-100 border border-black px-6 py-1 -mb-6 text-lg z-20 lg:text-2xl 2xl:px-8 2xl:py-2 2xl:text-3xl">
@@ -156,6 +161,7 @@ export default function EditorPage() {
 					</>
 				)}
 
+				{/* Questions and answers editor view */}
 				{page === 1 && (
 					<>
 						<div className="w-fit bg-gray-100 border border-black px-6 py-1 -mb-6 text-lg z-20 xl:text-2xl 2xl:px-8 2xl:py-2 2xl:text-3xl">

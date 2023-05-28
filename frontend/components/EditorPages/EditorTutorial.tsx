@@ -64,7 +64,7 @@ export default function EditorTutorial({
 	function insertYell(content: JSX.Element): JSX.Element {
 		return (
 			<div
-				className="absolute top-0 bottom-0 left-0 right-0 m-auto w-3/4 h-3/4 z-30 pointer-events-auto"
+				className="absolute top-0 bottom-0 left-0 right-0 m-auto w-1/2 h-3/4 z-30 pointer-events-auto"
 				onClick={toggleState}
 			>
 				<Image
@@ -78,7 +78,7 @@ export default function EditorTutorial({
 						left: '0%',
 					}}
 				/>
-				<div className="absolute top-0 bottom-0 left-0 right-0 m-auto w-2/5 flex items-center justify-center text-center whitespace-pre-line z-20 pointer-events-auto text-sm sm:text-base lg:text-lg 2xl:text-2xl">
+				<div className="absolute top-0 bottom-0 left-0 right-0 m-auto w-1/2 flex items-center justify-center text-center whitespace-pre-line z-20 pointer-events-auto text-sm sm:text-base lg:text-lg 2xl:text-2xl">
 					{content}
 				</div>
 			</div>

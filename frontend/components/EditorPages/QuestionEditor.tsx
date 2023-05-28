@@ -15,15 +15,6 @@ interface QuestionEditorProps {
 	onEdit: (question: QuizQuestion) => void;
 }
 
-// {
-// 	questionText,
-// 	answerTexts,
-// 	correctAnswers,
-//  answerExplanations, (later)
-// 	time,
-// 	points,
-// }
-
 const colors = ['bg-red-200', 'bg-green-200', 'bg-blue-200', 'bg-yellow-200'];
 
 export default function QuestionEditor({
@@ -101,7 +92,9 @@ export default function QuestionEditor({
 							onClick={() =>
 								editQuestion({
 									answerTexts: [...question.answerTexts, ''],
-									// answerExplanations: [...question.answerExplanations, ''],
+									explanations: question.explanations
+										? [...question.explanations, '']
+										: [''],
 								})
 							}
 						>

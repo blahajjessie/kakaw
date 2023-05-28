@@ -59,7 +59,7 @@ export default function TimerSetter({
 			intervalRef.current = undefined;
 			onChange(timerValue);
 		}
-	}, [isIncrementing, isDecrementing]);
+	}, [timerValue, isIncrementing, isDecrementing]);
 
 	// Handle release of held button, even if release happens outside of button
 	useEffect(() => {

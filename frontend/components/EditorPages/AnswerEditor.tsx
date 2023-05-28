@@ -22,7 +22,9 @@ export default function AnswerEditor({
 	const [isExpanded, setIsExpanded] = useState(false);
 
 	const answerText = question.answerTexts[answerIndex];
-	// const answerExplanation = question.answerExplanations[answerIndex];
+	const explanation = question.explanations
+		? question.explanations[answerIndex]
+		: '';
 
 	function editAnswerText(newAnswerText: string) {
 		const newAnswerTexts = question.answerTexts.map(
@@ -35,15 +37,15 @@ export default function AnswerEditor({
 		});
 	}
 
-	// function editAnswerExplanation(newAnswerExplanation: string) {
-	// 	const newAnswerExplanations = question.answerTexts.map((answerExplanation, i) =>
-	// 		i === answerIndex ? newAnswerExplanation : answerExplanation
-	// 	);
-	// 	onEdit({
-	// 		...question,
-	// 		answerExplanations: newAnswerExplanations,
-	// 	});
-	// }
+	function editExplanation(newExplanation: string) {
+		const newExplanations = question.answerTexts.map((explanation, i) =>
+			i === answerIndex ? newExplanation : explanation
+		);
+		onEdit({
+			...question,
+			explanations: newExplanations,
+		});
+	}
 
 	function toggleIsCorrect() {
 		let newCorrectAnswers;
@@ -71,7 +73,7 @@ export default function AnswerEditor({
 				}
 			>
 				<div className="w-3/4 flex flex-row items-center">
-					{/* <div
+					<div
 						className="relative w-4 h-4 mr-4 cursor-pointer 2xl:w-5 2xl:h-5"
 						onClick={() => setIsExpanded(!isExpanded)}
 					>
@@ -81,7 +83,7 @@ export default function AnswerEditor({
 						{!isExpanded && (
 							<Image alt="editor expand" src={editor_plus} fill />
 						)}
-					</div> */}
+					</div>
 
 					<input
 						className="grow bg-transparent border border-white px-1 placeholder:text-black placeholder:opacity-50"
@@ -103,6 +105,22 @@ export default function AnswerEditor({
 					/>
 				</div>
 			</div>
+
+			{/* Show detailed editor view for expanded answer */}
+			{isExpanded && (
+				<div className="w-full flex flex-col items-center justify-center p-4">
+					<div className="w-full bg-white flex items-center justify-center mb-2 p-2 2xl:p-3">
+						<textarea
+							className="w-full p-2 border border-black text-black"
+							name="explanation"
+							placeholder="Add an explanation for your answer (Optional)"
+							maxLength={100}
+							value={explanation}
+							onChange={(e) => editExplanation(e.target.value)}
+						/>
+					</div>
+				</div>
+			)}
 		</div>
 	);
 }
