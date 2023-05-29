@@ -3,13 +3,13 @@ import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import { Question, currentPlayersState } from '@/lib/useKakawGame';
 import HostQuestionBottom from './QuestionPages/HostQuestionBottom';
 import { useRecoilValue } from 'recoil';
-import { useEffect } from 'react';
 import { useRouter } from 'next/router';
 import { apiCall } from '@/lib/api';
 
 export interface HostQuestionPageProps {
 	question: Question;
 	index: number;
+	postQuestion: boolean;
 }
 
 export default function HostQuestionPage(props: HostQuestionPageProps) {
@@ -25,7 +25,11 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 				qText={props.question.questionText}
 				endTime={props.question.endTime}
 			></QuestionTop>
-			<QuestionAnswers answers={props.question.answerTexts}></QuestionAnswers>
+			<QuestionAnswers
+				answers={props.question.answerTexts}
+				correctAnswers={props.question.correctAnswers}
+				explanations={props.question.explanations}
+			></QuestionAnswers>
 			<HostQuestionBottom
 				numAnswered={currentPlayers.size}
 				numPlayers={
@@ -36,13 +40,20 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 					try {
 						await apiCall(
 							'POST',
-							`/games/${gameId}/questions/${props.index}/end`
+							props.postQuestion
+								? `/games/${gameId}/questions/${props.index + 1}/start`
+								: `/games/${gameId}/questions/${props.index}/end`
 						);
 					} catch (e) {
-						alert('Ending question failed. Please try again.');
+						alert(
+							`${
+								props.postQuestion ? 'Going to next' : 'Ending'
+							} question failed. Please try again.`
+						);
 						console.error(e);
 					}
 				}}
+				buttonText={props.postQuestion ? 'Next Question' : 'End Guessing'}
 			/>
 		</main>
 	);

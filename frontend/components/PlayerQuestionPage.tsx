@@ -14,17 +14,15 @@ import { apiCall } from '@/lib/api';
 export interface PlayerQuestionPageProps {
 	question: Question;
 	index: number;
-	startWithModal: boolean;
+	startWithModal?: boolean;
 	playerAnswer?: number;
-	correctAnswers?: number[];
 }
 
 export default function PlayerQuestionPage({
 	question,
 	index,
-	startWithModal,
+	startWithModal = false,
 	playerAnswer,
-	correctAnswers,
 }: PlayerQuestionPageProps) {
 	// which answer was actually given -- starts as null if the player hasn't answered yet; is
 	// always defined on the post-question page
@@ -65,9 +63,13 @@ export default function PlayerQuestionPage({
 	};
 
 	const feedbackImage =
-		correctAnswers && playerAnswer && correctAnswers.includes(playerAnswer)
+		question.correctAnswers !== undefined &&
+		playerAnswer !== undefined &&
+		question.correctAnswers.includes(playerAnswer)
 			? GoodJob
 			: NoLuck;
+
+	console.log(`in pqp, modal state = ${showModal}, prop = ${startWithModal}`);
 
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
@@ -84,18 +86,18 @@ export default function PlayerQuestionPage({
 				playerAnswer={finalAnswer}
 				onAnswerClick={handleAnswerClick}
 				explanations={question.explanations}
-				correctAnswers={correctAnswers}
-			></QuestionAnswers>
+				correctAnswers={question.correctAnswers}
+			/>
 
 			{/* Render the player question bottom */}
-			<PlayerQuestionBottom
-				name={username}
-				score={score}
-			></PlayerQuestionBottom>
+			<PlayerQuestionBottom name={username} score={score} />
 
 			{/* Render the modal when showModal is true */}
 			{showModal && (
-				<div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
+				<div
+					className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50"
+					onClick={toggleModal}
+				>
 					{/* Render the selected image if selectedAnswer is not null */}
 					{finalAnswer !== null && (
 						<div className="w-11/12 h-full flex flex-col items-center justify-center">
@@ -109,14 +111,23 @@ export default function PlayerQuestionPage({
 					)}
 
 					{/* Close button */}
-					<button
-						className="absolute top-4 right-4 text-white text-xl"
-						onClick={toggleModal}
-					>
+					<button className="absolute top-4 right-4 text-white text-xl">
 						Close
 					</button>
 				</div>
 			)}
 		</main>
 	);
+}
+
+export interface PlayerPostQuestionPageProps {
+	question: Question;
+	index: number;
+	playerAnswer: number;
+}
+
+// this component is separate so that react replaces the PlayerQuestionPage instead of only
+// re-rendering it
+export function PlayerPostQuestionPage(props: PlayerPostQuestionPageProps) {
+	return <PlayerQuestionPage {...props} startWithModal={true} />;
 }

@@ -15,6 +15,12 @@ export interface Question {
 	answerTexts: string[];
 	endTime: number;
 	explanations?: string[];
+	correctAnswers?: number[];
+}
+
+export interface LeaderboardEntry {
+	name: string;
+	score: number;
 }
 
 export type KakawGame =
@@ -32,7 +38,8 @@ export type KakawGame =
 			currentQuestion: Question;
 			scoreChange: number;
 			correct: boolean;
-			correctAnswers: number[];
+			playerAnswer: number;
+			leaderboard: LeaderboardEntry[];
 	  };
 
 const kakawGameState = atom<KakawGame>({
@@ -96,10 +103,13 @@ export default function useKakawGame(): {
 							questionText: event.questionText,
 							answerTexts: event.answerTexts,
 							endTime: Infinity,
+							correctAnswers: event.correctAnswers,
+							explanations: event.explanations,
 						},
 						scoreChange: event.scoreChange,
 						correct: event.correct,
-						correctAnswers: event.correctAnswers,
+						playerAnswer: event.yourAnswer,
+						leaderboard: event.leaderboard,
 					});
 					setUsername(event.username);
 					setScore(event.score);

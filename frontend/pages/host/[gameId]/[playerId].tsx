@@ -23,6 +23,15 @@ const HostGameRouter: NextPage<{}> = () => {
 				<HostQuestionPage
 					question={game.currentQuestion}
 					index={game.questionIndex}
+					postQuestion={false}
+				/>
+			);
+		case Stage.PostQuestion:
+			return (
+				<HostQuestionPage
+					question={game.currentQuestion}
+					index={game.questionIndex}
+					postQuestion={true}
 				/>
 			);
 	}

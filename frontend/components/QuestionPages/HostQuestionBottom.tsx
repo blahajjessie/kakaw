@@ -4,12 +4,14 @@ interface HostQuestionBottomProps {
 	numAnswered: number;
 	numPlayers: number;
 	onEndQuestion: () => void;
+	buttonText: string;
 }
 
 export default function HostQuestionBottom({
 	numAnswered,
 	numPlayers,
 	onEndQuestion,
+	buttonText,
 }: HostQuestionBottomProps) {
 	const mobileContent = (
 		<div className="w-full h-1/10 bg-gray-100 flex flex-row items-center justify-between rounded-t-xl font-extrabold text-lg">
@@ -20,7 +22,7 @@ export default function HostQuestionBottom({
 				className="bg-orange-50 px-6 py-3 rounded-l-xl rounded-t-xl text-center shadow-heavy hover:brightness-110"
 				onClick={onEndQuestion}
 			>
-				End Guessing
+				{buttonText}
 			</div>
 		</div>
 	);
@@ -34,7 +36,7 @@ export default function HostQuestionBottom({
 				className="bg-orange-50 px-8 py-3 rounded-l-xl text-center cursor-pointer shadow-heavy hover:brightness-110 2xl:py-4"
 				onClick={onEndQuestion}
 			>
-				End Guessing
+				{buttonText}
 			</div>
 		</div>
 	);
