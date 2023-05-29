@@ -50,10 +50,10 @@ const PlayerGameRouter: NextPage<{}> = () => {
 			return <PlayerWaiting />;
 		case Stage.Question:
 			return (
-				// TODO: pass props in here
 				<PlayerQuestionPage
 					question={game.currentQuestion}
 					index={game.questionIndex}
+					startWithModal={false}
 				/>
 			);
 	}

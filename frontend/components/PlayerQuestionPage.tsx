@@ -14,21 +14,24 @@ import { apiCall } from '@/lib/api';
 export interface PlayerQuestionPageProps {
 	question: Question;
 	index: number;
+	startWithModal: boolean;
+	playerAnswer?: number;
+	correctAnswers?: number[];
 }
 
 export default function PlayerQuestionPage({
 	question,
 	index,
+	startWithModal,
+	playerAnswer,
+	correctAnswers,
 }: PlayerQuestionPageProps) {
+	// which answer was actually given -- starts as null if the player hasn't answered yet; is
+	// always defined on the post-question page
+	const [finalAnswer, setFinalAnswer] = useState(playerAnswer);
+
 	// State variables
-	const [showModal, setShowModal] = useState(false); // Modal visibility state
-	const [selectedAnswer, setSelectedAnswer] = useState<number | undefined>(
-		undefined
-	); // Selected answer state
-	const [selectedImage, setSelectedImage] = useState(GoodJob); // Default image is GoodJob
-	const [firstClickedAnswer, setFirstClickedAnswer] = useState<
-		number | undefined
-	>(undefined); // First clicked answer state
+	const [showModal, setShowModal] = useState(startWithModal); // Modal visibility state
 
 	const username = useRecoilValue(usernameState);
 	const score = useRecoilValue(scoreState);
@@ -39,45 +42,32 @@ export default function PlayerQuestionPage({
 		playerId: string;
 	};
 
-	// TODO SEND THIS
-	() =>
-		apiCall('POST', `/games/${gameId}/questions/${index}/answers`, {
-			userId: playerId,
-			answer: firstClickedAnswer,
-		});
-
 	// Toggle modal visibility
 	const toggleModal = () => {
 		setShowModal(!showModal);
 	};
 
 	// Handle answer click event
-	const handleAnswerClick = (answerIndex: number) => {
-		setSelectedAnswer(answerIndex);
-
-		// Determine the selected image path based on your conditions
-		const imagePath = determineSelectedImagePath(answerIndex);
-		setSelectedImage(imagePath);
-
+	const handleAnswerClick = async (answerIndex: number) => {
 		// Update the firstClickedAnswer state if it is currently null
-		if (firstClickedAnswer === null) {
-			setFirstClickedAnswer(answerIndex);
-			toggleModal();
+		if (finalAnswer === undefined) {
+			try {
+				await apiCall('POST', `/games/${gameId}/questions/${index}/answer`, {
+					userId: playerId,
+					answer: answerIndex,
+				});
+				setFinalAnswer(answerIndex);
+			} catch (e) {
+				alert('Error answering question, please try again');
+				console.error(e);
+			}
 		}
 	};
 
-	// Function to determine the selected image path based on conditions
-	const determineSelectedImagePath = (answerIndex: number) => {
-		// TODO this has to get correct answer from server
-		throw 'unimplemented';
-		// Add your conditions here to choose between GoodJob and NoLuck images
-		// For example:
-		if (answerIndex === 0) {
-			return NoLuck; // Select NoLuck image
-		} else {
-			return GoodJob; // Select GoodJob image
-		}
-	};
+	const feedbackImage =
+		correctAnswers && playerAnswer && correctAnswers.includes(playerAnswer)
+			? GoodJob
+			: NoLuck;
 
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
@@ -91,9 +81,10 @@ export default function PlayerQuestionPage({
 			{/* Render the question answers */}
 			<QuestionAnswers
 				answers={question.answerTexts}
-				selectedAnswerIndex={selectedAnswer}
-				onAnswerClick={() => console.log('answer click')}
-				// TODO explanations?
+				playerAnswer={finalAnswer}
+				onAnswerClick={handleAnswerClick}
+				explanations={question.explanations}
+				correctAnswers={correctAnswers}
 			></QuestionAnswers>
 
 			{/* Render the player question bottom */}
@@ -106,11 +97,11 @@ export default function PlayerQuestionPage({
 			{showModal && (
 				<div className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50">
 					{/* Render the selected image if selectedAnswer is not null */}
-					{selectedAnswer !== null && (
+					{finalAnswer !== null && (
 						<div className="w-11/12 h-full flex flex-col items-center justify-center">
 							<Image
 								alt="Popup Image"
-								src={selectedImage}
+								src={feedbackImage}
 								width={400}
 								className="-mb-6"
 							/>

@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
-import SelectedImage from 'next/image';
+import Image from 'next/image';
 import XMarkImage from 'public/remove1.png';
 import CheckMarkImage from 'public/checkmark1.png';
 import styles from '@/styles/flip.module.css';
@@ -23,34 +23,33 @@ function StyledAnswers({
 	answers,
 	explanations,
 	onAnswerClick,
-	selectedAnswerIndex,
+	playerAnswer,
+	correctAnswers,
 }: StyledAnswersProps) {
-	// State to keep track of selected answer and selected image
+	// which answer the player clicked most recently -- could be their answer, or they could be
+	// viewing an explanation
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(
-		selectedAnswerIndex ?? null
-	);
-	const [selectedImage, setSelectedImage] = useState(
-		selectedAnswerIndex === 0 ? XMarkImage : ''
+		playerAnswer ?? null
 	);
 	const [isHovering, setIsHovering] = useState(false);
+
+	// which answer the player actually chose
 	const [firstClickedAnswer, setFirstClickedAnswer] = useState<number | null>(
-		null
+		playerAnswer ?? null
 	);
 
 	const handleAnswerClick = (index: number) => {
 		// Update the firstClickedAnswer state if it is currently null
 		if (firstClickedAnswer === null) {
 			setFirstClickedAnswer(index);
-			setSelectedImage(index === 0 ? XMarkImage : CheckMarkImage);
+			// Call the onAnswerClick function if it exists
+			if (onAnswerClick) {
+				onAnswerClick(index);
+			}
 		}
 
 		// Always update the selectedAnswer state for the clicked answer
 		setSelectedAnswer(index);
-
-		// Call the onAnswerClick function if it exists
-		if (onAnswerClick) {
-			onAnswerClick(index);
-		}
 	};
 
 	const getAnswerText = (index: number) => {
@@ -96,8 +95,7 @@ function StyledAnswers({
 
 					{/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
 					{index === firstClickedAnswer &&
-						onAnswerClick &&
-						selectedAnswerIndex !== undefined &&
+						selectedAnswer !== null &&
 						!isHovering && (
 							<div
 								className="absolute bottom-0 left-0 flex justify-center items-center"
@@ -114,17 +112,17 @@ function StyledAnswers({
 						)}
 
 					{/* Display X or Y image if the current index matches selectedAnswerIndex */}
-					{selectedAnswer !== null &&
-						onAnswerClick &&
-						selectedAnswerIndex !== undefined && (
-							<div className="absolute top-0 right-0 h-16 w-16">
-								<SelectedImage
-									src={selectedImage}
-									alt="Selected Image"
-									className="w-full h-full"
-								/>
-							</div>
-						)}
+					{correctAnswers && (
+						<div className="absolute top-0 right-0 h-16 w-16">
+							<Image
+								src={
+									correctAnswers.includes(index) ? CheckMarkImage : XMarkImage
+								}
+								alt="Selected Image"
+								className="w-full h-full"
+							/>
+						</div>
+					)}
 				</div>
 			))}
 		</div>
@@ -135,7 +133,8 @@ interface QuestionAnswersProps {
 	answers: string[];
 	explanations?: string[];
 	onAnswerClick?: (answerIndex: number) => void | Promise<void>;
-	selectedAnswerIndex?: number;
+	playerAnswer?: number;
+	correctAnswers?: number[];
 }
 
 export default function QuestionAnswers(props: QuestionAnswersProps) {

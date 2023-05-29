@@ -18,7 +18,6 @@ export async function apiCall(
 
 	const req = await fetch(API_BASE_URL + url, options);
 	const data = await req.json();
-	console.dir(data);
 
 	if (data === null || typeof data != 'object') {
 		throw new Error('Server responded with invalid JSON');

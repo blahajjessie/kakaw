@@ -14,6 +14,7 @@ export interface Question {
 	questionText: string;
 	answerTexts: string[];
 	endTime: number;
+	explanations?: string[];
 }
 
 export type KakawGame =
@@ -78,6 +79,7 @@ export default function useKakawGame(): {
 						currentQuestion: {
 							questionText: event.questionText,
 							answerTexts: event.answerTexts,
+							explanations: event.explanations ?? null,
 							// We store the timestamp when the question will end, NOT the amount of
 							// time remaining. This should make timers easier to implement.
 							endTime: Date.now() + event.time,
