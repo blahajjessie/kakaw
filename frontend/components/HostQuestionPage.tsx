@@ -3,9 +3,9 @@ import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import { Question, currentPlayersState } from '@/lib/useKakawGame';
 import HostQuestionBottom from './QuestionPages/HostQuestionBottom';
 import { useRecoilValue } from 'recoil';
-import { RequestState, useRequest } from '@/lib/api';
 import { useEffect } from 'react';
 import { useRouter } from 'next/router';
+import { apiCall } from '@/lib/api';
 
 export interface HostQuestionPageProps {
 	question: Question;
@@ -17,17 +17,6 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 
 	const router = useRouter();
 	const { gameId } = router.query as { gameId: string };
-
-	const { state, response, error, trigger } = useRequest(
-		'POST',
-		`/games/${gameId}/questions/${props.index}/end`
-	);
-
-	useEffect(() => {
-		if (state == RequestState.Errored) {
-			alert(`Ending question failed: ${JSON.stringify(error)}`);
-		}
-	}, [state, error]);
 
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
@@ -43,7 +32,17 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 					// TODO get from backend
 					5
 				}
-				onEndQuestion={trigger}
+				onEndQuestion={async () => {
+					try {
+						await apiCall(
+							'POST',
+							`/games/${gameId}/questions/${props.index}/end`
+						);
+					} catch (e) {
+						alert('Ending question failed. Please try again.');
+						console.error(e);
+					}
+				}}
 			/>
 		</main>
 	);

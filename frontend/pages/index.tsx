@@ -31,33 +31,16 @@ export default function Home({ code }: HomeProps) {
 
 		setJoining(true);
 
-		let response;
-
 		try {
-			response = await apiCall('POST', `/games/${gameId}/players`, {
+			const { id } = await apiCall('POST', `/games/${gameId}/players`, {
 				username,
 			});
 
-			const { ok, id, err } = await response.json();
-			if (!ok) {
-				setError(err);
-				setJoining(false);
-			} else {
-				// we got an ID so redirect to the player page
-				console.log(`entering game: ${gameId}, ${id}`);
-				router.push(`/play/${gameId}/${id}`);
-			}
+			// we got an ID so redirect to the player page
+			console.log(`entering game: ${gameId}, ${id}`);
+			router.push(`/play/${gameId}/${id}`);
 		} catch (e) {
-			// TODO backend should communicate this better
-			if (response?.status == 404) {
-				setError(
-					'That game does not exist. Make sure you typed the code correctly.'
-				);
-			} else if (response?.status == 409) {
-				setError('Someone has already joined with that username.');
-			} else {
-				setError('An error occurred communicating with the server.');
-			}
+			setError((e as Error).toString());
 			setJoining(false);
 			console.error(e);
 		}

@@ -9,7 +9,7 @@ import { useRouter } from 'next/router';
 import GoodJob from 'public/goodjob.png';
 import NoLuck from 'public/noluck.png';
 import { Question, usernameState, scoreState } from '@/lib/useKakawGame';
-import { useRequest } from '@/lib/api';
+import { apiCall } from '@/lib/api';
 
 export interface PlayerQuestionPageProps {
 	question: Question;
@@ -39,15 +39,12 @@ export default function PlayerQuestionPage({
 		playerId: string;
 	};
 
-	// TODO TODO TODO send this request
-	const { state, response, error, trigger } = useRequest(
-		'POST',
-		`/games/${gameId}/questions/${index}/answers`,
-		{
+	// TODO SEND THIS
+	() =>
+		apiCall('POST', `/games/${gameId}/questions/${index}/answers`, {
 			userId: playerId,
 			answer: firstClickedAnswer,
-		}
-	);
+		});
 
 	// Toggle modal visibility
 	const toggleModal = () => {
@@ -95,7 +92,7 @@ export default function PlayerQuestionPage({
 			<QuestionAnswers
 				answers={question.answerTexts}
 				selectedAnswerIndex={selectedAnswer}
-				onAnswerClick={trigger}
+				onAnswerClick={() => console.log('answer click')}
 				// TODO explanations?
 			></QuestionAnswers>
 

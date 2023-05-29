@@ -36,16 +36,12 @@ export default function HostWaiting({ gameId }: hostProps) {
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
 	async function startQuiz() {
-		apiCall('POST', `/games/${gameId}/questions/0/start`)
-			.then((res) => {
-				if (!res.ok) {
-					throw res;
-				}
-				return;
-			})
-			.catch((err) => {
-				alert(`Error starting game (${err}), please try again`);
-			});
+		try {
+			apiCall('POST', `/games/${gameId}/questions/0/start`);
+		} catch (e) {
+			alert('Error starting game. Please try again.');
+			console.error(e);
+		}
 	}
 
 	const playersArray = [...currentPlayers.entries()];

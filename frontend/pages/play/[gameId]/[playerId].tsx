@@ -51,12 +51,10 @@ const PlayerGameRouter: NextPage<{}> = () => {
 		case Stage.Question:
 			return (
 				// TODO: pass props in here
-				// <PlayerQuestionPage
-				// 	question={game.currentQuestion}
-				// 	index={game.questionIndex}
-				// 	onAnswer={sendAnswer}
-				// />
-				<></>
+				<PlayerQuestionPage
+					question={game.currentQuestion}
+					index={game.questionIndex}
+				/>
 			);
 	}
 	throw new Error('unreachable');
