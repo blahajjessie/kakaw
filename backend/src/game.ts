@@ -96,7 +96,7 @@ export class Game {
 		});
 		this.quizOpen = true;
 
-		this.timer = setTimeout(() => this.endQuestion(), qt * 1000);
+		this.timer = setTimeout(() => this.endQuestion(), qt);
 		this.startTime = Date.now();
 
 		return;

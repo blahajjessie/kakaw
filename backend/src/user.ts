@@ -57,7 +57,7 @@ export class User {
 		return {
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
-			time: quiz.getQuestionTime(qn) * 1000,
+			time: quiz.getQuestionTime(qn) ,
 			index: qn,
 			username: this.name,
 			score: this.totalScore(),
