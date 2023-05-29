@@ -61,7 +61,7 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		if (!req.body) {
 			// console.log(req.body)
-			res.status(400).send('Invalid JSON file');
+			res.status(400).send({ok: false, err: 'Quiz validation failed for : no body'});
 		}
 		try {
 			let freshGame = new Game(req.body);
@@ -74,7 +74,7 @@ export default function registerGameRoutes(app: Express) {
 		} catch (e) {
 			// client upload error
 			console.log(e);
-			res.status(400).send('Invalid JSON file');
+			res.status(400).send({ok: false, err: " Quiz validation failed for : Invalid JSON file" + e});
 			return;
 		}
 		return;
@@ -145,7 +145,7 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/players', (req, res) => {
 		const body = req.body;
 		if (typeof body.username != 'string') {
-			res.status(400).send();
+			res.status(400).send({ok: false, err: "Add username fail, Username is not a string"});
 			return;
 		}
 		const game = getGame(req.params.gameId);
@@ -155,7 +155,7 @@ export default function registerGameRoutes(app: Express) {
 		try {
 			uid = game.addPlayer(username);
 		} catch {
-			res.status(409).send('add user fail!');
+			res.status(409).send({ ok: false, err:"Add username fail, the name is probably taken" });
 			return;
 		}
 		// Generate Code and Set User Entry
@@ -178,21 +178,21 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		const answer = req.body.answer;
+		const answerChoice = req.body.answer;
 		if (
-			typeof answer != 'number' ||
-			answer >= game.quizData.getAnswerChoices(game.activeQuestion).length
+			typeof answerChoice != 'number' ||
+			answerChoice >= game.quizData.getAnswerChoices(game.activeQuestion).length
 		) {
 			res
 				.status(400)
-				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
+				.send({ ok: false, err: `Answer index ${answerChoice} is not valid.` });
 			return;
 		}
 		// validate time
 		const ansTime: number = Date.now() - game.startTime;
-
+		console.log(ansTime);
 		try {
-			game.getUser(userId).answer(game.activeQuestion, ansTime, answer);
+			game.getUser(userId).answer(game.activeQuestion, ansTime, answerChoice);
 		} catch {
 			// console.log('answer() failed; the error message might be right');
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });

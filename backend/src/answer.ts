@@ -24,8 +24,8 @@ export class AnswerObj {
 			return;
 		}
 		const ratio = this.time / this.totalTime;
-		const varPoints = 0.9 * this.totalPoints;
-		const setPoints = 0.1 * this.totalPoints;
+		const varPoints = 0.7 * this.totalPoints;
+		const setPoints = 0.3 * this.totalPoints;
 		this.score = Math.round((varPoints * (1 - ratio) + setPoints) * isCorrect);
 		return;
 	}
