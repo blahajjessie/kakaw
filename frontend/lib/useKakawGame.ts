@@ -47,6 +47,9 @@ const kakawGameState = atom<KakawGame>({
 	default: { stage: Stage.WaitingRoom },
 });
 
+// In line with the new playerAction message, this is "the players that have completed the current
+// action." In waiting room this is the players in the game, and in a question this is the players
+// who have answered so far.
 export const currentPlayersState = atom<Map<string, string>>({
 	key: 'currentPlayersState',
 	default: new Map(),
