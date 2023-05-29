@@ -69,8 +69,6 @@ export default function PlayerQuestionPage({
 			? GoodJob
 			: NoLuck;
 
-	console.log(`in pqp, modal state = ${showModal}, prop = ${startWithModal}`);
-
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
 			{/* Render the question header */}
