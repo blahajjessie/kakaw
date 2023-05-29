@@ -1,8 +1,10 @@
 import { useState } from 'react';
+import { useRouter } from 'next/router';
 
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import TimerSetter from '@/components/EditorPages/TimerSetter';
 import QuestionEditor from '@/components/EditorPages/QuestionEditor';
+import { apiCall } from '@/lib/api';
 
 import { QuizMeta, QuizQuestion } from '@/../backend/src/quiz';
 import { Quiz } from '@/../backend/dist/quiz';
@@ -22,6 +24,8 @@ export default function EditorPage() {
 
 	// Editor tutorial state -- see toggleTutorialState()
 	const [tutorialState, setTutorialState] = useState('tap');
+
+	const router = useRouter();
 
 	// Return questions with removed explanations property
 	// for the questions that don't use it
@@ -95,14 +99,22 @@ export default function EditorPage() {
 		temp.click();
 	}
 
-	function startQuiz() {
+	async function startQuiz() {
 		const filteredQuestions = filterExplanations(questions);
 		if (!isValidQuiz(meta, filteredQuestions)) {
 			toggleTutorialState('check');
 			return;
 		}
-
-		// TODO: use meta and filteredQuestions to actually make/run quiz
+		try {
+			// this will have to store the host ID somewhere so that the websocket opening code can use it
+			const { gameId, hostId } = await (
+				await apiCall('POST', '/games', { meta, filteredQuestions })
+			).json();
+			// i don't know what the client-side URL here will be eventually
+			router.push(`/games/${gameId}`);
+		} catch (e) {
+			console.error(e);
+		}
 	}
 
 	return (

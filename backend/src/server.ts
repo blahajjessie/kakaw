@@ -10,6 +10,17 @@ import { getGame, gameExist } from './game';
 import { Game } from './game';
 registerGameRoutes(app);
 
+app.use(function (req, res, next) {
+	// Website you wish to allow to connect
+	res.setHeader('Access-Control-Allow-Origin', '*');
+	res.setHeader('Access-Control-Allow-Methods', 'GET, POST, OPTIONS, PUT, PATCH, DELETE');
+	res.setHeader('Access-Control-Allow-Headers', 'content-type');
+
+	// Pass to next layer of middleware
+	next();
+});
+
+
 // create websocket "server" which really piggybacks on the express server
 const webSocketServer = new WebSocket.Server({
 	// if true, the ws library maintains a Set of all client connections
@@ -45,9 +56,9 @@ httpServer.on('upgrade', (request, socket, head) => {
 	if (!gameExist(gameId)) {
 		console.log(
 			'Invalid game while trying to upgrade ws. PlayerId: ' +
-				playerId +
-				' GameId:' +
-				gameId
+			playerId +
+			' GameId:' +
+			gameId
 		);
 		socket.destroy();
 		return;
