@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import TimerSetter from '@/components/EditorPages/TimerSetter';
+import TimerSetter from '@/components/Fixtures/TimerSetter';
 import AnswerEditor from '@/components/EditorPages/AnswerEditor';
 
 import { QuizQuestion } from '@/../backend/src/quiz';

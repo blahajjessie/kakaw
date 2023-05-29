@@ -88,9 +88,12 @@ export default function EditorPage() {
 			return;
 		}
 
-		const quizFile = new Blob([JSON.stringify({ meta, filteredQuestions })], {
-			type: 'application/json',
-		});
+		const quizFile = new Blob(
+			[JSON.stringify({ meta: meta, questions: filteredQuestions })],
+			{
+				type: 'application/json',
+			}
+		);
 
 		const temp = document.createElement('a');
 		temp.href = URL.createObjectURL(quizFile);
@@ -105,13 +108,14 @@ export default function EditorPage() {
 			toggleTutorialState('check');
 			return;
 		}
+
 		try {
 			// this will have to store the host ID somewhere so that the websocket opening code can use it
-			const { gameId, hostId } = await (
-				await apiCall('POST', '/games', { meta, filteredQuestions })
-			).json();
-			// i don't know what the client-side URL here will be eventually
-			router.push(`/games/${gameId}`);
+			const { gameId, hostId } = await apiCall('POST', '/games', {
+				meta: meta,
+				questions: filteredQuestions,
+			});
+			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			console.error(e);
 		}
