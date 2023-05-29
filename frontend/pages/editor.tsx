@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { useRouter } from 'next/router';
 
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
-import TimerSetter from '@/components/EditorPages/TimerSetter';
+import TimerSetter from '@/components/Fixtures/TimerSetter';
 import QuestionEditor from '@/components/EditorPages/QuestionEditor';
 import { apiCall } from '@/lib/api';
 
