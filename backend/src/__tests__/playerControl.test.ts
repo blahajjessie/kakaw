@@ -90,7 +90,7 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
 			.expect(200);
-		
+
 		// Check Websocket Message
 		expect(serverMessage).toBeDefined();
 		expect(serverMessage.type).toBeDefined();
@@ -98,7 +98,9 @@ describe('Player Control', () => {
 		expect(serverMessage.questionText).toBeDefined();
 		expect(serverMessage.questionText).toStrictEqual('Are we human?');
 		expect(serverMessage.answerTexts).toBeDefined();
-		expect(serverMessage.answerTexts).toStrictEqual(correct.questions[0].answerTexts);
+		expect(serverMessage.answerTexts).toStrictEqual(
+			correct.questions[0].answerTexts
+		);
 		expect(serverMessage.time).toBeDefined();
 		expect(serverMessage.time).toStrictEqual(10000);
 		expect(serverMessage.index).toBeDefined();
@@ -127,7 +129,35 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/end`)
 			.expect(200);
-		console.log(serverMessage);
+		expect(serverMessage).toBeDefined();
+		expect(serverMessage.type).toBeDefined();
+		expect(serverMessage.type).toStrictEqual('endQuestion');
+		expect(serverMessage.correctAnswers).toBeDefined();
+		expect(serverMessage.correctAnswers).toStrictEqual([1]);
+		expect(serverMessage.explanations).toBeDefined();
+		// Strict Equal / TODO update test quiz
+		expect(serverMessage.score).toBeDefined();
+		// Strict Equal / TODO fix negative scores
+		expect(serverMessage.scoreChange).toBeDefined();
+		// Strict Equal / TODO fix negative scores
+		expect(serverMessage.correct).toBeDefined();
+		expect(serverMessage.correct).toStrictEqual(true);
+		expect(serverMessage.responseTime).toBeDefined();
+		expect(serverMessage.questionText).toBeDefined();
+		expect(serverMessage.questionText).toStrictEqual('Are we human?');
+		expect(serverMessage.answerTexts).toBeDefined();
+		expect(serverMessage.answerTexts).toStrictEqual(
+			correct.questions[0].answerTexts
+		);
+		expect(serverMessage.index).toBeDefined();
+		expect(serverMessage.index).toStrictEqual(0);
+		expect(serverMessage.username).toBeDefined();
+		expect(serverMessage.username).toStrictEqual('Jorge');
+		expect(serverMessage.yourAnswer).toBeDefined();
+		expect(serverMessage.yourAnswer).toStrictEqual(1);
+
+		// Leaderboard Field Validation
+		expect(serverMessage.leaderboard).toBeDefined();
 	});
 
 	test('Start Second Question', async () => {
