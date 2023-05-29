@@ -41,13 +41,12 @@ function StyledAnswers({
 	const handleAnswerClick = (index: number) => {
 		// Update the firstClickedAnswer state if it is currently null
 		if (firstClickedAnswer === null) {
-			setFirstClickedAnswer(index);
 			// Call the onAnswerClick function if it exists
 			if (onAnswerClick) {
+				setFirstClickedAnswer(index);
 				onAnswerClick(index);
 			}
 		}
-
 		// Always update the selectedAnswer state for the clicked answer
 		setSelectedAnswer(index);
 	};
