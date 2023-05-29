@@ -34,7 +34,7 @@ describe('Player Control', () => {
 		answer: 1,
 	};
 	let createRes: CreationResponse;
-	let serverMessage: JSON;
+	let serverMessage: any;
 
 	// Host and Game Set-Up
 	test('Quiz Upload', async () => {
@@ -80,6 +80,9 @@ describe('Player Control', () => {
 		url.searchParams.set('playerId', playerId);
 		playerSocket = new WebSocket(url);
 		await waitForSocketState(playerSocket, WebSocket.OPEN);
+		playerSocket.on('message', function message(raw) {
+			serverMessage = JSON.parse(raw.toString());
+		});
 	});
 
 	// Quiz Start
@@ -87,13 +90,27 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
 			.expect(200);
+		
+		// Check Websocket Message
+		expect(serverMessage).toBeDefined();
+		expect(serverMessage.type).toBeDefined();
+		expect(serverMessage.type).toStrictEqual('startQuestion');
+		expect(serverMessage.questionText).toBeDefined();
+		expect(serverMessage.questionText).toStrictEqual('Are we human?');
+		expect(serverMessage.answerTexts).toBeDefined();
+		expect(serverMessage.answerTexts).toStrictEqual(correct.questions[0].answerTexts);
+		expect(serverMessage.time).toBeDefined();
+		expect(serverMessage.time).toStrictEqual(10000);
+		expect(serverMessage.index).toBeDefined();
+		expect(serverMessage.index).toStrictEqual(0);
+		expect(serverMessage.username).toBeDefined();
+		expect(serverMessage.username).toStrictEqual('Jorge');
+		expect(serverMessage.score).toBeDefined();
+		expect(serverMessage.score).toStrictEqual(0);
 	});
 
 	// Question Answering Tests
 	test('Answer Question / Correct', async () => {
-		playerSocket.on('message', function message(raw) {
-			serverMessage = JSON.parse(raw.toString());
-		});
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/answer`)
 			.send(answer)
@@ -110,6 +127,7 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/end`)
 			.expect(200);
+		console.log(serverMessage);
 	});
 
 	test('Start Second Question', async () => {
