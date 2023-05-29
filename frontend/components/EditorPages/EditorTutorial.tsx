@@ -118,9 +118,9 @@ export default function EditorTutorial({
 			{state === 'questions' &&
 				insertLarge(
 					<div>
-						You can change the timer for each individual question and add up to
-						4 answers for each. Your answer explanation will appear during the
-						game.
+						You can change the timer and add up to 4 answers for each question.
+						Answer explanations are optional, but must either be defined for
+						every answer or left blank for each question.
 					</div>
 				)}
 

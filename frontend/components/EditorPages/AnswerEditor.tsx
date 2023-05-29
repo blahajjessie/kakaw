@@ -122,7 +122,7 @@ export default function AnswerEditor({
 						<textarea
 							className="w-full p-2 border border-black text-black"
 							name="explanation"
-							placeholder="Add an explanation for your answer (Optional)"
+							placeholder="Add an explanation for your answer"
 							maxLength={100}
 							value={explanation}
 							onChange={(e) => editExplanation(e.target.value)}
