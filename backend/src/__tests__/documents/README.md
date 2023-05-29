@@ -131,6 +131,22 @@ ws.on('message', function message(data) {
 });
 ```
 
+Any event declaration should be done at the same time as connecting the websocket
+to the server.
+
+To check a message, a convention similar to checking API responses will be used:
+
+```ts
+expect(serverMessage).toBeDefined();
+expect(serverMessage.type).toBeDefined();
+expect(serverMessage.type).toStrictEqual('string');
+expect(serverMessage.something).toBeDefined();
+expect(serverMessage.something).toStrictEqual(100);
+```
+
+While tedious, this convention ensures the test will be clear on where in the message 
+the test failed as well as staying consistent to API response validation.
+
 Closing:
 
 All WebSockets should be closed before the end of a test file, this can be checked
