@@ -154,8 +154,8 @@ export default function registerGameRoutes(app: Express) {
 		let uid: UserId;
 		try {
 			uid = game.addPlayer(username);
-		} catch {
-			res.status(409).send({ ok: false, err:"Add username fail, the name is probably taken" });
+		} catch (e) {
+			res.status(409).send({ ok: false, err:"Add username fail. Reason: "  + e});
 			return;
 		}
 		// Generate Code and Set User Entry
