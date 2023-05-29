@@ -5,6 +5,7 @@ import { GameId, Game, gameExist, getGame } from './game';
 import { Quiz } from './quiz';
 import { UserId } from './user';
 import { newGameResp } from './respTypes';
+import { generateToken, validateToken } from './auth';
 
 // first key is gameId
 
@@ -30,6 +31,23 @@ function validateGame(req: Request, res: Response, next: NextFunction) {
 
 function validateQuestion(req: Request, res: Response, next: NextFunction) {
 	const params = req.params;
+
+	// extract the token from the authorization header
+	const token = req.headers.authorization?.split(' ')[1];
+	if (!token) {
+		res.status(401).send({ ok: false, err: 'Token is missing' });
+		return;
+	}
+
+	// validate authorization
+	const gameId: GameId = params.gameId;
+	const userId: UserId = req.body.userId;
+	const isValid = validateToken(gameId, userId, token);
+	if (!isValid) {
+		res.status(403).send({ ok: false, err: 'Invalid token' });
+		return;
+	}
+	
 	if (req.params.gameId === undefined) {
 		res.status(400).send({ ok: false, err: `Question number is required` });
 		return;
@@ -65,11 +83,15 @@ export default function registerGameRoutes(app: Express) {
 		}
 		try {
 			let freshGame = new Game(req.body);
+			let hostToken = generateToken(freshGame.id, freshGame.hostId);
+			// @ts-ignore
+			// sessionStorage.setItem('token', JSON.stringify(hostToken));
 			let response: newGameResp = {
 				gameId: freshGame.id,
 				hostId: freshGame.hostId,
+				token: hostToken,
 			};
-			// console.log(response);
+			console.log(response);
 			res.status(201).json(response);
 		} catch (e) {
 			// client upload error
@@ -182,8 +204,11 @@ export default function registerGameRoutes(app: Express) {
 			res.status(409).send('add user fail!');
 			return;
 		}
-		// Generate Code and Set User Entry
-		res.status(201).json({ ok: true, id: uid });
+
+		let playerToken = generateToken(req.params.gameId, uid);
+		//@ts-ignore
+		// sessionStorage.setItem('token', JSON.stringify(playerToken));
+		res.status(201).json({ ok: true, id: uid , token: playerToken});
 		return;
 	});
 
