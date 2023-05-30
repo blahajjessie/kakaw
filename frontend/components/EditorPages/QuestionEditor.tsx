@@ -11,20 +11,23 @@ import editor_minus from '@/public/editor_minus.svg';
 
 interface QuestionEditorProps {
 	question: QuizQuestion;
-	questionNumber: number;
-	onEdit: (updates: Partial<QuizQuestion>) => void;
+	questionIndex: number;
+	onEdit: (updates: Partial<QuizQuestion>, index: number) => void;
 }
 
 const colors = ['bg-red-200', 'bg-green-200', 'bg-blue-200', 'bg-yellow-200'];
 
 export default function QuestionEditor({
 	question,
-	questionNumber,
+	questionIndex,
 	onEdit,
 }: QuestionEditorProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
 
-	const editQuestionTime = useCallback((v: number) => onEdit({ time: v }), []);
+	const editQuestionTime = useCallback(
+		(v: number) => onEdit({ time: v }, questionIndex),
+		[onEdit, questionIndex]
+	);
 
 	return (
 		<div className="w-4/5 h-fit bg-gray-100 bg-opacity-50 flex flex-col font-extrabold text-white text-base rounded-xl my-2 lg:text-lg 2xl:text-xl">
@@ -47,7 +50,7 @@ export default function QuestionEditor({
 							<Image alt="editor expand" src={editor_plus} fill sizes="5vw" />
 						)}
 					</div>
-					<span>Question {questionNumber}</span>
+					<span>Question {questionIndex + 1}</span>
 				</div>
 
 				{/* Individual question timer */}
@@ -71,7 +74,9 @@ export default function QuestionEditor({
 							placeholder="Add your question body here"
 							maxLength={100}
 							value={question.questionText}
-							onChange={(e) => onEdit({ questionText: e.target.value })}
+							onChange={(e) =>
+								onEdit({ questionText: e.target.value }, questionIndex)
+							}
 						/>
 					</div>
 
@@ -81,7 +86,7 @@ export default function QuestionEditor({
 							question={question}
 							answerIndex={i}
 							color={colors[i]}
-							onEdit={(answer) => onEdit(answer)}
+							onEdit={(answer) => onEdit(answer, questionIndex)}
 							key={i}
 						/>
 					))}
@@ -94,12 +99,15 @@ export default function QuestionEditor({
 								colors[question.answerTexts.length]
 							}
 							onClick={() =>
-								onEdit({
-									answerTexts: [...question.answerTexts, ''],
-									explanations: question.explanations
-										? [...question.explanations, '']
-										: [''],
-								})
+								onEdit(
+									{
+										answerTexts: [...question.answerTexts, ''],
+										explanations: question.explanations
+											? [...question.explanations, '']
+											: [''],
+									},
+									questionIndex
+								)
 							}
 						>
 							Add Answer

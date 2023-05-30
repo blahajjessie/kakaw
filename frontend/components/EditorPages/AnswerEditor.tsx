@@ -31,8 +31,7 @@ export default function AnswerEditor({
 			(answer: string, i: number) =>
 				i === answerIndex ? newAnswerText : answer
 		);
-		onEdit({ answerTexts: newAnswerTexts,
-		});
+		onEdit({ answerTexts: newAnswerTexts });
 	}
 
 	function editExplanation(newExplanation: string) {
@@ -40,8 +39,7 @@ export default function AnswerEditor({
 			const newExplanations = question.explanations.map((explanation, i) =>
 				i === answerIndex ? newExplanation : explanation
 			);
-			onEdit({ explanations: newExplanations,
-			});
+			onEdit({ explanations: newExplanations });
 		}
 	}
 
@@ -56,8 +54,7 @@ export default function AnswerEditor({
 			newCorrectAnswers = [...question.correctAnswers, answerIndex];
 		}
 
-		onEdit({ correctAnswers: newCorrectAnswers,
-		});
+		onEdit({ correctAnswers: newCorrectAnswers });
 	}
 
 	return (

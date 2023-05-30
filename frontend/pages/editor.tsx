@@ -99,6 +99,17 @@ export default function EditorPage() {
 		[]
 	);
 
+	const editQuestion = useCallback(
+		(updates: Partial<QuizQuestion>, indexToEdit: number) => {
+			setQuestions((questions) =>
+				questions.map((question, i) =>
+					i === indexToEdit ? { ...question, ...updates } : question
+				)
+			);
+		},
+		[]
+	);
+
 	return (
 		<main className="bg-purple-100 h-screen flex flex-col items-center justify-center text-black font-extrabold">
 			<div className="w-5/6 h-full flex flex-col items-center justify-center">
@@ -194,14 +205,8 @@ export default function EditorPage() {
 								{questions.map((question, i) => (
 									<QuestionEditor
 										question={question}
-										questionNumber={i + 1}
-										onEdit={(updates) =>
-											setQuestions((questions) =>
-												questions.map((question, index) =>
-													i === index ? { ...question, ...updates } : question
-												)
-											)
-										}
+										questionIndex={i}
+										onEdit={editQuestion}
 										key={i}
 									/>
 								))}
