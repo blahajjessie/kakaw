@@ -1,5 +1,5 @@
 import Image from 'next/image';
-import { useState } from 'react';
+import { useCallback, useState } from 'react';
 
 import TimerSetter from '@/components/Fixtures/TimerSetter';
 import AnswerEditor from '@/components/EditorPages/AnswerEditor';
@@ -31,6 +31,17 @@ export default function QuestionEditor({
 		});
 	}
 
+	const editQuestionTime = useCallback(
+		(v: number) => editQuestion({ time: v }),
+		[
+			question.questionText,
+			question.answerTexts,
+			question.correctAnswers,
+			question.explanations,
+			question.points,
+		]
+	);
+
 	return (
 		<div className="w-4/5 h-fit bg-gray-100 bg-opacity-50 flex flex-col font-extrabold text-white text-base rounded-xl my-2 lg:text-lg 2xl:text-xl">
 			<div className="w-full h-12 bg-gray-100 bg-opacity-50 flex flex-row items-center justify-between rounded-xl px-4 shadow-heavy 2xl:h-14">
@@ -60,7 +71,7 @@ export default function QuestionEditor({
 					<span>Timer:</span>
 					<TimerSetter
 						initTimerValue={question.time || 15}
-						onChange={(v) => editQuestion({ time: v })}
+						onChange={editQuestionTime}
 					/>
 				</div>
 			</div>

@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
 
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
@@ -44,20 +44,19 @@ export default function EditorPage() {
 	// leave: warning when user clicks back button to navigate away
 	// check: warning when user tries to start, but quiz is invalid
 	function toggleTutorialState(newTutorialState?: string) {
+		let newState;
 		if (newTutorialState) {
-			setTutorialState(newTutorialState);
-			return;
-		}
-
-		if (tutorialState === 'tap') {
+			newState = newTutorialState;
+		} else if (tutorialState === 'tap') {
 			if (page === 0) {
-				setTutorialState('title');
+				newState = 'title';
 			} else {
-				setTutorialState('questions');
+				newState = 'questions';
 			}
 		} else {
-			setTutorialState('tap');
+			newState = 'tap';
 		}
+		setTutorialState(newState);
 	}
 
 	function downloadQuiz() {
@@ -81,7 +80,6 @@ export default function EditorPage() {
 
 	async function startQuiz() {
 		setIsStarting(true);
-
 		try {
 			// this will have to store the host ID somewhere so that the websocket opening code can use it
 			const { gameId, hostId } = await apiCall('POST', '/games', {
@@ -91,10 +89,20 @@ export default function EditorPage() {
 			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			console.error(e);
-			setIsStarting(false);
 			toggleTutorialState('check');
 		}
+		setIsStarting(false);
 	}
+
+	const editDefaultTime = useCallback(
+		(v: number) =>
+			setMeta({
+				...meta,
+				timeDefault: v,
+			}),
+		[meta]
+	);
+	console.log(meta);
 
 	return (
 		<main className="bg-purple-100 h-screen flex flex-col items-center justify-center text-black font-extrabold">
@@ -147,12 +155,7 @@ export default function EditorPage() {
 									<div className="pl-4">Set default timer:</div>
 									<TimerSetter
 										initTimerValue={meta.timeDefault}
-										onChange={(v) =>
-											setMeta({
-												...meta,
-												timeDefault: v,
-											})
-										}
+										onChange={editDefaultTime}
 									/>
 								</div>
 							</div>

@@ -59,7 +59,7 @@ export default function TimerSetter({
 			intervalRef.current = undefined;
 			onChange(timerValue);
 		}
-	}, [timerValue, isIncrementing, isDecrementing]);
+	}, [onChange, timerValue, isIncrementing, isDecrementing]);
 
 	// Handle release of held button, even if release happens outside of button
 	useEffect(() => {
@@ -69,23 +69,11 @@ export default function TimerSetter({
 		});
 	});
 
-	function startIncrementing() {
-		if (timerValue < MAX_TIMER_VALUE) {
-			setIsIncrementing(true);
-		}
-	}
-
-	function startDecrementing() {
-		if (timerValue > MIN_TIMER_VALUE) {
-			setIsDecrementing(true);
-		}
-	}
-
 	return (
 		<div className="w-20 h-full bg-gray-100 flex flex-row items-center justify-between font-normal text-base rounded-lg lg:text-lg lg:w-24 2xl:text-xl 2xl:w-28">
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-red-200 rounded-md ml-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
-				onMouseDown={startDecrementing}
+				onMouseDown={() => setIsDecrementing(timerValue > MIN_TIMER_VALUE)}
 			>
 				-
 			</button>
@@ -94,7 +82,7 @@ export default function TimerSetter({
 
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-green-200 rounded-md mr-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
-				onMouseDown={startIncrementing}
+				onMouseDown={() => setIsIncrementing(timerValue < MAX_TIMER_VALUE)}
 			>
 				+
 			</button>

@@ -45,9 +45,9 @@ httpServer.on('upgrade', (request, socket, head) => {
 	if (!gameExist(gameId)) {
 		console.log(
 			'Invalid game while trying to upgrade ws. PlayerId: ' +
-			playerId +
-			' GameId:' +
-			gameId
+				playerId +
+				' GameId:' +
+				gameId
 		);
 		socket.destroy();
 		return;

@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Link from 'next/link';
 
 import happy_kaw from 'public/happy_kaw.png';
 import fail_kaw from 'public/fail_kaw.png';
@@ -133,12 +134,12 @@ export default function EditorTutorial({
 						<br />
 						(All progress will be lost)
 						<div className="flex items-center justify-between gap-8 mt-4">
-							<a
+							<Link
 								href="/upload"
 								className="bg-white hover:brightness-95 border border-gray-200 text-orange-200 rounded-lg px-6 py-1 shadow-heavy"
 							>
 								Yes
-							</a>
+							</Link>
 							<button className="bg-white hover:brightness-95 border border-gray-200 text-orange-200 rounded-lg px-6 py-1 shadow-heavy">
 								No
 							</button>
