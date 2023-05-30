@@ -79,16 +79,18 @@ export type startResp = {
 
 export type EndResp = {
 	correctAnswers: Array<number>;
+	score: number;
 	scoreChange: number;
 	correct: boolean;
 	leaderboard: LeaderBoard[];
 	responseTime: number;
 
-	score: number;
 	questionText: string; // question.questionText,
 	answerTexts: string[]; // question.answerTexts,
 	index: number; // game.activeQuestion,
 	username: string;
+	explanations: string[] | null;
+	yourAnswer: number;
 };
 
 export type ActionResp = {

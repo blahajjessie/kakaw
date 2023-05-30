@@ -147,44 +147,20 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
-		const gameId: GameId = req.params.gameId;
-		// TODO change this to match whatever method we use to authenticate users
-		const userId: UserId = req.body.userId;
-		const index = parseInt(req.params.index);
+	app.get('/games/:id/results', (req, res) => {
+		const gameId = req.params.id;
 		const game = getGame(gameId)!;
 
-		// check if question is open
-		if (game.activeQuestion != index && game.quizOpen) {
-			res
-				.status(400)
-				.send({ ok: false, err: `Question ${index} is not open for answers` });
-			return;
-		}
-
-		const answer = req.body.answer;
-		if (
-			typeof answer != 'number' ||
-			answer >= game.quizData.getAnswerChoices(game.activeQuestion).length
-		) {
-			res
-				.status(400)
-				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
-			return;
-		}
-
-		// validate time
-		const ansTime: number = Date.now() - game.startTime;
-
-		try {
-			game.getUser(userId).answer(game.activeQuestion, ansTime, answer);
-		} catch {
-			// console.log('answer() failed; the error message might be right');
-			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
-			return;
-		}
-
+		// host end results
+		game.sendResults();
 		res.status(200).send({ ok: true });
+		return;
+	});
+
+	app.get('/games/:id/export-quiz', (req, res) => {
+		const gameId = req.params.id;
+		const game = getGame(gameId);
+		res.status(200).json(game.quizData);
 		return;
 	});
 
@@ -204,29 +180,49 @@ export default function registerGameRoutes(app: Express) {
 			res.status(409).send('add user fail!');
 			return;
 		}
-
+		// Generate Code and Set User Entry
 		let playerToken = generateToken(req.params.gameId, uid);
-		//@ts-ignore
-		// sessionStorage.setItem('token', JSON.stringify(playerToken));
-		res.status(201).json({ ok: true, id: uid , token: playerToken});
+		res.status(201).json({ ok: true, id: uid, token: playerToken });
 		return;
 	});
 
-	app.get('/games/:id/results', (req, res) => {
-		const gameId = req.params.id;
+	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
+		const gameId: GameId = req.params.gameId;
+		// TODO change this to match whatever method we use to authenticate users
+		const userId: UserId = req.body.userId;
+		const index = parseInt(req.params.index);
 		const game = getGame(gameId)!;
 
-		// host end results
-		game.sendResults();
+		// check if question is open
+		if (game.activeQuestion != index || !game.quizOpen) {
+			res
+				.status(400)
+				.send({ ok: false, err: `Question ${index} is not open for answers` });
+			return;
+		}
+
+		const answer = req.body.answer;
+		if (
+			typeof answer != 'number' ||
+			answer >= game.quizData.getAnswerChoices(game.activeQuestion).length
+		) {
+			res
+				.status(400)
+				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
+			return;
+		}
+		// validate time
+		const ansTime: number = Date.now() - game.startTime;
+
+		try {
+			game.getUser(userId).answer(game.activeQuestion, ansTime, answer);
+		} catch {
+			// console.log('answer() failed; the error message might be right');
+			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
+			return;
+		}
+
 		res.status(200).send({ ok: true });
-		return;
-	});
-
-	app.get('/games/:id/export-quiz', (req, res) => {
-		const gameId = req.params.id;
-		const game = getGame(gameId);
-
-		res.status(200).json(game.quizData);
 		return;
 	});
 }
