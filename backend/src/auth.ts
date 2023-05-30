@@ -17,6 +17,10 @@ export function validateToken(gameId: string, userId: string, token: string | un
     return false;
   }
 
+  if (typeof token !== "string" || token.length !== 64) {
+    return false;
+  }
+
   const toBeHashed = `${gameId}.${userId}`;
   const hmac = crypto.createHmac('sha256', SECRET);
   hmac.update(toBeHashed);
