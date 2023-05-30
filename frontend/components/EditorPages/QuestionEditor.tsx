@@ -4,7 +4,7 @@ import { useState } from 'react';
 import TimerSetter from '@/components/Fixtures/TimerSetter';
 import AnswerEditor from '@/components/EditorPages/AnswerEditor';
 
-import { QuizQuestion } from '@/../backend/src/quiz';
+import { QuizQuestion } from '@/lib/editorQuiz';
 
 import editor_plus from '@/public/editor_plus.svg';
 import editor_minus from '@/public/editor_minus.svg';

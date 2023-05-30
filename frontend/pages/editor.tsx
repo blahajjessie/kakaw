@@ -6,7 +6,7 @@ import TimerSetter from '@/components/Fixtures/TimerSetter';
 import QuestionEditor from '@/components/EditorPages/QuestionEditor';
 import { apiCall } from '@/lib/api';
 
-import { QuizMeta, QuizQuestion } from '@/../backend/src/quiz';
+import { QuizMeta, QuizQuestion } from '@/lib/editorQuiz';
 
 export default function EditorPage() {
 	const [page, setPage] = useState(0);
