@@ -28,6 +28,9 @@
 	"jest": {
 		"testTimeout": 10000,
 		"clearMocks": true,
+		"collectCoverageFrom": [
+			"**/src/{!(__tests__),}"
+		],
 		"moduleFileExtensions": [
 			"ts",
 			"tsx",
