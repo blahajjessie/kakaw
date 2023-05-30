@@ -1,7 +1,7 @@
 import Image from 'next/image';
 import { useState } from 'react';
 
-import { QuizQuestion } from '@/../backend/src/quiz';
+import { QuizQuestion } from '@/lib/editorQuiz';
 
 import editor_plus from '@/public/editor_plus.svg';
 import editor_minus from '@/public/editor_minus.svg';
