@@ -2,7 +2,7 @@ import Link from 'next/link';
 import { useState } from 'react';
 
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
-import TimerSetter from '@/components/EditorPages/TimerSetter';
+import TimerSetter from '@/components/Fixtures/TimerSetter';
 
 export default function EditorPage() {
 	const [timerValue, setTimerValue] = useState(15);
