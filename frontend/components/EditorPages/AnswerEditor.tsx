@@ -10,7 +10,7 @@ interface AnswerEditorProps {
 	question: QuizQuestion;
 	answerIndex: number;
 	color: string;
-	onEdit: (question: QuizQuestion) => void;
+	onEdit: (question: Partial<QuizQuestion>) => void;
 }
 
 export default function AnswerEditor({
@@ -31,9 +31,7 @@ export default function AnswerEditor({
 			(answer: string, i: number) =>
 				i === answerIndex ? newAnswerText : answer
 		);
-		onEdit({
-			...question,
-			answerTexts: newAnswerTexts,
+		onEdit({ answerTexts: newAnswerTexts,
 		});
 	}
 
@@ -42,9 +40,7 @@ export default function AnswerEditor({
 			const newExplanations = question.explanations.map((explanation, i) =>
 				i === answerIndex ? newExplanation : explanation
 			);
-			onEdit({
-				...question,
-				explanations: newExplanations,
+			onEdit({ explanations: newExplanations,
 			});
 		}
 	}
@@ -60,9 +56,7 @@ export default function AnswerEditor({
 			newCorrectAnswers = [...question.correctAnswers, answerIndex];
 		}
 
-		onEdit({
-			...question,
-			correctAnswers: newCorrectAnswers,
+		onEdit({ correctAnswers: newCorrectAnswers,
 		});
 	}
 

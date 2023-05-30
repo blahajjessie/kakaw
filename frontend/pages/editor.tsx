@@ -95,12 +95,8 @@ export default function EditorPage() {
 	}
 
 	const editDefaultTime = useCallback(
-		(v: number) =>
-			setMeta({
-				...meta,
-				timeDefault: v,
-			}),
-		[meta]
+		(v: number) => setMeta((meta) => ({ ...meta, timeDefault: v })),
+		[]
 	);
 
 	return (
@@ -199,10 +195,10 @@ export default function EditorPage() {
 									<QuestionEditor
 										question={question}
 										questionNumber={i + 1}
-										onEdit={(newQuestion) =>
-											setQuestions(
+										onEdit={(updates) =>
+											setQuestions((questions) =>
 												questions.map((question, index) =>
-													i === index ? newQuestion : question
+													i === index ? { ...question, ...updates } : question
 												)
 											)
 										}

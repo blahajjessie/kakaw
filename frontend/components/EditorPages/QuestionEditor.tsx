@@ -12,7 +12,7 @@ import editor_minus from '@/public/editor_minus.svg';
 interface QuestionEditorProps {
 	question: QuizQuestion;
 	questionNumber: number;
-	onEdit: (question: QuizQuestion) => void;
+	onEdit: (updates: Partial<QuizQuestion>) => void;
 }
 
 const colors = ['bg-red-200', 'bg-green-200', 'bg-blue-200', 'bg-yellow-200'];
@@ -24,21 +24,7 @@ export default function QuestionEditor({
 }: QuestionEditorProps) {
 	const [isExpanded, setIsExpanded] = useState(false);
 
-	function editQuestion(updates: Partial<QuizQuestion>) {
-		onEdit({
-			...question,
-			...updates,
-		});
-	}
-
-	const editQuestionTime = useCallback(
-		(v: number) =>
-			onEdit({
-				...question,
-				time: v,
-			}),
-		[onEdit, question]
-	);
+	const editQuestionTime = useCallback((v: number) => onEdit({ time: v }), []);
 
 	return (
 		<div className="w-4/5 h-fit bg-gray-100 bg-opacity-50 flex flex-col font-extrabold text-white text-base rounded-xl my-2 lg:text-lg 2xl:text-xl">
@@ -85,7 +71,7 @@ export default function QuestionEditor({
 							placeholder="Add your question body here"
 							maxLength={100}
 							value={question.questionText}
-							onChange={(e) => editQuestion({ questionText: e.target.value })}
+							onChange={(e) => onEdit({ questionText: e.target.value })}
 						/>
 					</div>
 
@@ -95,7 +81,7 @@ export default function QuestionEditor({
 							question={question}
 							answerIndex={i}
 							color={colors[i]}
-							onEdit={(answer) => editQuestion(answer)}
+							onEdit={(answer) => onEdit(answer)}
 							key={i}
 						/>
 					))}
@@ -108,7 +94,7 @@ export default function QuestionEditor({
 								colors[question.answerTexts.length]
 							}
 							onClick={() =>
-								editQuestion({
+								onEdit({
 									answerTexts: [...question.answerTexts, ''],
 									explanations: question.explanations
 										? [...question.explanations, '']
