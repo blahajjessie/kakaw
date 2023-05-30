@@ -9,13 +9,20 @@ import { QuizQuestion } from '@/lib/editorQuiz';
 import editor_plus from '@/public/editor_plus.svg';
 import editor_minus from '@/public/editor_minus.svg';
 
+const colors = [
+	'bg-red-200',
+	'bg-green-200',
+	'bg-blue-200',
+	'bg-yellow-200',
+	'bg-purple-400',
+	'bg-pink-400',
+];
+
 interface QuestionEditorProps {
 	question: QuizQuestion;
 	questionIndex: number;
 	onEdit: (updates: Partial<QuizQuestion>, index: number) => void;
 }
-
-const colors = ['bg-red-200', 'bg-green-200', 'bg-blue-200', 'bg-yellow-200'];
 
 export default function QuestionEditor({
 	question,
