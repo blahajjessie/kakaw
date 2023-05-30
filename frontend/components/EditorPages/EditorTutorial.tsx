@@ -154,7 +154,7 @@ export default function EditorTutorial({
 							Invalid quiz, oh no!
 						</span>
 						<br />
-						Check that you've filled in every field and marked at least one
+						Check that you&apos;ve filled in every field and marked at least one
 						correct answer for each question.
 					</div>
 				)}

@@ -32,14 +32,12 @@ export default function QuestionEditor({
 	}
 
 	const editQuestionTime = useCallback(
-		(v: number) => editQuestion({ time: v }),
-		[
-			question.questionText,
-			question.answerTexts,
-			question.correctAnswers,
-			question.explanations,
-			question.points,
-		]
+		(v: number) =>
+			onEdit({
+				...question,
+				time: v,
+			}),
+		[onEdit, question]
 	);
 
 	return (

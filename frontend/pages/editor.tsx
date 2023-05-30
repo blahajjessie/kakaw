@@ -102,7 +102,6 @@ export default function EditorPage() {
 			}),
 		[meta]
 	);
-	console.log(meta);
 
 	return (
 		<main className="bg-purple-100 h-screen flex flex-col items-center justify-center text-black font-extrabold">
