@@ -7,13 +7,9 @@ import QuestionEditor from '@/components/EditorPages/QuestionEditor';
 import { apiCall } from '@/lib/api';
 
 import { QuizMeta, QuizQuestion } from '@/../backend/src/quiz';
-import { Quiz } from '@/../backend/dist/quiz';
 
 export default function EditorPage() {
-	// Title editor page (0) or questions editor page (1)
 	const [page, setPage] = useState(0);
-
-	// Quiz information
 	const [meta, setMeta] = useState<QuizMeta>({
 		title: '',
 		author: 'Host',
@@ -21,10 +17,8 @@ export default function EditorPage() {
 		timeDefault: 15,
 	});
 	const [questions, setQuestions] = useState<QuizQuestion[]>([]);
-
-	// Editor tutorial state -- see toggleTutorialState()
 	const [tutorialState, setTutorialState] = useState('tap');
-
+	const [isStarting, setIsStarting] = useState(false);
 	const router = useRouter();
 
 	// Return questions with removed explanations property
@@ -32,7 +26,7 @@ export default function EditorPage() {
 	function filterExplanations(
 		currentQuestions: QuizQuestion[]
 	): QuizQuestion[] {
-		let newQuestions = currentQuestions.map((question) => {
+		return currentQuestions.map((question) => {
 			if (question.explanations?.every((explanation) => explanation === '')) {
 				return {
 					...question,
@@ -41,7 +35,6 @@ export default function EditorPage() {
 			}
 			return question;
 		});
-		return newQuestions;
 	}
 
 	// -------- tutorial states --------
@@ -67,34 +60,18 @@ export default function EditorPage() {
 		}
 	}
 
-	// Check that quiz metadata and questions are all valid
-	// using Quiz constructor's validation
-	function isValidQuiz(meta: QuizMeta, questions: QuizQuestion[]) {
-		try {
-			const newQuiz = new Quiz({
-				meta,
-				questions,
-			});
-			return true;
-		} catch (e) {
-			return false;
-		}
-	}
-
 	function downloadQuiz() {
-		const filteredQuestions = filterExplanations(questions);
-		if (!isValidQuiz(meta, filteredQuestions)) {
-			toggleTutorialState('check');
-			return;
-		}
-
 		const quizFile = new Blob(
-			[JSON.stringify({ meta: meta, questions: filteredQuestions })],
+			[
+				JSON.stringify({
+					meta: meta,
+					questions: filterExplanations(questions),
+				}),
+			],
 			{
 				type: 'application/json',
 			}
 		);
-
 		const temp = document.createElement('a');
 		temp.href = URL.createObjectURL(quizFile);
 		temp.download = meta.title + '.json';
@@ -103,21 +80,19 @@ export default function EditorPage() {
 	}
 
 	async function startQuiz() {
-		const filteredQuestions = filterExplanations(questions);
-		if (!isValidQuiz(meta, filteredQuestions)) {
-			toggleTutorialState('check');
-			return;
-		}
+		setIsStarting(true);
 
 		try {
 			// this will have to store the host ID somewhere so that the websocket opening code can use it
 			const { gameId, hostId } = await apiCall('POST', '/games', {
 				meta: meta,
-				questions: filteredQuestions,
+				questions: filterExplanations(questions),
 			});
 			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			console.error(e);
+			setIsStarting(false);
+			toggleTutorialState('check');
 		}
 	}
 
@@ -244,6 +219,7 @@ export default function EditorPage() {
 												correctAnswers: [],
 												explanations: [],
 												time: meta.timeDefault,
+												points: meta.pointDefault,
 											},
 										])
 									}
@@ -267,7 +243,7 @@ export default function EditorPage() {
 									type="button"
 									onClick={startQuiz}
 								>
-									Start Quiz
+									{isStarting ? 'Starting...' : 'Start Quiz'}
 								</button>
 							</div>
 						</div>
