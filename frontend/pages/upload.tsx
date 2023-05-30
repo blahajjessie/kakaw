@@ -64,11 +64,8 @@ export default function UploadPage() {
 
 		try {
 			// this will have to store the host ID somewhere so that the websocket opening code can use it
-			const { gameId, hostId } = await (
-				await apiCall('POST', '/games', quizData)
-			).json();
-			// i don't know what the client-side URL here will be eventually
-			router.push(`/games/${gameId}`);
+			const { gameId, hostId } = await apiCall('POST', '/games', quizData);
+			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			setUploadStatus(UploadStatus.Error);
 			console.error(e);
