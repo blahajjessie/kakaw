@@ -73,12 +73,10 @@ export default function registerGameRoutes(app: Express) {
 		} catch (e) {
 			// client upload error
 			console.log(e);
-			res
-				.status(400)
-				.send({
-					ok: false,
-					err: ' Quiz validation failed for : Invalid JSON file' + e,
-				});
+			res.status(400).send({
+				ok: false,
+				err: ' Quiz validation failed for : Invalid JSON file' + e,
+			});
 			return;
 		}
 		return;
@@ -149,12 +147,10 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/players', (req, res) => {
 		const body = req.body;
 		if (typeof body.username != 'string') {
-			res
-				.status(400)
-				.send({
-					ok: false,
-					err: 'Add username fail, Username is not a string',
-				});
+			res.status(400).send({
+				ok: false,
+				err: 'Add username fail, Username is not a string',
+			});
 			return;
 		}
 		const game = getGame(req.params.gameId);
