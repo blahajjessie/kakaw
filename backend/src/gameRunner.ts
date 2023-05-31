@@ -31,23 +31,6 @@ function validateGame(req: Request, res: Response, next: NextFunction) {
 
 function validateQuestion(req: Request, res: Response, next: NextFunction) {
 	const params = req.params;
-
-	// extract the token from the authorization header
-	const token = req.headers.authorization?.split(' ')[1];
-	if (!token) {
-		res.status(401).send({ ok: false, err: 'Token is missing' });
-		return;
-	}
-
-	// validate authorization
-	const gameId: GameId = params.gameId;
-	const userId: UserId = req.body.userId;
-	const isValid = validateToken(gameId, userId, token);
-	if (!isValid) {
-		res.status(403).send({ ok: false, err: 'Invalid token' });
-		return;
-	}
-	
 	if (req.params.gameId === undefined) {
 		res.status(400).send({ ok: false, err: `Question number is required` });
 		return;
@@ -72,6 +55,45 @@ function validateQuestion(req: Request, res: Response, next: NextFunction) {
 	next();
 }
 
+function validatePlayerToken(req: Request, res: Response, next: NextFunction) {
+	// extract the token from the authorization header
+	const token = req.headers.authorization?.split(' ')[1];
+	if (!token) {
+		res.status(401).send({ ok: false, err: 'Token is missing' });
+		return;
+	}
+
+	// validate authorization
+	const gameId: GameId = req.params.gameId;
+	const userId: UserId = req.body.userId;
+	const isValid = validateToken(gameId, userId, token);
+	if (!isValid) {
+		res.status(403).send({ ok: false, err: 'Invalid token' });
+		return;
+	}
+	next();
+}
+
+function validateHostToken(req: Request, res: Response, next: NextFunction) {
+	// extract the token from the authorization header
+	const token = req.headers.authorization?.split(' ')[1];
+	if (!token) {
+		res.status(401).send({ ok: false, err: 'Token is missing' });
+		return;
+	}
+
+	// validate authorization
+	const gameId: GameId = req.params.gameId;
+	const game = getGame(gameId);
+	const userId: UserId = game.hostId;
+	const isValid = validateToken(gameId, userId, token);
+	if (!isValid) {
+		res.status(403).send({ ok: false, err: 'Invalid token' });
+		return;
+	}
+	next();
+}
+
 export default function registerGameRoutes(app: Express) {
 	app.use('/games/:gameId/', validateGame);
 	app.use('/games/:gameId/questions/:index/', validateQuestion);
@@ -84,8 +106,6 @@ export default function registerGameRoutes(app: Express) {
 		try {
 			let freshGame = new Game(req.body);
 			let hostToken = generateToken(freshGame.id, freshGame.hostId);
-			// @ts-ignore
-			// sessionStorage.setItem('token', JSON.stringify(hostToken));
 			let response: newGameResp = {
 				gameId: freshGame.id,
 				hostId: freshGame.hostId,
@@ -102,10 +122,10 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.post('/games/:gameId/questions/:index/start', (req, res) => {
+	app.post('/games/:gameId/questions/:index/start', validateHostToken, (req, res) => {
 		const index = parseInt(req.params.index);
 		const game = getGame(req.params.gameId)!;
-
+		console.log("start");
 		// start accepting answers for the question index
 
 		if (index != game.activeQuestion + 1) {
@@ -123,7 +143,7 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.post('/games/:gameId/questions/:index/end', (req, res) => {
+	app.post('/games/:gameId/questions/:index/end', validateHostToken, (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		const index = parseInt(req.params.index);
 		const game = getGame(gameId)!;
@@ -147,7 +167,7 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.get('/games/:id/results', (req, res) => {
+	app.get('/games/:id/results', validateHostToken, (req, res) => {
 		const gameId = req.params.id;
 		const game = getGame(gameId)!;
 
@@ -186,7 +206,7 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.post('/games/:gameId/questions/:index/answer', (req, res) => {
+	app.post('/games/:gameId/questions/:index/answer', validatePlayerToken, (req, res) => {
 		const gameId: GameId = req.params.gameId;
 		// TODO change this to match whatever method we use to authenticate users
 		const userId: UserId = req.body.userId;
