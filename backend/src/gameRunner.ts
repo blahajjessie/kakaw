@@ -58,7 +58,9 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		if (!req.body) {
 			// console.log(req.body)
-			res.status(400).send({ok: false, err: 'Quiz validation failed for : no body'});
+			res
+				.status(400)
+				.send({ ok: false, err: 'Quiz validation failed for : no body' });
 		}
 		try {
 			let freshGame = new Game(req.body);
@@ -71,7 +73,12 @@ export default function registerGameRoutes(app: Express) {
 		} catch (e) {
 			// client upload error
 			console.log(e);
-			res.status(400).send({ok: false, err: " Quiz validation failed for : Invalid JSON file" + e});
+			res
+				.status(400)
+				.send({
+					ok: false,
+					err: ' Quiz validation failed for : Invalid JSON file' + e,
+				});
 			return;
 		}
 		return;
@@ -142,7 +149,12 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/players', (req, res) => {
 		const body = req.body;
 		if (typeof body.username != 'string') {
-			res.status(400).send({ok: false, err: "Add username fail, Username is not a string"});
+			res
+				.status(400)
+				.send({
+					ok: false,
+					err: 'Add username fail, Username is not a string',
+				});
 			return;
 		}
 		const game = getGame(req.params.gameId);
@@ -152,7 +164,9 @@ export default function registerGameRoutes(app: Express) {
 		try {
 			uid = game.addPlayer(username);
 		} catch (e) {
-			res.status(409).send({ ok: false, err:"Add username fail. Reason: "  + e});
+			res
+				.status(409)
+				.send({ ok: false, err: 'Add username fail. Reason: ' + e });
 			return;
 		}
 		// Generate Code and Set User Entry

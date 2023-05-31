@@ -75,13 +75,13 @@ export class Game {
 		return this.quizData.getQuestionData(this.activeQuestion);
 	}
 
-	sendPlayerAction(uid: UserId){
+	sendPlayerAction(uid: UserId) {
 		const user = this.getUser(uid);
-		if (!user) throw new Error("User issue");
+		if (!user) throw new Error('User issue');
 		const respObj = {
-			[uid]: user.name
-		}
-		this.host.send(new ActionData({"players":respObj}))
+			[uid]: user.name,
+		};
+		this.host.send(new ActionData({ players: respObj }));
 	}
 	// Input: Game Object
 	// beginQuestion sends each player and host the current active question

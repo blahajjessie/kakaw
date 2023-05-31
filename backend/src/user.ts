@@ -3,12 +3,7 @@ import { gen } from './code';
 
 import { sendMessage } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
-import {
-	EndData,
-	LeaderBoard,
-	socketData,
-	startResp,
-} from './respTypes';
+import { EndData, LeaderBoard, socketData, startResp } from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -56,7 +51,7 @@ export class User {
 		return {
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
-			time: quiz.getQuestionTime(qn) ,
+			time: quiz.getQuestionTime(qn),
 			index: qn,
 			username: this.name,
 			score: this.totalScore(),

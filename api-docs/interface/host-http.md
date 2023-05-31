@@ -58,7 +58,6 @@ Response: `{ok: bool, err?: string, results: Leaderboard[]}`
 
 
 
-
 ## Kick player
 
 endpoint: `DELETE /games/:gameId/players/:playerId`
