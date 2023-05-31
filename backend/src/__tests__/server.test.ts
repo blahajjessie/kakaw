@@ -24,6 +24,16 @@ describe('WebSocket Connection Tests', () => {
 	// Set Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
+	test('Quiz Does Not Exist', async () => {
+		const wrongSocket = new WebSocket(
+			`ws://localhost:8080/connect?gameId=55555&playerId=55555`
+		);
+		wrongSocket.on('error', (err) => {
+			expect(err).toBeDefined();
+		});
+		await waitForSocketState(wrongSocket, WebSocket.CLOSED);
+	});
+
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')
