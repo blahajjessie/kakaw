@@ -1,8 +1,5 @@
 import { Express, NextFunction, Request, Response } from 'express';
-import { WebSocket } from 'ws';
-import { sendMessage } from './connection';
 import { GameId, Game, gameExist, getGame } from './game';
-import { Quiz } from './quiz';
 import { UserId } from './user';
 import { newGameResp } from './respTypes';
 
@@ -160,6 +157,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 		// Generate Code and Set User Entry
 		res.status(201).json({ ok: true, id: uid });
+		game.sendPlayerAction(uid);
 		return;
 	});
 
@@ -200,6 +198,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		res.status(200).send({ ok: true });
+		game.sendPlayerAction(userId);
 		return;
 	});
 }

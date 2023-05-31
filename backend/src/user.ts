@@ -5,7 +5,6 @@ import { sendMessage } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
 import {
 	EndData,
-	EndResp,
 	LeaderBoard,
 	socketData,
 	startResp,

@@ -92,10 +92,7 @@ export type EndResp = {
 	yourAnswer: number;
 };
 
-export type ActionResp = {
-	id: UserId;
-	username: string;
-};
+export type ActionResp = object;
 
 export type LeaderBoard = {
 	name: string;
