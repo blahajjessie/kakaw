@@ -1,6 +1,7 @@
 
 
 
+
 ## Game
 - users (Map<UserId, User>) : a map of the user Id's and their user objects
 - host (UserId): The id of the game host
