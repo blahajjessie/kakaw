@@ -144,7 +144,7 @@ expect(serverMessage.something).toBeDefined();
 expect(serverMessage.something).toStrictEqual(100);
 ```
 
-While tedious, this convention ensures the test will be clear on where in the message 
+While tedious, this convention ensures the test will be clear on where in the message
 the test failed as well as staying consistent to API response validation.
 
 Closing:
