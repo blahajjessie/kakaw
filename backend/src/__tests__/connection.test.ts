@@ -44,16 +44,14 @@ describe('Multiple Connection Attempts', () => {
 		hostSocket = new WebSocket(
 			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
 		);
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
+		dupeSocket = new WebSocket(
+			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
+		);
 
-		hostSocket.on('message', () => {
-			dupeSocket = new WebSocket(
-				`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
-			);
-			hostSocket.close();
-		});
-
-		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 		await waitForSocketState(dupeSocket, WebSocket.CLOSED);
+		hostSocket.close();
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });
 
@@ -80,12 +78,9 @@ describe('Client can Message Host', () => {
 		hostSocket = new WebSocket(
 			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
 		);
-
-		hostSocket.on('message', () => {
-			hostSocket.send(JSON.stringify({ ok: 'bongo' }));
-			hostSocket.close();
-		});
-
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
+		hostSocket.send(JSON.stringify({ ok: 'bongo' }));
+		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });
