@@ -5,6 +5,7 @@ import correct from './testTools/quizzes/correct.json';
 import { WebSocket } from 'ws';
 import { WEBSOCKET_BASE_URL } from './testTools/apiDef';
 import { waitForSocketState } from './testTools/connect';
+import { validate } from './testTools/validateSocket';
 
 interface CreationResponse {
 	gameId: string;
@@ -25,7 +26,7 @@ describe('Question Controls', () => {
 	// Set-Up Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
-	let serverMessage: JSON;
+	let serverMessage: any;
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')
@@ -47,6 +48,9 @@ describe('Question Controls', () => {
 		url.searchParams.set('playerId', createRes.hostId);
 		hostSocket = new WebSocket(url);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
+		hostSocket.on('message', function message(raw) {
+			serverMessage = JSON.parse(raw.toString());
+		});
 	});
 
 	// Control Tests
@@ -71,15 +75,10 @@ describe('Question Controls', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(false);
-				console.log(data.error);
-				console.log(data.body.err);
 			});
 	});
 
 	test('Start Quiz', async () => {
-		hostSocket.on('message', function message(raw) {
-			serverMessage = JSON.parse(raw.toString());
-		});
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
 			.expect(200)
@@ -89,6 +88,9 @@ describe('Question Controls', () => {
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(true);
 			});
+
+		// Check Websocket Message
+		validate(serverMessage);
 	});
 
 	test('End Question', async () => {
@@ -101,6 +103,10 @@ describe('Question Controls', () => {
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(true);
 			});
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.yourAnswer).toStrictEqual(-1);
 	});
 
 	test('Results', async () => {
@@ -113,6 +119,9 @@ describe('Question Controls', () => {
 				expect(data.body.ok).toBeDefined();
 				expect(data.body.ok).toBe(true);
 			});
+
+		// Check Websocket Message
+		validate(serverMessage);
 	});
 
 	// Close Game

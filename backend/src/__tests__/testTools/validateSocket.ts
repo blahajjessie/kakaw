@@ -24,13 +24,14 @@ export function validate(message: any) {
 			expect(message.username).toBeDefined();
 			expect(message.yourAnswer).toBeDefined();
 			expect(message.leaderboard).toBeDefined();
-			expect(message.leaderboard[0].name).toBeDefined();
-			expect(message.leaderboard[0].score).toBeDefined();
-			expect(message.leaderboard[0].correctAnswers).toBeDefined();
+			break;
+		}
+		case 'results': {
 			break;
 		}
 		default:
 			expect(message.type).toStrictEqual('Check Type');
 			break;
 	}
+	return;
 }

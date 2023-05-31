@@ -140,6 +140,9 @@ describe('Player Control', () => {
 		expect(serverMessage.yourAnswer).toStrictEqual(1);
 
 		// Leaderboard Field Validation
+		expect(serverMessage.leaderboard[0].name).toBeDefined();
+		expect(serverMessage.leaderboard[0].score).toBeDefined();
+		expect(serverMessage.leaderboard[0].correctAnswers).toBeDefined();
 		expect(serverMessage.leaderboard[0].name).toStrictEqual('Jorge');
 		// expect(serverMessage.leaderboard[0].score).toStrictEqual(4);
 		expect(serverMessage.leaderboard[0].correctAnswers).toStrictEqual([0]);
@@ -149,6 +152,11 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/start`)
 			.expect(200);
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.questionText).toStrictEqual('Or are we dancer?');
+		expect(serverMessage.index).toStrictEqual(1);
 	});
 
 	test('Answer Question / Incorrect', async () => {
@@ -168,6 +176,11 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/end`)
 			.expect(200);
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.correct).toStrictEqual(false);
+		expect(serverMessage.scoreChange).toStrictEqual(0);
 	});
 
 	// Close Game
