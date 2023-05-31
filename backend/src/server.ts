@@ -1,5 +1,5 @@
 import express from 'express';
-import WebSocket from 'ws';
+import { WebSocket } from 'ws';
 import { handleConnection } from './connection';
 
 const app = express();

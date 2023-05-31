@@ -5,6 +5,7 @@ import correct from './testTools/quizzes/correct.json';
 import { WebSocket } from 'ws';
 import { WEBSOCKET_BASE_URL } from './testTools/apiDef';
 import { waitForSocketState } from './testTools/connect';
+import { validate } from './testTools/validateSocket';
 
 interface CreationResponse {
 	gameId: string;
@@ -34,7 +35,7 @@ describe('Player Control', () => {
 		answer: 1,
 	};
 	let createRes: CreationResponse;
-	let serverMessage: JSON;
+	let serverMessage: any;
 
 	// Host and Game Set-Up
 	test('Quiz Upload', async () => {
@@ -80,6 +81,9 @@ describe('Player Control', () => {
 		url.searchParams.set('playerId', playerId);
 		playerSocket = new WebSocket(url);
 		await waitForSocketState(playerSocket, WebSocket.OPEN);
+		playerSocket.on('message', function message(raw) {
+			serverMessage = JSON.parse(raw.toString());
+		});
 	});
 
 	// Quiz Start
@@ -87,13 +91,22 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
 			.expect(200);
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.type).toStrictEqual('startQuestion');
+		expect(serverMessage.questionText).toStrictEqual('Are we human?');
+		expect(serverMessage.answerTexts).toStrictEqual(
+			correct.questions[0].answerTexts
+		);
+		expect(serverMessage.time).toStrictEqual(10000);
+		expect(serverMessage.index).toStrictEqual(0);
+		expect(serverMessage.username).toStrictEqual('Jorge');
+		expect(serverMessage.score).toStrictEqual(0);
 	});
 
 	// Question Answering Tests
 	test('Answer Question / Correct', async () => {
-		playerSocket.on('message', function message(raw) {
-			serverMessage = JSON.parse(raw.toString());
-		});
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/answer`)
 			.send(answer)
@@ -110,12 +123,40 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/end`)
 			.expect(200);
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.type).toStrictEqual('endQuestion');
+		expect(serverMessage.correctAnswers).toStrictEqual([1]);
+		// Strict Equal / TODO fix negative scores
+		// Strict Equal / TODO fix negative scores
+		expect(serverMessage.correct).toStrictEqual(true);
+		expect(serverMessage.questionText).toStrictEqual('Are we human?');
+		expect(serverMessage.answerTexts).toStrictEqual(
+			correct.questions[0].answerTexts
+		);
+		expect(serverMessage.index).toStrictEqual(0);
+		expect(serverMessage.username).toStrictEqual('Jorge');
+		expect(serverMessage.yourAnswer).toStrictEqual(1);
+
+		// Leaderboard Field Validation
+		expect(serverMessage.leaderboard[0].name).toBeDefined();
+		expect(serverMessage.leaderboard[0].score).toBeDefined();
+		expect(serverMessage.leaderboard[0].correctAnswers).toBeDefined();
+		expect(serverMessage.leaderboard[0].name).toStrictEqual('Jorge');
+		// expect(serverMessage.leaderboard[0].score).toStrictEqual(4);
+		expect(serverMessage.leaderboard[0].correctAnswers).toStrictEqual([0]);
 	});
 
 	test('Start Second Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/start`)
 			.expect(200);
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.questionText).toStrictEqual('Or are we dancer?');
+		expect(serverMessage.index).toStrictEqual(1);
 	});
 
 	test('Answer Question / Incorrect', async () => {
@@ -135,6 +176,11 @@ describe('Player Control', () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/end`)
 			.expect(200);
+
+		// Check Websocket Message
+		validate(serverMessage);
+		expect(serverMessage.correct).toStrictEqual(false);
+		expect(serverMessage.scoreChange).toStrictEqual(0);
 	});
 
 	// Close Game
