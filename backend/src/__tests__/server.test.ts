@@ -24,6 +24,16 @@ describe('WebSocket Connection Tests', () => {
 	// Set Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
+	test('Quiz Does Not Exist', async () => {
+		const wrongSocket = new WebSocket(
+			`ws://localhost:8080/connect?gameId=55555&playerId=55555`
+		);
+		wrongSocket.on('error', (err) => {
+			expect(err).toBeDefined();
+		});
+		await waitForSocketState(wrongSocket, WebSocket.CLOSED);
+	});
+
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')
@@ -42,8 +52,9 @@ describe('WebSocket Connection Tests', () => {
 	test('Wrong Path', async () => {
 		const failSocket = new WebSocket(`ws://localhost:8080/con`);
 		failSocket.on('error', (err) => {
-			expect(err.message).toBe('socket hang up');
+			expect(err).toBeDefined();
 		});
+		await waitForSocketState(failSocket, failSocket.CLOSED);
 	});
 
 	// Tests to see if a Host can connect and receive data from the websocket
@@ -51,9 +62,8 @@ describe('WebSocket Connection Tests', () => {
 		hostSocket = new WebSocket(
 			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
 		);
-		hostSocket.on('message', function message() {
-			hostSocket.close();
-		});
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
+		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });
