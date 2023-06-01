@@ -4,6 +4,7 @@ import { Question, currentPlayersState } from '@/lib/useKakawGame';
 import HostQuestionBottom from './QuestionPages/HostQuestionBottom';
 import { useRecoilValue } from 'recoil';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 import { apiCall } from '@/lib/api';
 
 export interface HostQuestionPageProps {
@@ -20,6 +21,9 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
+			<Head>
+				<title>Game - Kakaw!</title>
+			</Head>
 			<QuestionTop
 				qNum={props.index + 1}
 				qText={props.question.questionText}

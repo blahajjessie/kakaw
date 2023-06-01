@@ -5,6 +5,7 @@ import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
 import PlayerQuestionBottom from '@/components/QuestionPages/PlayerQuestionBottom';
 import { useRecoilValue } from 'recoil';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
 import GoodJob from 'public/goodjob.png';
 import NoLuck from 'public/noluck.png';
@@ -71,13 +72,16 @@ export default function PlayerQuestionPage({
 
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
+			<Head>
+				<title>Game - Kakaw!</title>
+			</Head>
 			{/* Render the question header */}
 			<QuestionTop
 				qNum={index + 1}
 				qText={question.questionText}
 				endTime={question.endTime}
+				showContinue={true}
 			></QuestionTop>
-
 			{/* Render the question answers */}
 			<QuestionAnswers
 				answers={question.answerTexts}
@@ -86,10 +90,9 @@ export default function PlayerQuestionPage({
 				explanations={question.explanations}
 				correctAnswers={question.correctAnswers}
 			/>
-
 			{/* Render the player question bottom */}
-			<PlayerQuestionBottom name={username} score={score} />
-
+			{/* TODO: pass in actual scoreChange value here */}
+			<PlayerQuestionBottom name={username} score={score} scoreChange={500} />
 			{/* Render the modal when showModal is true */}
 			{showModal && (
 				<div

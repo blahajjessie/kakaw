@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -48,6 +49,9 @@ export default function Home({ code }: HomeProps) {
 
 	return (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
+			<Head>
+				<title>Kakaw!</title>
+			</Head>
 			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
 				<Image
 					alt="Kakaw logo"

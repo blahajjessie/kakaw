@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Head from 'next/head';
 
 import medal1 from '@/public/medal1.png';
 import medal2 from '@/public/medal2.png';
@@ -30,6 +31,9 @@ export default function ResultsPage() {
 
 	return (
 		<main className="w-full h-screen bg-purple-100 bg-results bg-fixed bg-center bg-cover flex flex-row items-end justify-center font-extrabold text-lg text-shadow sm:text-xl lg:text-2xl xl:text-3xl 2xl:text-4xl">
+			<Head>
+				<title>Final Results - Kakaw!</title>
+			</Head>
 			<div className="w-1/3 h-full flex flex-col items-center justify-end sm:w-1/4">
 				<div className="text-white">
 					{resultsEntries[1].isSelf ? 'You' : resultsEntries[1].name}

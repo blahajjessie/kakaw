@@ -1,18 +1,16 @@
+import { useState } from 'react';
 import Image from 'next/image';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+
 import TimerSetter from '@/components/Fixtures/TimerSetter';
 import Qr from '@/components/Fixtures/QrCodeGeneration';
 import { WEBPAGE_BASE_URL } from '@/lib/baseUrl';
-import { useRouter } from 'next/router';
-import { Inter } from 'next/font/google';
 import { apiCall } from '@/lib/api';
-import { useState } from 'react';
 import { currentPlayersState } from '@/lib/useKakawGame';
 
 import logo2 from '@/public/logo2.png';
 import { useRecoilValue } from 'recoil';
-const inter = Inter({
-	subsets: ['latin'],
-});
 
 interface hostProps {
 	gameId: string;
@@ -56,9 +54,10 @@ export default function HostWaiting({ gameId }: hostProps) {
 	const qrCode = Qr(gameId);
 
 	return (
-		<main
-			className={`${inter.className} w-screen h-screen font-sans bg-purple-100 flex flex-col p-4`}
-		>
+		<main className="w-screen h-screen bg-purple-100 flex flex-col p-4">
+			<Head>
+				<title>Waiting Room - Kakaw!</title>
+			</Head>
 			<div className="flex flex-row items-center justify-center sm:justify-start">
 				<Image
 					alt="Kakaw logo"
