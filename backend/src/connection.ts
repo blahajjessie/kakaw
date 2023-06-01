@@ -37,14 +37,21 @@ export function handleConnection(
 	if (user.getWs()) {
 		return killConnection(connection, 'You are already connected to this game');
 	}
-	user.addWs(connection);
 
+	user.addWs(connection);
+	if (playerId == game.hostId){
+		game.endHostTimeout();
+	}
 	connection.on('message', (data) => {
 		console.log(`player ${playerId} says: ${data}`);
 	});
 	// handle when the player leaves or we close the connection
 	connection.on('close', () => {
 		console.log(`player ${playerId} disconnected`);
+		if (game.hostId == playerId){
+			console.warn("Host for "+ game.id + " is leaving!")
+			game.setHostTimeout();
+		}
 		user.removeWs();
 	});
 }
