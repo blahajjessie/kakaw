@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws';
 import { gen } from './code';
 
-import { sendMessage } from './connection';
+import { sendMessage, killConnection } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
 import { EndData, LeaderBoard, socketData, startResp } from './respTypes';
 import { AnswerObj } from './answer';
@@ -88,6 +88,12 @@ export class User {
 			return undefined;
 		}
 		return this.connection;
+	}
+	kick(reason: string){
+		if (this.connection){
+			killConnection(this.connection, "you have been removed from the game because" + reason);
+		}
+		return;
 	}
 	send(message: socketData) {
 		if (!this.connection) {

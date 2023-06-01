@@ -8,7 +8,7 @@ export function sendMessage(client: WebSocket, type: string, data: any) {
 	client.send(JSON.stringify({ type, ...data }));
 }
 
-function killConnection(client: WebSocket, reason: string) {
+export function killConnection(client: WebSocket, reason: string) {
 	sendMessage(client, 'end', { reason });
 	client.close();
 }

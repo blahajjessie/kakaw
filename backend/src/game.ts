@@ -50,8 +50,8 @@ export class Game {
 	constructor(quiz: any) {
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
-		this.hostId = gen(8, []);
 		this.host = new User([], this.quizData.meta.author);
+		this.hostId = this.host.id;	;
 		games.set(this.id, this);
 	}
 
@@ -168,8 +168,17 @@ export class Game {
 		this.hostTimeout = undefined;
 		console.log("Host reconnected");
 	}
+	kickUser(uid: UserId, reason:string){
+		const u = this.getUser(uid)
+		u.kick(reason);
+		this.players.delete(uid);
+	}
 	endGame(){
-		console.log("Host has been disconnected too long. Game should end now!, gameId " + this.id)
+		console.log("Host has been disconnected too long. Game should end now!, gameId " + this.id);
+		this.getUsers().forEach((u)=>{
+			this.kickUser(u.id, "The game is over");
+		})
+		games.delete(this.id);
 	}
 }
 
