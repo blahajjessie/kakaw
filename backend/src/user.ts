@@ -90,8 +90,10 @@ export class User {
 		return this.connection;
 	}
 	send(message: socketData) {
-		if (!this.connection) throw new Error('user not connected');
-
+		if (!this.connection) {
+			console.log('user not connected' + this.name);
+			return;
+		}
 		if (this.connection.readyState === WebSocket.OPEN) {
 			sendMessage(this.connection, message.name, message.data);
 		}
