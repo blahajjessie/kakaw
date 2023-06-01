@@ -8,7 +8,7 @@ import {
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
-import {prefs} from './preferences'
+import { prefs } from './preferences';
 // // used ids for both players and host
 export type GameId = string;
 
@@ -51,7 +51,7 @@ export class Game {
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
 		this.host = new User([], this.quizData.meta.author);
-		this.hostId = this.host.id;	;
+		this.hostId = this.host.id;
 		games.set(this.id, this);
 	}
 
@@ -155,29 +155,43 @@ export class Game {
 	sendResults() {
 		this.host.send(new LeaderboardData(this.getLeaderboard()));
 	}
-	setHostTimeout(){
-		this.hostTimeout = setTimeout(()=> this.endGame(), prefs.hostDisconnectDelay);
-		console.log("Host disconnected. Waiting " + prefs.hostDisconnectDelay + " ms for reconnect, gameId " + this.id)
+	setHostTimeout() {
+		this.hostTimeout = setTimeout(
+			() => this.endGame(),
+			prefs.hostDisconnectDelay
+		);
+		console.log(
+			'Host disconnected. Waiting ' +
+				prefs.hostDisconnectDelay +
+				' ms for reconnect, gameId ' +
+				this.id
+		);
 	}
-	endHostTimeout(){
-		if (!this.hostTimeout){
-			console.log("Host appears to be connected already (or connecting for the first time), gameId " + this.id);
+	endHostTimeout() {
+		if (!this.hostTimeout) {
+			console.log(
+				'Host appears to be connected already (or connecting for the first time), gameId ' +
+					this.id
+			);
 			return;
 		}
 		clearTimeout(this.hostTimeout);
 		this.hostTimeout = undefined;
-		console.log("Host reconnected");
+		console.log('Host reconnected');
 	}
-	kickUser(uid: UserId, reason:string){
-		const u = this.getUser(uid)
+	kickUser(uid: UserId, reason: string) {
+		const u = this.getUser(uid);
 		u.kick(reason);
 		this.players.delete(uid);
 	}
-	endGame(){
-		console.log("Host has been disconnected too long. Game should end now!, gameId " + this.id);
-		this.getUsers().forEach((u)=>{
-			this.kickUser(u.id, "The game is over");
-		})
+	endGame() {
+		console.log(
+			'Host has been disconnected too long. Game should end now!, gameId ' +
+				this.id
+		);
+		this.getUsers().forEach((u) => {
+			this.kickUser(u.id, 'The game is over');
+		});
 		games.delete(this.id);
 	}
 }

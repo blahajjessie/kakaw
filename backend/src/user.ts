@@ -89,9 +89,12 @@ export class User {
 		}
 		return this.connection;
 	}
-	kick(reason: string){
-		if (this.connection){
-			killConnection(this.connection, "you have been removed from the game because" + reason);
+	kick(reason: string) {
+		if (this.connection) {
+			killConnection(
+				this.connection,
+				'you have been removed from the game because' + reason
+			);
 		}
 		return;
 	}

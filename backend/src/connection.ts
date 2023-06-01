@@ -39,7 +39,7 @@ export function handleConnection(
 	}
 
 	user.addWs(connection);
-	if (playerId == game.hostId){
+	if (playerId == game.hostId) {
 		game.endHostTimeout();
 	}
 	connection.on('message', (data) => {
@@ -48,8 +48,8 @@ export function handleConnection(
 	// handle when the player leaves or we close the connection
 	connection.on('close', () => {
 		console.log(`player ${playerId} disconnected`);
-		if (game.hostId == playerId){
-			console.warn("Host for "+ game.id + " is leaving!")
+		if (game.hostId == playerId) {
+			console.warn('Host for ' + game.id + ' is leaving!');
 			game.setHostTimeout();
 		}
 		user.removeWs();
