@@ -95,8 +95,11 @@ export default function PlayerQuestionPage({
 				correctAnswers={question.correctAnswers}
 			/>
 			{/* Render the player question bottom */}
-			{/* TODO: pass in actual scoreChange value here */}
-			<PlayerQuestionBottom name={username} score={score} scoreChange={scoreChange} />
+			<PlayerQuestionBottom
+				name={username}
+				score={score}
+				scoreChange={scoreChange}
+			/>
 			{/* Render the modal when showModal is true */}
 			{showModal && (
 				<div
@@ -135,5 +138,7 @@ export interface PlayerPostQuestionPageProps {
 // this component is separate so that react replaces the PlayerQuestionPage instead of only
 // re-rendering it
 export function PlayerPostQuestionPage(props: PlayerPostQuestionPageProps) {
-	return <PlayerQuestionPage {...props} startWithModal={true} showContinue={true} />;
+	return (
+		<PlayerQuestionPage {...props} startWithModal={true} showContinue={true} />
+	);
 }
