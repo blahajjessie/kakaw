@@ -67,18 +67,17 @@ skips the rest of the current question’s timer if not ended yet, and shows pla
 - `:id:` the id of the game that should be sent
 
 #### Description:
- Returns all player names with their respective score and all their correct answers after the game has finished.
+Returns all player names with their respective score and all their correct answers after the game has finished.
 
 #### Server Event:
-None
+Sends the end of game results to all players also
 
 #### Response:
 `{ok: bool, err?: string, results: Leaderboard[]}`
 - `ok` is a message stating whether the results succeeded
 - `err` is a message indicating some reason that it may have failed
 - `results` is an array of [Leaderboard](###leaderboard) objects
-
-
+- `correctness`(number[]) : An array of the score that each player got, in percent (TODO)
 
 ## Get Export
 #### Description: 
@@ -132,3 +131,4 @@ This contains data about a player's score. An array of these can be used to send
 
 - `name` (string) : the player's username 
 - `score` (number) : the score of the player
+- `positionChange` (number) : The amount that the player's score has changed (TODO)

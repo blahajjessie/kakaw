@@ -10,9 +10,6 @@ Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}&toke
 
 - When a client connects to the server and the game has already started, the server immediately sends a question or endQuestion (or lobby if client is the host) message to catch them up to the current state of the game. Before then, the client just displays “Waiting for the host to start the game” or something. This way the same logic handles both “client joined and is waiting for game to start” and “client joined late and is waiting for the server to respond to them.”
 
-- Leaderboard
-    - `name` (string) : the player's username 
-    - `score` (number) : the score of the player
 
 # Types
 
@@ -56,7 +53,7 @@ The same message is sent to the host, but the information about the answer choic
 - `score` (number) = the player’s current score, the host will receive garbage
 - `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
-- `leaderboard`: sorted array of [{name: string, score: number }, …] to represent the player score
+- `leaderboard`: sorted array of [Leaderboard](host-http.md#leaderboard) to represent the player score
 - `positionChange`: How much the position has changed in the leaderboard. 0 if the position has stayed the same, negative if it has decreased. Sends `NaN` if this is the player's first answered question. (TODO)
 - `responseTime` (number) : the amount of time the player took to answer the question (ms)
 - `questionText` (string) : The question
@@ -67,6 +64,17 @@ The same message is sent to the host, but the information about the answer choic
         Sends `null` if there are no explanations in the quiz, otherwise an array of strings
 - `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
 - `totalQuestions`: the total number of questions in the quiz (TODO)
+
+## `playerResults`
+Sends a player their end of game results (TODO)
+
+#### Fields:
+- `leaderboard` ([`Leaderboard[]`](host-http.md#leaderboard))
+- `numCorrect`(number) : The number of correct answers the player made
+- `numWrong` (number) : The number of incorrect answers the player made
+- `numEmpty` (number) : The number of questions not answered
+- `username` (string) : The username of the player
+- `score` (number) : the player's score
 
 
 ## `playerAction`
