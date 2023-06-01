@@ -8,7 +8,7 @@ import {
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
-
+import {prefs} from './preferences'
 // // used ids for both players and host
 export type GameId = string;
 
@@ -46,7 +46,7 @@ export class Game {
 	activeQuestion = -1;
 	startTime = -1;
 	timer: NodeJS.Timeout | undefined = undefined;
-
+	hostTimeout: NodeJS.Timeout | undefined = undefined;
 	constructor(quiz: any) {
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
@@ -154,6 +154,22 @@ export class Game {
 	}
 	sendResults() {
 		this.host.send(new LeaderboardData(this.getLeaderboard()));
+	}
+	setHostTimeout(){
+		this.hostTimeout = setTimeout(()=> this.endGame(), prefs.hostDisconnectDelay);
+		console.log("Host disconnected. Waiting " + prefs.hostDisconnectDelay + " ms for reconnect, gameId " + this.id)
+	}
+	endHostTimeout(){
+		if (!this.hostTimeout){
+			console.log("Host appears to be connected already (or connecting for the first time), gameId " + this.id);
+			return;
+		}
+		clearTimeout(this.hostTimeout);
+		this.hostTimeout = undefined;
+		console.log("Host reconnected");
+	}
+	endGame(){
+		console.log("Host has been disconnected too long. Game should end now!, gameId " + this.id)
 	}
 }
 
