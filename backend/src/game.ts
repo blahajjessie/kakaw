@@ -208,4 +208,3 @@ export class Game {
 		console.log('Player has received its status update');
 	}
 }
-
