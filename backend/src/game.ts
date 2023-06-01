@@ -209,5 +209,3 @@ export class Game {
 	}
 }
 
-// // interface for user, mostly blank rn but will keep score or smth later.
-// // Userid is stored in the map for now
