@@ -6,11 +6,13 @@ const MAX_TIMER_VALUE = 420;
 interface TimerSetterProps {
 	initTimerValue: number;
 	onChange: (timerValue: number) => void;
+	indicateSeconds?: boolean;
 }
 
 export default function TimerSetter({
 	initTimerValue,
 	onChange,
+	indicateSeconds = true,
 }: TimerSetterProps) {
 	const [timerValue, setTimerValue] = useState(initTimerValue);
 	const [isIncrementing, setIsIncrementing] = useState(false);
@@ -78,7 +80,10 @@ export default function TimerSetter({
 				-
 			</button>
 
-			<div className="px-1 text-black">{timerValue}s</div>
+			<div className="px-1 text-black">
+				{timerValue}
+				{indicateSeconds ? 's' : ''}
+			</div>
 
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-green-200 rounded-md mr-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
