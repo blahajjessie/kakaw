@@ -79,15 +79,15 @@ export default function HostWaiting({ gameId }: hostProps) {
 					<div className="bg-white flex flex-col justify-center items-center rounded-xl p-4">
 						<div className="text-4xl xl:text-5xl mb-2">Settings:</div>
 						<div className="flex flex-col text-xl xl:text-2xl">
-							<div className="flex flex-row items-center justify-between whitespace-nowrap mt-2">
-								<div className="mr-1">Time Limit:</div>
+							<div className="flex flex-row items-center justify-between mt-2">
+								<div className="mr-2">Time Limit:</div>
 								<TimerSetter
 									initTimerValue={timeLimit}
 									onChange={(v) => setTimeLimit(v)}
 								/>
 							</div>
-							<div className="flex flex-row items-center justify-between whitespace-nowrap mt-2">
-								<div className="mr-1">Max Players:</div>
+							<div className="flex flex-row items-center justify-between mt-2">
+								<div className="mr-2">Max Players:</div>
 								<TimerSetter
 									initTimerValue={maxPlayers}
 									onChange={(v) => setMaxPlayers(v)}
@@ -98,7 +98,7 @@ export default function HostWaiting({ gameId }: hostProps) {
 					</div>
 				</div>
 			</div>
-			<div className="w-full h-1/2 py-4">
+			<div className="w-full h-1/2 grow py-4">
 				<div className="absolute rounded-xl shadow-heavy bg-purple-50 text-3xl py-3 px-6 w-fit">
 					Participants
 				</div>
