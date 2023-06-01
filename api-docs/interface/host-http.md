@@ -1,71 +1,134 @@
 # Game Host (teacher) API's
 
 ## Create game
-Endpoint: `POST /games`: create a game (does not start it yet)
+#### Description:
+Host creates a game
 
-`body:` JSON file of the questions and answers
+#### Endpoint: 
+`POST /games`
 
-Description: Host creates a game
+#### `body`: 
+JSON file of the questions and answers [(a `quiz`)](../backend/Quiz.md)
 
-response: `{gameId: string, hostId: string}`
 
+#### Server Event
 The game opens on the server side, and is now accepting players via the join code (which is the game ID)
-
 Upon receipt of this, the host should display a screen showing a list of players. 
 
+#### Response:
+`{gameId: string, hostId: string}`
+- `gameId` is the id of the game that was started
+- `hostId` is the id of the host
+
 ## Start a question
+#### Description:
+Start accepting answers for the next question 
 
-Endpoint : `POST /games/:id/questions/:index/start`
-
-Description : start accepting answers for the next question 
-
-Server event: Show the question on all user screens (via a websocket #TODO)
-
-response: `{ok: bool, err?: string}`
-
+#### Endpoint:
+`POST /games/:id/questions/:index/start`
 - `:id:` the id of the game that the question should be started on
 - `:index` : the question number that should be started.
   Send this with index 0 to start the game, then 1, 2, 3, etc. until you are out of questions.
 
-## Skip a question
+#### Server event:
+Show the question on all user screens [(a `startQuestion`)](server-socket.md#startquestion)
 
-Endpoint: `POST /games/:id/questions/:index/end`
+#### response:
+`{ok: bool, err?: string}`
+- `ok` is true if the question advanced, false if it wasn't. 
+- `err` is an optional error message representing what may have happened
 
-Description : skips the rest of the current question’s timer if not ended yet, and shows players answers. 
+## End a question
+#### Description:
+skips the rest of the current question’s timer if not ended yet, and shows players answers. 
 
-Server event: The next question will not be showing or accepting answers. 
-Players will get their answers
-Skips question timer if not ended yet
+#### Endpoint:
+`POST /games/:id/questions/:index/end`
+- `:id:` the id of the game that the question should be ended
+- `:index` : the question number that should be ended.
+  Send this with index 0 to start the game, then 1, 2, 3, etc. until you are out of questions.
 
-no request body here (we will work on host authentication later)
 
+#### Server event:
+- The next question will not be showing or accepting answers. 
+- Players will get their answers
+- Skips question timer if not ended yet
+- Show the results on all user screens [(an `endQuestion`)](server-socket.md#endquestion)
+
+#### Response:
+`{ok: bool, err?: string}`
+- `ok` is true if the question was ended, false if it wasn't. 
+- `err` is an optional error message representing what may have happened
 
 ## Show results
-endpoint: `GET /games/:id/results`:
 
-Description: Returns all player names with their respective score and all their correct answers after the game has finished.
+#### Endpoint:
+ `GET /games/:id/results`:
+- `:id:` the id of the game that should be sent
 
-Server Event: Show it on the host’s screen
-where a leaderboard is 
+#### Description:
+Returns all player names with their respective score and all their correct answers after the game has finished.
 
-Response: `{ok: bool, err?: string, results: Leaderboard[]}`
+#### Server Event:
+Sends the end of game results to all players also
 
-#### Leaderboard
-- `name` (string) : the player's username 
-- `score` (number) : the score of the player
+#### Response:
+`{ok: bool, err?: string, results: Leaderboard[]}`
+- `ok` is a message stating whether the results succeeded
+- `err` is a message indicating some reason that it may have failed
+- `results` is an array of [Leaderboard](###leaderboard) objects
+- `correctness`(number[]) : An array of the score that each player got, in percent (TODO)
 
-### Get Export
+## Get Export
+#### Description: 
+Sends the quiz json to the host
 
+#### Endpoint:
+`GET /games/:id/export-quiz`
+- `id` : the game id
 
+#### Server event:
+None
+
+#### Response: 
+a complete [`quiz` Json file](../backend/Quiz.md)
 
 ## Kick player
+#### Description:
+Removes the specified player from the game. Can be called at any time.
 
-endpoint: `DELETE /games/:gameId/players/:playerId`
+#### Endpoint:
+`DELETE /games/:gameId/players/:playerId`
 
-Description: Removes the specified player from the game. Can be called at any time.
+#### Server Event:
+- close the connection for the specified player.
+- The player will receive a [message](server-socket.md#end) saying that they have been kicked by the host
+- The host will not receive a WS message. Instead, they remove the player from their local Map of players upon hearing the successful response for this request.
 
-Server Event: close the connection for the specified player.
 
-The host will not receive a WS message. Instead, they remove the player from their local Map of players upon hearing the successful response for this request.
+#### Response:
+`{ok: bool, err?: string}`
+- `ok` returns true or false if the player was kicked
+- `err` will be a string if the kick failed
 
-Response: `{ok: bool, err?: string}`
+## End game
+
+#### Description: 
+Ends the game and kicks all players
+
+#### Endpoint:
+`DELETE /games/:gameId`
+- `gameId` is the id of the game to end
+
+#### Server event: 
+- All players receive a [message](server-socket.md#end) informing them that the game has been ended by the host
+
+#### Response:
+None. The game is now closed and the host socket has been closed
+
+### Leaderboard
+This contains data about a player's score. An array of these can be used to send the leaderboard
+
+- `name` (string) : the player's username 
+- `score` (number) : the score of the player
+- `positionChange` (number) : The amount that the player's score has changed (TODO)
