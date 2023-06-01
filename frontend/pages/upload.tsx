@@ -2,6 +2,7 @@ import { ChangeEvent, useRef, useState } from 'react';
 import { useRouter } from 'next/router';
 import Head from 'next/head';
 
+import NoMobileSupport from '@/components/Fixtures/NoMobileSupport';
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import { apiCall } from '@/lib/api';
 import Link from 'next/link';
@@ -14,22 +15,6 @@ enum UploadStatus {
 }
 
 export default function UploadPage() {
-	const mobileContent = (
-		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
-			<Head>
-				<title>Upload Quiz - Kakaw!</title>
-			</Head>
-			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
-				<div className="bg-gray-100 rounded-xl w-2/5 px-8 py-2 -mb-2 font-mono text-4xl text-center font-extrabold shadow-heavy">
-					404
-				</div>
-				<div className="bg-gray-100 rounded-xl w-4/5 px-8 py-4 mb-2 text-lg text-center shadow-heavy">
-					Feature not supported on mobile devices :&#40;
-				</div>
-			</div>
-		</main>
-	);
-
 	const [quizData, setQuizData] = useState<any>(null);
 	const [filename, setFilename] = useState<string | null>(null);
 	const [valid, setValid] = useState(false);
@@ -75,6 +60,8 @@ export default function UploadPage() {
 			console.error(e);
 		}
 	}
+
+	const mobileContent = <NoMobileSupport />;
 
 	const desktopContent = (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
