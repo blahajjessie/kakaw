@@ -8,6 +8,7 @@ import { waitForSocketState } from './testTools/connect';
 interface CreationResponse {
 	gameId: string;
 	hostId: string;
+	token: string;
 }
 
 let request: supertest.SuperTest<supertest.Test>;
@@ -36,17 +37,18 @@ describe('Multiple Connection Attempts', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
 
 	test('Second Connection is Destroyed', async () => {
 		hostSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
+			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}&token=${createRes.token}`
 		);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
 		dupeSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
+			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}&token=${createRes.token}`
 		);
 
 		await waitForSocketState(dupeSocket, WebSocket.CLOSED);
@@ -70,13 +72,14 @@ describe('Client can Message Host', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
 
 	test('Message Server', async () => {
 		hostSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
+			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}&token=${createRes.token}`
 		);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
 		hostSocket.send(JSON.stringify({ ok: 'bongo' }));

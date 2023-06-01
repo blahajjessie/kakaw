@@ -8,6 +8,7 @@ import { waitForSocketState } from './testTools/connect';
 interface CreationResponse {
 	gameId: string;
 	hostId: string;
+	token: string;
 }
 
 let request: supertest.SuperTest<supertest.Test>;
@@ -26,7 +27,7 @@ describe('WebSocket Connection Tests', () => {
 	let createRes: CreationResponse;
 	test('Quiz Does Not Exist', async () => {
 		const wrongSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=55555&playerId=55555`
+			`ws://localhost:8080/connect?gameId=55555&playerId=55555&token=55555`
 		);
 		wrongSocket.on('error', (err) => {
 			expect(err).toBeDefined();
@@ -44,6 +45,7 @@ describe('WebSocket Connection Tests', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
@@ -60,7 +62,7 @@ describe('WebSocket Connection Tests', () => {
 	// Tests to see if a Host can connect and receive data from the websocket
 	test('Successful Connection', async () => {
 		hostSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
+			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}&token=${createRes.token}`
 		);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
 		hostSocket.close();
