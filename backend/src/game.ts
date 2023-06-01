@@ -194,6 +194,20 @@ export class Game {
 		});
 		games.delete(this.id);
 	}
+	updateUser(uid: UserId) {
+		if (uid == this.hostId) {
+			this.updateHost();
+			return;
+		}
+		this.updatePlayer(uid);
+	}
+	updateHost() {
+		this.endHostTimeout();
+
+	}
+	updatePlayer(uid: UserId) {
+		console.log("Player has received its status update");
+	}
 }
 
 // // interface for user, mostly blank rn but will keep score or smth later.

@@ -39,9 +39,7 @@ export function handleConnection(
 	}
 
 	user.addWs(connection);
-	if (playerId == game.hostId) {
-		game.endHostTimeout();
-	}
+	game.updateUser(user.id);
 	connection.on('message', (data) => {
 		console.log(`player ${playerId} says: ${data}`);
 	});
