@@ -16,14 +16,18 @@ export interface PlayerQuestionPageProps {
 	question: Question;
 	index: number;
 	startWithModal?: boolean;
+	showContinue?: boolean;
 	playerAnswer?: number;
+	scoreChange?: number;
 }
 
 export default function PlayerQuestionPage({
 	question,
 	index,
 	startWithModal = false,
+	showContinue = false,
 	playerAnswer,
+	scoreChange,
 }: PlayerQuestionPageProps) {
 	// which answer was actually given -- starts as null if the player hasn't answered yet; is
 	// always defined on the post-question page
@@ -80,7 +84,7 @@ export default function PlayerQuestionPage({
 				qNum={index + 1}
 				qText={question.questionText}
 				endTime={question.endTime}
-				showContinue={true}
+				showContinue={showContinue}
 			></QuestionTop>
 			{/* Render the question answers */}
 			<QuestionAnswers
@@ -92,7 +96,7 @@ export default function PlayerQuestionPage({
 			/>
 			{/* Render the player question bottom */}
 			{/* TODO: pass in actual scoreChange value here */}
-			<PlayerQuestionBottom name={username} score={score} scoreChange={500} />
+			<PlayerQuestionBottom name={username} score={score} scoreChange={scoreChange} />
 			{/* Render the modal when showModal is true */}
 			{showModal && (
 				<div
@@ -125,10 +129,11 @@ export interface PlayerPostQuestionPageProps {
 	question: Question;
 	index: number;
 	playerAnswer: number;
+	scoreChange: number;
 }
 
 // this component is separate so that react replaces the PlayerQuestionPage instead of only
 // re-rendering it
 export function PlayerPostQuestionPage(props: PlayerPostQuestionPageProps) {
-	return <PlayerQuestionPage {...props} startWithModal={true} />;
+	return <PlayerQuestionPage {...props} startWithModal={true} showContinue={true} />;
 }
