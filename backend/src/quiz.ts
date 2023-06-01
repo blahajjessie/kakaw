@@ -1,5 +1,3 @@
-import { BeginData, startResp } from './respTypes';
-
 export interface QuizQuestion {
 	questionText: string;
 	answerTexts: string[];
@@ -231,7 +229,7 @@ export class Quiz {
 		return this.questions[qn].answerTexts;
 	}
 	getQuestionTime(qn: number): number {
-		return this.questions[qn].time || this.meta.timeDefault;
+		return (this.questions[qn].time || this.meta.timeDefault) * 1000;
 	}
 	getPoints(qn: number): number {
 		return this.questions[qn].points || this.meta.pointDefault;
