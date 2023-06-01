@@ -82,22 +82,20 @@ export default function HostWaiting({ gameId }: hostProps) {
 					</div>
 					<div className="bg-white flex flex-col justify-center items-center rounded-xl p-4">
 						<div className="text-4xl xl:text-5xl mb-2">Settings:</div>
-						<div className="flex flex-row mt-2">
-							<div className="flex flex-row p-1">
-								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap mt-2">
-									<div className="mb-4">Time Limit:</div>
-									<div className="mb-4">Max Players:</div>
-								</div>
-								<div className="flex flex-col items-center justify-center text-xl xl:text-2xl whitespace-nowrap">
-									<TimerSetter
-										initTimerValue={timeLimit}
-										onChange={(v) => setTimeLimit(v)}
-									/>
-									<TimerSetter
-										initTimerValue={maxPlayers}
-										onChange={(v) => setMaxPlayers(v)}
-									/>
-								</div>
+						<div className="flex flex-col text-xl xl:text-2xl">
+							<div className="flex flex-row items-center justify-between whitespace-nowrap mt-2">
+								<div className="mr-1">Time Limit:</div>
+								<TimerSetter
+									initTimerValue={timeLimit}
+									onChange={(v) => setTimeLimit(v)}
+								/>
+							</div>
+							<div className="flex flex-row items-center justify-between whitespace-nowrap mt-2">
+								<div className="mr-1">Max Players:</div>
+								<TimerSetter
+									initTimerValue={maxPlayers}
+									onChange={(v) => setMaxPlayers(v)}
+								/>
 							</div>
 						</div>
 					</div>
