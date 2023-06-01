@@ -203,10 +203,9 @@ export class Game {
 	}
 	updateHost() {
 		this.endHostTimeout();
-
 	}
 	updatePlayer(uid: UserId) {
-		console.log("Player has received its status update");
+		console.log('Player has received its status update');
 	}
 }
 

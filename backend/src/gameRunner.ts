@@ -211,21 +211,22 @@ export default function registerGameRoutes(app: Express) {
 		game.sendPlayerAction(userId);
 		return;
 	});
-	app.delete('/games/:gameId', (req, res)=>{
+	app.delete('/games/:gameId', (req, res) => {
 		const game = getGame(req.params.gameId);
 		try {
 			game.endGame();
-			res.status(200).send({ok: true})
-		} catch(e) {
+			res.status(200).send({ ok: true });
+		} catch (e) {
 			// console.log('answer() failed; the error message might be right');
-			res.status(500).send({ ok: false, err: `Unable to delete game. Reason:` + e });
+			res
+				.status(500)
+				.send({ ok: false, err: `Unable to delete game. Reason:` + e });
 			return;
 		}
-
 	});
-	app.delete('DELETE /games/:gameId/players/:playerId', (req, res)=>{
+	app.delete('DELETE /games/:gameId/players/:playerId', (req, res) => {
 		const game = getGame(req.params.gameId);
-		const uid = req.params.playerId
+		const uid = req.params.playerId;
 		try {
 			game.getUser(uid);
 		} catch {
@@ -234,14 +235,15 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 		try {
-			game.kickUser(uid, " the host has kicked you from the game");
-			res.status(200).send({ok: true})
+			game.kickUser(uid, ' the host has kicked you from the game');
+			res.status(200).send({ ok: true });
 			return;
-		} catch(e) {
+		} catch (e) {
 			// console.log('answer() failed; the error message might be right');
-			res.status(500).send({ ok: false, err: `Unable to Kick user. Reason:` + e });
+			res
+				.status(500)
+				.send({ ok: false, err: `Unable to Kick user. Reason:` + e });
 			return;
 		}
-
 	});
 }
