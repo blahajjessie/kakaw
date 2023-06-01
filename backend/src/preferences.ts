@@ -1,3 +1,3 @@
 export const prefs = {
-	hostDisconnectDelay: 60000,
+	hostDisconnectDelay: 5000,
 };

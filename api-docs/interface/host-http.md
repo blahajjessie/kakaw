@@ -124,7 +124,10 @@ Ends the game and kicks all players
 - All players receive a [message](server-socket.md#end) informing them that the game has been ended by the host
 
 #### Response:
-None. The game is now closed and the host socket has been closed
+`{ok: bool, err?: string}`
+- `ok` returns true or false if the player was kicked
+- `err` will be a string if the kick failed. 
+
 
 ### Leaderboard
 This contains data about a player's score. An array of these can be used to send the leaderboard
