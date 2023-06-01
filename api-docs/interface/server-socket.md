@@ -42,7 +42,8 @@ Sent by server whenever a new question is available
 - `time` (number): The number of *milliseconds* that are left in the question (where 0 is the end of the question)
 - `index` (number): the number of the question being started.
 - `score` (number): player’s current score, the host will receive garbage
-- `username`: the name of the player. 
+- `username`: the name of the player
+- `totalQuestions`: the total number of questions in the quiz (TODO)
 
 
 ## `endQuestion`
@@ -56,6 +57,7 @@ The same message is sent to the host, but the information about the answer choic
 - `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
 - `leaderboard`: sorted array of [{name: string, score: number }, …] to represent the player score
+- `positionChange`: How much the position has changed in the leaderboard. 0 if the position has stayed the same, negative if it has decreased. Sends `NaN` if this is the player's first answered question. (TODO)
 - `responseTime` (number) : the amount of time the player took to answer the question (ms)
 - `questionText` (string) : The question
 - `answerTexts` (string[]) : string[] of the answer choices
@@ -64,7 +66,7 @@ The same message is sent to the host, but the information about the answer choic
 - `explanations` (string[] | null) : The explanations for right and wrong answers. 
         Sends `null` if there are no explanations in the quiz, otherwise an array of strings
 - `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
-
+- `totalQuestions`: the total number of questions in the quiz (TODO)
 
 
 ## `playerAction`
