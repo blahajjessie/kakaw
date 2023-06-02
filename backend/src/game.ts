@@ -2,9 +2,9 @@ import { Quiz, QuizQuestion } from './quiz';
 import {
 	BeginData,
 	startResp,
-	EndResp,
 	LeaderBoard,
 	LeaderboardData,
+	ActionData,
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
@@ -75,6 +75,14 @@ export class Game {
 		return this.quizData.getQuestionData(this.activeQuestion);
 	}
 
+	sendPlayerAction(uid: UserId) {
+		const user = this.getUser(uid);
+		if (!user) throw new Error('User issue');
+		const respObj = {
+			[uid]: user.name,
+		};
+		this.host.send(new ActionData({ players: respObj }));
+	}
 	// Input: Game Object
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
@@ -96,7 +104,7 @@ export class Game {
 		});
 		this.quizOpen = true;
 
-		this.timer = setTimeout(() => this.endQuestion(), qt * 1000);
+		this.timer = setTimeout(() => this.endQuestion(), qt);
 		this.startTime = Date.now();
 
 		return;

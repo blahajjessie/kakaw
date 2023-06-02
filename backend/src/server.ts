@@ -8,7 +8,6 @@ app.use(express.json());
 
 import registerGameRoutes from './gameRunner';
 import { getGame, gameExist } from './game';
-import { Game } from './game';
 registerGameRoutes(app);
 
 // create websocket "server" which really piggybacks on the express server

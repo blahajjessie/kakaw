@@ -122,7 +122,7 @@ export default function useKakawGame(): {
 					setCurrentPlayers(
 						new Map([
 							...currentPlayers.entries(),
-							...Object.entries(event.player as Record<string, string>),
+							...Object.entries(event.players as Record<string, string>),
 						])
 					);
 					break;
