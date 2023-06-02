@@ -169,8 +169,8 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.get('/games/:id/results', validateHostToken, (req, res) => {
-		const gameId = req.params.id;
+	app.get('/games/:gameId/results', validateHostToken, (req, res) => {
+		const gameId = req.params.gameId;
 		const game = getGame(gameId)!;
 
 		// host end results
@@ -179,8 +179,8 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.get('/games/:id/export-quiz', (req, res) => {
-		const gameId = req.params.id;
+	app.get('/games/:gameId/export-quiz', (req, res) => {
+		const gameId = req.params.gameId;
 		const game = getGame(gameId);
 		res.status(200).json(game.quizData);
 		return;
