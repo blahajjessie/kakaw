@@ -32,12 +32,13 @@ export default function Home({ code }: HomeProps) {
 		setJoining(true);
 
 		try {
-			const { id } = await apiCall('POST', `/games/${gameId}/players`, {
+			const { id, token } = await apiCall('POST', `/games/${gameId}/players`, {
 				username,
 			});
 
 			// we got an ID so redirect to the player page
 			console.log(`entering game: ${gameId}, ${id}`);
+			sessionStorage.setItem('kakawToken', token);
 			router.push(`/play/${gameId}/${id}`);
 		} catch (e) {
 			setError((e as Error).toString());
