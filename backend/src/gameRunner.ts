@@ -234,12 +234,10 @@ export default function registerGameRoutes(app: Express) {
 
 			// check if question is open
 			if (game.activeQuestion != index || !game.quizOpen) {
-				res
-					.status(400)
-					.send({
-						ok: false,
-						err: `Question ${index} is not open for answers`,
-					});
+				res.status(400).send({
+					ok: false,
+					err: `Question ${index} is not open for answers`,
+				});
 				return;
 			}
 
@@ -249,12 +247,10 @@ export default function registerGameRoutes(app: Express) {
 				answerChoice >=
 					game.quizData.getAnswerChoices(game.activeQuestion).length
 			) {
-				res
-					.status(400)
-					.send({
-						ok: false,
-						err: `Answer index ${answerChoice} is not valid.`,
-					});
+				res.status(400).send({
+					ok: false,
+					err: `Answer index ${answerChoice} is not valid.`,
+				});
 				return;
 			}
 			// validate time
