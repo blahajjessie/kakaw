@@ -91,7 +91,7 @@ describe('Player Control', () => {
 	test('Start Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -111,7 +111,7 @@ describe('Player Control', () => {
 	test('Answer Question / Correct', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/answer`)
-			.set({authorization: 'Bearer ' + player.token})
+			.set({ authorization: 'Bearer ' + player.token })
 			.send(answer)
 			.expect(200)
 			.then((data) => {
@@ -125,7 +125,7 @@ describe('Player Control', () => {
 	test('End Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/end`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -155,7 +155,7 @@ describe('Player Control', () => {
 	test('Start Second Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/start`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -167,7 +167,7 @@ describe('Player Control', () => {
 	test('Answer Question / Incorrect', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/answer`)
-			.set({authorization: 'Bearer ' + player.token})
+			.set({ authorization: 'Bearer ' + player.token })
 			.send(answer)
 			.expect(200)
 			.then((data) => {
@@ -181,7 +181,7 @@ describe('Player Control', () => {
 	test('End Second Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/end`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message

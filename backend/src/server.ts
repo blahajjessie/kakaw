@@ -71,14 +71,11 @@ httpServer.on('upgrade', (request, socket, head) => {
 			webSocketServer.emit('connection', client, request);
 			handleConnection(client, game, playerId);
 		});
-	}
-	catch (e){
+	} catch (e) {
 		console.log(e);
 		socket.destroy();
 		return;
 	}
-	
-
 });
 
 export default httpServer;

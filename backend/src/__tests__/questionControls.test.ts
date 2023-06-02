@@ -54,7 +54,7 @@ describe('Question Controls', () => {
 	test('Start Question Failure / Question Out of Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/2/start`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(404)
 			.then((data) => {
 				expect(data).toBeDefined();
@@ -67,7 +67,7 @@ describe('Question Controls', () => {
 	test('End Question Failure / Question Out of Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/2/end`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(400)
 			.then((data) => {
 				expect(data).toBeDefined();
@@ -80,7 +80,7 @@ describe('Question Controls', () => {
 	test('Start Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200)
 			.then((data) => {
 				expect(data).toBeDefined();
@@ -96,7 +96,7 @@ describe('Question Controls', () => {
 	test('End Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/end`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200)
 			.then((data) => {
 				expect(data).toBeDefined();
@@ -113,7 +113,7 @@ describe('Question Controls', () => {
 	test('Results', async () => {
 		await request
 			.get(`/games/${createRes.gameId}/results`)
-			.set({authorization: 'Bearer ' + createRes.token})
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200)
 			.then((data) => {
 				expect(data).toBeDefined();

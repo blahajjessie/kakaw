@@ -124,50 +124,58 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.post('/games/:gameId/questions/:index/start', validateHostToken, (req, res) => {
-		const index = parseInt(req.params.index);
-		const game = getGame(req.params.gameId)!;
-		console.log("start");
-		// start accepting answers for the question index
+	app.post(
+		'/games/:gameId/questions/:index/start',
+		validateHostToken,
+		(req, res) => {
+			const index = parseInt(req.params.index);
+			const game = getGame(req.params.gameId)!;
+			console.log('start');
+			// start accepting answers for the question index
 
-		if (index != game.activeQuestion + 1) {
-			res.status(404).send({
-				ok: false,
-				err: `Question ${index} is not next`,
-			});
+			if (index != game.activeQuestion + 1) {
+				res.status(404).send({
+					ok: false,
+					err: `Question ${index} is not next`,
+				});
+				return;
+			}
+
+			game.beginQuestion();
+
+			res.status(200).send({ ok: true });
+
 			return;
 		}
+	);
 
-		game.beginQuestion();
+	app.post(
+		'/games/:gameId/questions/:index/end',
+		validateHostToken,
+		(req, res) => {
+			const gameId: GameId = req.params.gameId;
+			const index = parseInt(req.params.index);
+			const game = getGame(gameId)!;
 
-		res.status(200).send({ ok: true });
+			// host-requested game error
+			// out-of-bounds error
 
-		return;
-	});
+			// stop accepting answers for the question index
+			if (index != game.activeQuestion) {
+				res.status(400).send({
+					ok: false,
+					err: `Question ${index} is not open`,
+				});
+				return;
+			}
 
-	app.post('/games/:gameId/questions/:index/end', validateHostToken, (req, res) => {
-		const gameId: GameId = req.params.gameId;
-		const index = parseInt(req.params.index);
-		const game = getGame(gameId)!;
+			// show question text and answers on both host and player screens
+			game.endQuestion();
 
-		// host-requested game error
-		// out-of-bounds error
-
-		// stop accepting answers for the question index
-		if (index != game.activeQuestion) {
-			res.status(400).send({
-				ok: false,
-				err: `Question ${index} is not open`,
-			});
+			res.status(200).send({ ok: true });
 			return;
 		}
-
-		// show question text and answers on both host and player screens
-		game.endQuestion();
-
-		res.status(200).send({ ok: true });
-		return;
-	});
+	);
 
 	app.get('/games/:gameId/results', validateHostToken, (req, res) => {
 		const gameId = req.params.gameId;
@@ -214,44 +222,57 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.post('/games/:gameId/questions/:index/answer', validatePlayerToken, (req, res) => {
-		const gameId: GameId = req.params.gameId;
-		// TODO change this to match whatever method we use to authenticate users
-		const userId: UserId = req.body.userId;
-		const index = parseInt(req.params.index);
-		const game = getGame(gameId)!;
+	app.post(
+		'/games/:gameId/questions/:index/answer',
+		validatePlayerToken,
+		(req, res) => {
+			const gameId: GameId = req.params.gameId;
+			// TODO change this to match whatever method we use to authenticate users
+			const userId: UserId = req.body.userId;
+			const index = parseInt(req.params.index);
+			const game = getGame(gameId)!;
 
-		// check if question is open
-		if (game.activeQuestion != index || !game.quizOpen) {
-			res
-				.status(400)
-				.send({ ok: false, err: `Question ${index} is not open for answers` });
+			// check if question is open
+			if (game.activeQuestion != index || !game.quizOpen) {
+				res
+					.status(400)
+					.send({
+						ok: false,
+						err: `Question ${index} is not open for answers`,
+					});
+				return;
+			}
+
+			const answerChoice = req.body.answer;
+			if (
+				typeof answerChoice != 'number' ||
+				answerChoice >=
+					game.quizData.getAnswerChoices(game.activeQuestion).length
+			) {
+				res
+					.status(400)
+					.send({
+						ok: false,
+						err: `Answer index ${answerChoice} is not valid.`,
+					});
+				return;
+			}
+			// validate time
+			const ansTime: number = Date.now() - game.startTime;
+			console.log(ansTime);
+			try {
+				game.getUser(userId).answer(game.activeQuestion, ansTime, answerChoice);
+			} catch {
+				// console.log('answer() failed; the error message might be right');
+				res
+					.status(400)
+					.send({ ok: false, err: `User ${userId} does not exist` });
+				return;
+			}
+
+			res.status(200).send({ ok: true });
+			game.sendPlayerAction(userId);
 			return;
 		}
-
-		const answerChoice = req.body.answer;
-		if (
-			typeof answerChoice != 'number' ||
-			answerChoice >= game.quizData.getAnswerChoices(game.activeQuestion).length
-		) {
-			res
-				.status(400)
-				.send({ ok: false, err: `Answer index ${answerChoice} is not valid.` });
-			return;
-		}
-		// validate time
-		const ansTime: number = Date.now() - game.startTime;
-		console.log(ansTime);
-		try {
-			game.getUser(userId).answer(game.activeQuestion, ansTime, answerChoice);
-		} catch {
-			// console.log('answer() failed; the error message might be right');
-			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
-			return;
-		}
-
-		res.status(200).send({ ok: true });
-		game.sendPlayerAction(userId);
-		return;
-	});
+	);
 }
