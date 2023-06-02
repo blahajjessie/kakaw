@@ -64,7 +64,12 @@ export default function UploadPage() {
 
 		try {
 			// this will have to store the host ID somewhere so that the websocket opening code can use it
-			const { gameId, hostId } = await apiCall('POST', '/games', quizData);
+			const { gameId, hostId, token } = await apiCall(
+				'POST',
+				'/games',
+				quizData
+			);
+			sessionStorage.setItem('kakawToken', token);
 			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			setUploadStatus(UploadStatus.Error);

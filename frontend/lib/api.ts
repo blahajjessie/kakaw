@@ -9,11 +9,14 @@ export async function apiCall(
 	body?: any
 ): Promise<any> {
 	const options: RequestInit = { method };
+	const token = sessionStorage.getItem('kakawToken');
+	options.headers = {};
 	if (body) {
 		options.body = JSON.stringify(body);
-		options.headers = {
-			'content-type': 'application/json',
-		};
+		options.headers['content-type'] = 'application/json';
+	}
+	if (token) {
+		options.headers['authorization'] = `Bearer ${token}`;
 	}
 
 	const req = await fetch(API_BASE_URL + url, options);
