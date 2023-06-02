@@ -4,12 +4,7 @@ import correct from './testTools/quizzes/correct.json';
 
 import { WebSocket } from 'ws';
 import { waitForSocketState } from './testTools/connect';
-
-interface CreationResponse {
-	gameId: string;
-	hostId: string;
-	token: string;
-}
+import { CreationResponse } from './testTools/testDef';
 
 let request: supertest.SuperTest<supertest.Test>;
 

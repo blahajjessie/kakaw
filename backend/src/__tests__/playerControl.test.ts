@@ -3,14 +3,9 @@ import supertest from 'supertest';
 import correct from './testTools/quizzes/correct.json';
 
 import { WebSocket } from 'ws';
-import { WEBSOCKET_BASE_URL } from './testTools/apiDef';
+import { WEBSOCKET_BASE_URL, CreationResponse } from './testTools/testDef';
 import { waitForSocketState } from './testTools/connect';
 import { validate } from './testTools/validateSocket';
-
-interface CreationResponse {
-	gameId: string;
-	hostId: string;
-}
 
 let request: supertest.SuperTest<supertest.Test>;
 
@@ -48,6 +43,7 @@ describe('Player Control', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
