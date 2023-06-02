@@ -14,6 +14,7 @@ export class User {
 	id: UserId;
 	answers: Array<AnswerObj> = new Array<AnswerObj>();
 	connection: WebSocket | undefined = undefined;
+	previousPosition: number = -1;
 	constructor(used: UserId[], name: string) {
 		this.id = gen(8, used);
 		this.name = name;
@@ -55,26 +56,37 @@ export class User {
 			index: qn,
 			username: this.name,
 			score: this.totalScore(),
+			totalQuestions: quiz.getQuestionCount(),
 		};
 	}
 	getEndData(
 		leaderBoard: LeaderBoard[],
 		qn: number,
-		question: QuizQuestion
+		question: QuizQuestion,
+		totalQuestions: number,
 	): EndData {
+		// calculate position change
+		const playerPosition = leaderBoard.findIndex((entry) => entry.name === this.name);
+		const positionChange = NaN;
+		if (this.previousPosition > -1) {
+			const positionChange = this.previousPosition - playerPosition;
+		}
+		this.previousPosition = playerPosition;
 		return new EndData({
 			correctAnswers: question.correctAnswers,
 			explanations: question.explanations || null,
 			score: this.totalScore(),
 			scoreChange: this.answers[qn].score,
 			correct: this.answers[qn].correct,
-			responseTime: this.answers[qn].time,
 			leaderboard: leaderBoard,
+			positionChange: positionChange,
+			responseTime: this.answers[qn].time,
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
 			index: qn,
 			username: this.name,
 			yourAnswer: this.answers[qn].answer,
+			totalQuestions: totalQuestions,
 		});
 	}
 	addWs(sock: WebSocket) {
