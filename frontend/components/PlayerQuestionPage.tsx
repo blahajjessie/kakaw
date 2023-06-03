@@ -16,6 +16,7 @@ export interface PlayerQuestionPageProps {
 	index: number;
 	startWithModal?: boolean;
 	playerAnswer?: number;
+	onLeaderboardNavigation?: () => void;
 }
 
 export default function PlayerQuestionPage({
@@ -23,6 +24,7 @@ export default function PlayerQuestionPage({
 	index,
 	startWithModal = false,
 	playerAnswer,
+	onLeaderboardNavigation,
 }: PlayerQuestionPageProps) {
 	// which answer was actually given -- starts as null if the player hasn't answered yet; is
 	// always defined on the post-question page
@@ -118,11 +120,10 @@ export default function PlayerQuestionPage({
 	);
 }
 
-export interface PlayerPostQuestionPageProps {
-	question: Question;
-	index: number;
-	playerAnswer: number;
-}
+export type PlayerPostQuestionPageProps = Omit<
+	PlayerQuestionPageProps,
+	'startWithModal'
+> & { onLeaderboardNavigation: () => void };
 
 // this component is separate so that react replaces the PlayerQuestionPage instead of only
 // re-rendering it

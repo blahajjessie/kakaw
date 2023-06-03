@@ -3,21 +3,14 @@ import Image from 'next/image';
 import lb_up from 'public/lb_up.svg';
 import lb_equal from 'public/lb_equal.svg';
 
-interface QuestionAnswerProps {
-	name: string;
-	score: number;
-	// positionChange: positive for up, 0 for no change, negative for down
-	positionChange: number;
-	// isSelf: true if the entry represents the current player
-	isSelf: boolean;
-}
+import { LeaderboardEntry as LeaderboardEntryType } from '@/lib/useKakawGame';
 
 export default function LeaderboardEntry({
 	name,
 	score,
 	isSelf,
 	positionChange,
-}: QuestionAnswerProps) {
+}: LeaderboardEntryType) {
 	// show up, down, or equal icon based on if/how player's position has changed
 	const positionIcon =
 		positionChange > 0 ? (
