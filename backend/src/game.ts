@@ -67,7 +67,9 @@ export class Game {
 		this.players.forEach((u) => {
 			u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
 		});
-		this.host.send(this.host.getEndData(board, this.activeQuestion, qd, totalQuestions));
+		this.host.send(
+			this.host.getEndData(board, this.activeQuestion, qd, totalQuestions)
+		);
 		this.quizOpen = false;
 
 		return;

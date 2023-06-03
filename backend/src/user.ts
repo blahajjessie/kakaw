@@ -63,10 +63,12 @@ export class User {
 		leaderBoard: LeaderBoard[],
 		qn: number,
 		question: QuizQuestion,
-		totalQuestions: number,
+		totalQuestions: number
 	): EndData {
 		// calculate position change
-		const playerPosition = leaderBoard.findIndex((entry) => entry.name === this.name);
+		const playerPosition = leaderBoard.findIndex(
+			(entry) => entry.name === this.name
+		);
 		const positionChange = NaN;
 		if (this.previousPosition > -1) {
 			const positionChange = this.previousPosition - playerPosition;
