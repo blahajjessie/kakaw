@@ -3,7 +3,6 @@ import { useCallback, useState } from 'react';
 
 import TimerSetter from '@/components/Fixtures/TimerSetter';
 import AnswerEditor from '@/components/EditorPages/AnswerEditor';
-
 import { QuizQuestion } from '@/lib/editorQuiz';
 
 import editor_plus from '@/public/editor_plus.svg';

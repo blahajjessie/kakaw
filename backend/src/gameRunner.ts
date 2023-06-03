@@ -1,8 +1,5 @@
 import { Express, NextFunction, Request, Response } from 'express';
-import { WebSocket } from 'ws';
-import { sendMessage } from './connection';
 import { GameId, Game, gameExist, getGame } from './game';
-import { Quiz } from './quiz';
 import { UserId } from './user';
 import { newGameResp } from './respTypes';
 
@@ -61,7 +58,9 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games', (req, res) => {
 		if (!req.body) {
 			// console.log(req.body)
-			res.status(400).send('Invalid JSON file');
+			res
+				.status(400)
+				.send({ ok: false, err: 'Quiz validation failed for : no body' });
 		}
 		try {
 			let freshGame = new Game(req.body);
@@ -74,7 +73,10 @@ export default function registerGameRoutes(app: Express) {
 		} catch (e) {
 			// client upload error
 			console.log(e);
-			res.status(400).send('Invalid JSON file');
+			res.status(400).send({
+				ok: false,
+				err: ' Quiz validation failed for : Invalid JSON file' + e,
+			});
 			return;
 		}
 		return;
@@ -145,7 +147,10 @@ export default function registerGameRoutes(app: Express) {
 	app.post('/games/:gameId/players', (req, res) => {
 		const body = req.body;
 		if (typeof body.username != 'string') {
-			res.status(400).send();
+			res.status(400).send({
+				ok: false,
+				err: 'Add username fail, Username is not a string',
+			});
 			return;
 		}
 		const game = getGame(req.params.gameId);
@@ -154,12 +159,15 @@ export default function registerGameRoutes(app: Express) {
 		let uid: UserId;
 		try {
 			uid = game.addPlayer(username);
-		} catch {
-			res.status(409).send('add user fail!');
+		} catch (e) {
+			res
+				.status(409)
+				.send({ ok: false, err: 'Add username fail. Reason: ' + e });
 			return;
 		}
 		// Generate Code and Set User Entry
 		res.status(201).json({ ok: true, id: uid });
+		game.sendPlayerAction(uid);
 		return;
 	});
 
@@ -178,21 +186,21 @@ export default function registerGameRoutes(app: Express) {
 			return;
 		}
 
-		const answer = req.body.answer;
+		const answerChoice = req.body.answer;
 		if (
-			typeof answer != 'number' ||
-			answer >= game.quizData.getAnswerChoices(game.activeQuestion).length
+			typeof answerChoice != 'number' ||
+			answerChoice >= game.quizData.getAnswerChoices(game.activeQuestion).length
 		) {
 			res
 				.status(400)
-				.send({ ok: false, err: `Answer index ${answer} is not valid.` });
+				.send({ ok: false, err: `Answer index ${answerChoice} is not valid.` });
 			return;
 		}
 		// validate time
 		const ansTime: number = Date.now() - game.startTime;
-
+		console.log(ansTime);
 		try {
-			game.getUser(userId).answer(game.activeQuestion, ansTime, answer);
+			game.getUser(userId).answer(game.activeQuestion, ansTime, answerChoice);
 		} catch {
 			// console.log('answer() failed; the error message might be right');
 			res.status(400).send({ ok: false, err: `User ${userId} does not exist` });
@@ -200,6 +208,42 @@ export default function registerGameRoutes(app: Express) {
 		}
 
 		res.status(200).send({ ok: true });
+		game.sendPlayerAction(userId);
 		return;
+	});
+	app.delete('/games/:gameId', (req, res) => {
+		const game = getGame(req.params.gameId);
+		try {
+			game.endGame();
+			res.status(200).send({ ok: true });
+		} catch (e) {
+			// console.log('answer() failed; the error message might be right');
+			res
+				.status(500)
+				.send({ ok: false, err: `Unable to delete game. Reason:` + e });
+			return;
+		}
+	});
+	app.delete('DELETE /games/:gameId/players/:playerId', (req, res) => {
+		const game = getGame(req.params.gameId);
+		const uid = req.params.playerId;
+		try {
+			game.getUser(uid);
+		} catch {
+			// console.log('answer() failed; the error message might be right');
+			res.status(400).send({ ok: false, err: `User ${uid} does not exist` });
+			return;
+		}
+		try {
+			game.kickUser(uid, ' the host has kicked you from the game');
+			res.status(200).send({ ok: true });
+			return;
+		} catch (e) {
+			// console.log('answer() failed; the error message might be right');
+			res
+				.status(500)
+				.send({ ok: false, err: `Unable to Kick user. Reason:` + e });
+			return;
+		}
 	});
 }

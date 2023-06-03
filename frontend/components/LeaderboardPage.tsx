@@ -1,4 +1,5 @@
 import Image from 'next/image';
+import Head from 'next/head';
 
 import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import LeaderboardEntry from '@/components/LeaderboardEntry';
@@ -27,6 +28,9 @@ export default function LeaderboardPage({
 
 	const mobileContent = (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
+			<Head>
+				<title>Leaderboard - Kakaw!</title>
+			</Head>
 			<div className="w-11/12 h-full flex flex-col items-center justify-center">
 				<Image alt="logo2" src={logo2} width={150} className="-mb-6" />
 				<div className="w-min bg-gray-100 border border-black px-4 py-1 text-2xl z-20">

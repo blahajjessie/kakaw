@@ -1,17 +1,14 @@
 import Image from 'next/image';
-import logo2 from '@/public/logo2.png';
-import { Inter } from 'next/font/google';
+import Head from 'next/head';
 
-const inter = Inter({
-	subsets: ['latin'],
-	variable: '--font-inter',
-});
+import logo2 from '@/public/logo2.png';
 
 export default function playerWaiting() {
 	return (
-		<main
-			className={`${inter.variable} font-sans bg-purple-100 flex min-h-screen flex-col items-center justify-center`}
-		>
+		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
+			<Head>
+				<title>Waiting Room - Kakaw!</title>
+			</Head>
 			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
 				<Image
 					alt="Kakaw logo"

@@ -1,15 +1,9 @@
 import { WebSocket } from 'ws';
 import { gen } from './code';
 
-import { sendMessage } from './connection';
+import { sendMessage, killConnection } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
-import {
-	EndData,
-	EndResp,
-	LeaderBoard,
-	socketData,
-	startResp,
-} from './respTypes';
+import { EndData, LeaderBoard, socketData, startResp } from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -20,6 +14,7 @@ export class User {
 	id: UserId;
 	answers: Array<AnswerObj> = new Array<AnswerObj>();
 	connection: WebSocket | undefined = undefined;
+	previousPosition: number = -1;
 	constructor(used: UserId[], name: string) {
 		this.id = gen(8, used);
 		this.name = name;
@@ -57,30 +52,43 @@ export class User {
 		return {
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
-			time: quiz.getQuestionTime(qn) * 1000,
+			time: quiz.getQuestionTime(qn),
 			index: qn,
 			username: this.name,
 			score: this.totalScore(),
+			totalQuestions: quiz.getQuestionCount(),
 		};
 	}
 	getEndData(
 		leaderBoard: LeaderBoard[],
 		qn: number,
-		question: QuizQuestion
+		question: QuizQuestion,
+		totalQuestions: number
 	): EndData {
+		// calculate position change
+		const playerPosition = leaderBoard.findIndex(
+			(entry) => entry.name === this.name
+		);
+		const positionChange = NaN;
+		if (this.previousPosition > -1) {
+			const positionChange = this.previousPosition - playerPosition;
+		}
+		this.previousPosition = playerPosition;
 		return new EndData({
 			correctAnswers: question.correctAnswers,
 			explanations: question.explanations || null,
 			score: this.totalScore(),
 			scoreChange: this.answers[qn].score,
 			correct: this.answers[qn].correct,
-			responseTime: this.answers[qn].time,
 			leaderboard: leaderBoard,
+			positionChange: positionChange,
+			responseTime: this.answers[qn].time,
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
 			index: qn,
 			username: this.name,
 			yourAnswer: this.answers[qn].answer,
+			totalQuestions: totalQuestions,
 		});
 	}
 	addWs(sock: WebSocket) {
@@ -95,9 +103,20 @@ export class User {
 		}
 		return this.connection;
 	}
+	kick(reason: string) {
+		if (this.connection) {
+			killConnection(
+				this.connection,
+				'you have been removed from the game because' + reason
+			);
+		}
+		return;
+	}
 	send(message: socketData) {
-		if (!this.connection) throw new Error('user not connected');
-
+		if (!this.connection) {
+			console.log('user not connected' + this.name);
+			return;
+		}
 		if (this.connection.readyState === WebSocket.OPEN) {
 			sendMessage(this.connection, message.name, message.data);
 		}

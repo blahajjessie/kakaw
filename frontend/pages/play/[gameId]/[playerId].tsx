@@ -32,6 +32,7 @@ const PlayerGameRouter: NextPage<{}> = () => {
 						index={game.questionIndex}
 						playerAnswer={game.playerAnswer}
 						onLeaderboardNavigation={() => setViewingLeaderboard(true)}
+						scoreChange={game.scoreChange}
 					/>
 				);
 			}
