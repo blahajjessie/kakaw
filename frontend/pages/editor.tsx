@@ -1,6 +1,9 @@
 import { useState, useCallback } from 'react';
 import { useRouter } from 'next/router';
+import Head from 'next/head';
 
+import NoMobileSupport from '@/components/Fixtures/NoMobileSupport';
+import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import EditorGuide from '@/components/EditorPages/EditorTutorial';
 import TimerSetter from '@/components/Fixtures/TimerSetter';
 import QuestionEditor from '@/components/EditorPages/QuestionEditor';
@@ -110,8 +113,13 @@ export default function EditorPage() {
 		[]
 	);
 
-	return (
+	const mobileContent = <NoMobileSupport />;
+
+	const desktopContent = (
 		<main className="bg-purple-100 h-screen flex flex-col items-center justify-center text-black font-extrabold">
+			<Head>
+				<title>Quiz Editor - Kakaw!</title>
+			</Head>
 			<div className="w-5/6 h-full flex flex-col items-center justify-center">
 				<EditorGuide
 					state={tutorialState}
@@ -254,5 +262,12 @@ export default function EditorPage() {
 				)}
 			</div>
 		</main>
+	);
+
+	return (
+		<MatchMediaWrapper
+			mobileContent={mobileContent}
+			desktopContent={desktopContent}
+		/>
 	);
 }

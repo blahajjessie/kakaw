@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 
 import { PieChart } from 'react-minimal-pie-chart';
 
@@ -34,6 +35,9 @@ export default function PostgamePlayerPage() {
 
 	return (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
+			<Head>
+				<title>Postgame Results - Kakaw!</title>
+			</Head>
 			<div className="w-4/5 h-full flex flex-col items-center justify-center">
 				<Image
 					alt="postgame logo"

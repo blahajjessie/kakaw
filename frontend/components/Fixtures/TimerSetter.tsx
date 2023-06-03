@@ -6,11 +6,13 @@ const MAX_TIMER_VALUE = 420;
 interface TimerSetterProps {
 	initTimerValue: number;
 	onChange: (timerValue: number) => void;
+	indicateSeconds?: boolean;
 }
 
 export default function TimerSetter({
 	initTimerValue,
 	onChange,
+	indicateSeconds = true,
 }: TimerSetterProps) {
 	const [timerValue, setTimerValue] = useState(initTimerValue);
 	const [isIncrementing, setIsIncrementing] = useState(false);
@@ -70,7 +72,7 @@ export default function TimerSetter({
 	});
 
 	return (
-		<div className="w-20 h-full bg-gray-100 flex flex-row items-center justify-between font-normal text-base rounded-lg lg:text-lg lg:w-24 2xl:text-xl 2xl:w-28">
+		<div className="w-20 h-min bg-gray-100 flex flex-row items-center justify-between font-normal text-base rounded-lg lg:text-lg lg:w-24 2xl:text-xl 2xl:w-28">
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-red-200 rounded-md ml-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
 				onMouseDown={() => setIsDecrementing(timerValue > MIN_TIMER_VALUE)}
@@ -78,7 +80,10 @@ export default function TimerSetter({
 				-
 			</button>
 
-			<div className="px-1 text-black">{timerValue}s</div>
+			<div className="px-1 text-black">
+				{timerValue}
+				{indicateSeconds ? 's' : ''}
+			</div>
 
 			<button
 				className="w-4 h-4 bg-white flex items-center justify-center text-green-200 rounded-md mr-1 my-1 hover:brightness-95 active:brightness-90 lg:w-5 lg:h-5 2xl:w-7 2xl:h-7"
