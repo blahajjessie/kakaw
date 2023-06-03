@@ -24,6 +24,7 @@ const PlayerGameRouter: NextPage<{}> = () => {
 					question={game.currentQuestion}
 					index={game.questionIndex}
 					playerAnswer={game.playerAnswer}
+					scoreChange={game.scoreChange}
 				/>
 			);
 	}

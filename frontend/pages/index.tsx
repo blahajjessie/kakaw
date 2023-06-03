@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
 
@@ -49,6 +50,9 @@ export default function Home({ code }: HomeProps) {
 
 	return (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
+			<Head>
+				<title>Kakaw!</title>
+			</Head>
 			<div className="flex w-full max-w-sm flex-col items-center justify-center font-extrabold">
 				<Image
 					alt="Kakaw logo"
@@ -62,7 +66,7 @@ export default function Home({ code }: HomeProps) {
 
 				<form className="p-8 mb-2 w-4/5 sm:w-full" onSubmit={joinGame}>
 					<input
-						className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md"
+						className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md placeholder:text-gray-200"
 						id="code"
 						type="text"
 						placeholder="Code"
@@ -72,7 +76,7 @@ export default function Home({ code }: HomeProps) {
 						onChange={(e) => setGameId(e.target.value)}
 					/>
 					<input
-						className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md"
+						className="bg-gray-100 border-1 border-gray-200 rounded-xl w-full px-4 py-2 mb-4 text-center text-lg shadow-md placeholder:text-gray-200"
 						id="username"
 						type="text"
 						placeholder="Username"

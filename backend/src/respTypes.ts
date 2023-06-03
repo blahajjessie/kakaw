@@ -75,6 +75,7 @@ export type startResp = {
 	index: number; // game.activeQuestion,
 	score: number;
 	username: string;
+	totalQuestions: number;
 };
 
 export type EndResp = {
@@ -83,6 +84,7 @@ export type EndResp = {
 	scoreChange: number;
 	correct: boolean;
 	leaderboard: LeaderBoard[];
+	positionChange: number;
 	responseTime: number;
 
 	questionText: string; // question.questionText,
@@ -91,6 +93,7 @@ export type EndResp = {
 	username: string;
 	explanations: string[] | null;
 	yourAnswer: number;
+	totalQuestions: number;
 };
 
 export type ActionResp = { players: object };

@@ -8,7 +8,7 @@ import {
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
-
+import { prefs } from './preferences';
 // // used ids for both players and host
 export type GameId = string;
 
@@ -46,12 +46,12 @@ export class Game {
 	activeQuestion = -1;
 	startTime = -1;
 	timer: NodeJS.Timeout | undefined = undefined;
-
+	hostTimeout: NodeJS.Timeout | undefined = undefined;
 	constructor(quiz: any) {
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
-		this.hostId = gen(8, []);
 		this.host = new User([], this.quizData.meta.author);
+		this.hostId = this.host.id;
 		games.set(this.id, this);
 	}
 
@@ -63,10 +63,13 @@ export class Game {
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
+		const totalQuestions = this.quizData.getQuestionCount();
 		this.players.forEach((u) => {
-			u.send(u.getEndData(board, this.activeQuestion, qd));
+			u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
 		});
-		this.host.send(this.host.getEndData(board, this.activeQuestion, qd));
+		this.host.send(
+			this.host.getEndData(board, this.activeQuestion, qd, totalQuestions)
+		);
 		this.quizOpen = false;
 
 		return;
@@ -155,7 +158,56 @@ export class Game {
 	sendResults() {
 		this.host.send(new LeaderboardData(this.getLeaderboard()));
 	}
+	setHostTimeout() {
+		this.hostTimeout = setTimeout(
+			() => this.endGame(),
+			prefs.hostDisconnectDelay
+		);
+		console.log(
+			'Host disconnected. Waiting ' +
+				prefs.hostDisconnectDelay +
+				' ms for reconnect, gameId ' +
+				this.id
+		);
+	}
+	endHostTimeout() {
+		if (!this.hostTimeout) {
+			console.log(
+				'Host appears to be connected already (or connecting for the first time), gameId ' +
+					this.id
+			);
+			return;
+		}
+		clearTimeout(this.hostTimeout);
+		this.hostTimeout = undefined;
+		console.log('Host reconnected');
+	}
+	kickUser(uid: UserId, reason: string) {
+		const u = this.getUser(uid);
+		u.kick(reason);
+		this.players.delete(uid);
+	}
+	endGame() {
+		console.log(
+			'Host has been disconnected too long. Game should end now!, gameId ' +
+				this.id
+		);
+		this.getUsers().forEach((u) => {
+			this.kickUser(u.id, 'The game is over');
+		});
+		games.delete(this.id);
+	}
+	updateUser(uid: UserId) {
+		if (uid == this.hostId) {
+			this.updateHost();
+			return;
+		}
+		this.updatePlayer(uid);
+	}
+	updateHost() {
+		this.endHostTimeout();
+	}
+	updatePlayer(uid: UserId) {
+		console.log('Player has received its status update');
+	}
 }
-
-// // interface for user, mostly blank rn but will keep score or smth later.
-// // Userid is stored in the map for now

@@ -4,7 +4,7 @@
 Connect to the websocket at `/connect?gameId={game ID}&playerId={player ID}&token={authentication token}`
 - Calls handleConnection()
 
-### Data Structs:
+### Data Structures:
 
 - Every message is a JSON object with type as a string, and potentially other fields depending on the type.
 
