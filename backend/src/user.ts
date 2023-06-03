@@ -1,7 +1,7 @@
 import { WebSocket } from 'ws';
 import { gen } from './code';
 
-import { sendMessage } from './connection';
+import { sendMessage, killConnection } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
 import { EndData, LeaderBoard, socketData, startResp } from './respTypes';
 import { AnswerObj } from './answer';
@@ -89,9 +89,20 @@ export class User {
 		}
 		return this.connection;
 	}
+	kick(reason: string) {
+		if (this.connection) {
+			killConnection(
+				this.connection,
+				'you have been removed from the game because' + reason
+			);
+		}
+		return;
+	}
 	send(message: socketData) {
-		if (!this.connection) throw new Error('user not connected');
-
+		if (!this.connection) {
+			console.log('user not connected' + this.name);
+			return;
+		}
 		if (this.connection.readyState === WebSocket.OPEN) {
 			sendMessage(this.connection, message.name, message.data);
 		}
