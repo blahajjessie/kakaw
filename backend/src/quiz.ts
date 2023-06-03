@@ -234,4 +234,7 @@ export class Quiz {
 	getPoints(qn: number): number {
 		return this.questions[qn].points || this.meta.pointDefault;
 	}
+	getQuestionCount(): number {
+		return this.questions.length;
+	}
 }
