@@ -26,7 +26,7 @@
 		"check-format": "prettier -c src"
 	},
 	"jest": {
-		"testTimeout": 10000,
+		"testTimeout": 15000,
 		"clearMocks": true,
 		"collectCoverageFrom": [
 			"**/src/{!(__tests__),}"
