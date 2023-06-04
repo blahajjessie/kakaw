@@ -16,6 +16,9 @@ const PlayerGameRouter: NextPage<{}> = () => {
 		case Stage.WaitingRoom:
 			return <PlayerWaiting />;
 		case Stage.Question:
+			if (viewingLeaderboard) {
+				setViewingLeaderboard(false);
+			}
 			return (
 				<PlayerQuestionPage
 					question={game.currentQuestion}
