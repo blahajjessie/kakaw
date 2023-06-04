@@ -80,6 +80,19 @@ describe('Client can Message Host', () => {
 		hostSocket = new WebSocket(url);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
 		hostSocket.send(JSON.stringify({ ok: 'bongo' }));
+	});
+
+	test('Clean Up / Delete Game', async () => {
+		await request
+			.delete(`/games/${createRes.gameId}`)
+			.set({ authorization: 'Bearer ' + createRes.token })
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.ok).toBeDefined();
+				expect(data.ok).toStrictEqual(true);
+			});
 		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});

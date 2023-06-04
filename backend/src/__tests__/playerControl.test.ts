@@ -196,7 +196,17 @@ describe('Player Control', () => {
 		await waitForSocketState(playerSocket, WebSocket.CLOSED);
 	});
 
-	test('Close Host', async () => {
+	test('Close Host and Game', async () => {
+		await request
+			.delete(`/games/${createRes.gameId}`)
+			.set({ authorization: 'Bearer ' + createRes.token })
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.ok).toBeDefined();
+				expect(data.ok).toStrictEqual(true);
+			});
 		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});

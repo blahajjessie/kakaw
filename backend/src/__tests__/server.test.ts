@@ -64,6 +64,19 @@ describe('WebSocket Connection Tests', () => {
 		url.searchParams.set('token', createRes.token);
 		hostSocket = new WebSocket(url);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
+	});
+
+	test('Delete Game', async () => {
+		await request
+			.delete(`/games/${createRes.gameId}`)
+			.set({ authorization: 'Bearer ' + createRes.token })
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.ok).toBeDefined();
+				expect(data.ok).toStrictEqual(true);
+			});
 		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});

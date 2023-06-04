@@ -287,7 +287,7 @@ export default function registerGameRoutes(app: Express) {
 	});
 
 	app.delete(
-		'DELETE /games/:gameId/players/:playerId',
+		'/games/:gameId/players/:playerId',
 		validateHostToken,
 		(req, res) => {
 			const game = getGame(req.params.gameId);
