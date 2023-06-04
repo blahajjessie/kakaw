@@ -85,10 +85,11 @@ export default function EditorPage() {
 		setIsStarting(true);
 		try {
 			// this will have to store the host ID somewhere so that the websocket opening code can use it
-			const { gameId, hostId } = await apiCall('POST', '/games', {
+			const { gameId, hostId, token } = await apiCall('POST', '/games', {
 				meta: meta,
 				questions: filterExplanations(questions),
 			});
+			sessionStorage.setItem(`kakawToken/${gameId}/${hostId}`, token);
 			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			console.error(e);

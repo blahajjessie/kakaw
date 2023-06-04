@@ -3,14 +3,9 @@ import supertest from 'supertest';
 import correct from './testTools/quizzes/correct.json';
 
 import { WebSocket } from 'ws';
-import { WEBSOCKET_BASE_URL } from './testTools/apiDef';
+import { WEBSOCKET_BASE_URL, CreationResponse } from './testTools/testDef';
 import { waitForSocketState } from './testTools/connect';
 import { validate } from './testTools/validateSocket';
-
-interface CreationResponse {
-	gameId: string;
-	hostId: string;
-}
 
 let request: supertest.SuperTest<supertest.Test>;
 
@@ -26,9 +21,10 @@ describe('Player Control', () => {
 	// Set-Up
 	let hostSocket: WebSocket;
 	let playerSocket: WebSocket;
-	let playerId: string;
 	const player = {
 		username: 'Jorge',
+		id: '',
+		token: '',
 	};
 	const answer = {
 		userId: '',
@@ -48,6 +44,7 @@ describe('Player Control', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
@@ -56,6 +53,7 @@ describe('Player Control', () => {
 		const url = new URL('/connect', WEBSOCKET_BASE_URL);
 		url.searchParams.set('gameId', createRes.gameId);
 		url.searchParams.set('playerId', createRes.hostId);
+		url.searchParams.set('token', createRes.token);
 		hostSocket = new WebSocket(url);
 		await waitForSocketState(hostSocket, WebSocket.OPEN);
 	});
@@ -70,15 +68,18 @@ describe('Player Control', () => {
 				expect(data).toBeDefined();
 				expect(data.body).toBeDefined();
 				expect(data.body.id).toBeDefined();
-				playerId = data.body.id;
-				answer.userId = playerId;
+				expect(data.body.token).toBeDefined();
+				player.id = data.body.id;
+				player.token = data.body.token;
+				answer.userId = data.body.id;
 			});
 	});
 
 	test('Player Connect', async () => {
 		const url = new URL('/connect', WEBSOCKET_BASE_URL);
 		url.searchParams.set('gameId', createRes.gameId);
-		url.searchParams.set('playerId', playerId);
+		url.searchParams.set('playerId', player.id);
+		url.searchParams.set('token', player.token);
 		playerSocket = new WebSocket(url);
 		await waitForSocketState(playerSocket, WebSocket.OPEN);
 		playerSocket.on('message', function message(raw) {
@@ -90,6 +91,7 @@ describe('Player Control', () => {
 	test('Start Quiz', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/start`)
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -109,6 +111,7 @@ describe('Player Control', () => {
 	test('Answer Question / Correct', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/answer`)
+			.set({ authorization: 'Bearer ' + player.token })
 			.send(answer)
 			.expect(200)
 			.then((data) => {
@@ -122,6 +125,7 @@ describe('Player Control', () => {
 	test('End Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/0/end`)
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -151,6 +155,7 @@ describe('Player Control', () => {
 	test('Start Second Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/start`)
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -162,6 +167,7 @@ describe('Player Control', () => {
 	test('Answer Question / Incorrect', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/answer`)
+			.set({ authorization: 'Bearer ' + player.token })
 			.send(answer)
 			.expect(200)
 			.then((data) => {
@@ -175,6 +181,7 @@ describe('Player Control', () => {
 	test('End Second Question', async () => {
 		await request
 			.post(`/games/${createRes.gameId}/questions/1/end`)
+			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200);
 
 		// Check Websocket Message
@@ -189,7 +196,17 @@ describe('Player Control', () => {
 		await waitForSocketState(playerSocket, WebSocket.CLOSED);
 	});
 
-	test('Close Host', async () => {
+	test('Close Host and Game', async () => {
+		await request
+			.delete(`/games/${createRes.gameId}`)
+			.set({ authorization: 'Bearer ' + createRes.token })
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.ok).toBeDefined();
+				expect(data.ok).toStrictEqual(true);
+			});
 		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});

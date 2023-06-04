@@ -57,10 +57,15 @@ export default function PlayerQuestionPage({
 		// Update the firstClickedAnswer state if it is currently null
 		if (finalAnswer === undefined) {
 			try {
-				await apiCall('POST', `/games/${gameId}/questions/${index}/answer`, {
-					userId: playerId,
-					answer: answerIndex,
-				});
+				await apiCall(
+					'POST',
+					`/games/${gameId}/questions/${index}/answer`,
+					{
+						userId: playerId,
+						answer: answerIndex,
+					},
+					{ gameId: gameId, id: playerId }
+				);
 				setFinalAnswer(answerIndex);
 			} catch (e) {
 				alert('Error answering question, please try again');

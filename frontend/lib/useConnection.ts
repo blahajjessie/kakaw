@@ -20,6 +20,9 @@ export default function useConnection({
 }: UseConnectionParams): void {
 	const router = useRouter();
 	const { gameId, playerId } = router.query;
+	const token = globalThis.sessionStorage?.getItem(
+		`kakawToken/${gameId}/${playerId}`
+	);
 	// if the server sends an 'end' message, we store the reason to pass later when the connection
 	// is closed
 	const [closeReason, setCloseReason] = useState<string | undefined>(undefined);
@@ -34,6 +37,7 @@ export default function useConnection({
 	const url = new URL('/connect', WEBSOCKET_BASE_URL);
 	url.searchParams.set('gameId', gameId);
 	url.searchParams.set('playerId', playerId);
+	url.searchParams.set('token', token ?? '');
 
 	useWebSocket(url.href, {
 		onOpen() {

@@ -24,18 +24,25 @@ const colors = [
 	'bg-purple-300',
 ];
 
-export default function HostWaiting({ gameId }: hostProps) {
+export default function HostWaiting() {
 	const currentPlayers = useRecoilValue(currentPlayersState);
 
 	const [timeLimit, setTimeLimit] = useState<number>(15);
 	const [maxPlayers, setMaxPlayers] = useState<number>(5);
 	const router = useRouter();
+	const { gameId, playerId } = router.query as {
+		gameId: string;
+		playerId: string;
+	};
 
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
 	async function startQuiz() {
 		try {
-			apiCall('POST', `/games/${gameId}/questions/0/start`);
+			apiCall('POST', `/games/${gameId}/questions/0/start`, null, {
+				gameId: gameId,
+				id: playerId,
+			});
 		} catch (e) {
 			alert('Error starting game. Please try again.');
 			console.error(e);

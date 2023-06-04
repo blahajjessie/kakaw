@@ -50,3 +50,9 @@ if (crypto.timingSafeEqual(Buffer.from(tokenInRequest), Buffer.from(correctToken
 	console.log('user is not authorized');
 }
 ```
+
+## Middleware: validateHostToken
+Used for host APIs. Extracts the token from the authorization header and authenticates the token given the game's hostId and the server's randomly generated secret. Returns HTTP 401 for missing tokens and 403 for invalid tokens.
+
+## Middleware: validatePlayerToken
+Used for player APIs. Extracts the token from the authorization header and authenticates the token given the userId from the request body and the server's randomly generated secret. Returns HTTP 401 for missing tokens and 403 for invalid tokens.
