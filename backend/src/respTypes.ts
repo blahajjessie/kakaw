@@ -58,6 +58,7 @@ export class LeaderboardData implements socketData {
 export type newGameResp = {
 	gameId: GameId;
 	hostId: UserId;
+	token: String;
 };
 
 // export type createResp = {

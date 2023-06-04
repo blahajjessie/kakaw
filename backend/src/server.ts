@@ -1,6 +1,7 @@
 import express from 'express';
 import { WebSocket } from 'ws';
 import { handleConnection } from './connection';
+import { generateToken, validateToken } from './auth';
 
 const app = express();
 app.use(express.json());
@@ -33,7 +34,8 @@ httpServer.on('upgrade', (request, socket, head) => {
 	if (
 		url.pathname != '/connect' ||
 		!url.searchParams.has('gameId') ||
-		!url.searchParams.has('playerId')
+		!url.searchParams.has('playerId') ||
+		!url.searchParams.has('token')
 	) {
 		// rude but no one should be trying to open websocket connections at other URLs
 		socket.destroy();
@@ -44,6 +46,18 @@ httpServer.on('upgrade', (request, socket, head) => {
 	if (!gameExist(gameId)) {
 		console.log(
 			'Invalid game while trying to upgrade ws. PlayerId: ' +
+				playerId +
+				' GameId:' +
+				gameId
+		);
+		socket.destroy();
+		return;
+	}
+	const token = url.searchParams.get('token')!;
+	const isValid = validateToken(gameId, playerId, token);
+	if (!isValid) {
+		console.log(
+			'Invalid token while trying to upgrade ws. PlayerId: ' +
 				playerId +
 				' GameId:' +
 				gameId

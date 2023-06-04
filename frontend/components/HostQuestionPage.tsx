@@ -17,7 +17,10 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 	const currentPlayers = useRecoilValue(currentPlayersState);
 
 	const router = useRouter();
-	const { gameId } = router.query as { gameId: string };
+	const { gameId, playerId } = router.query as {
+		gameId: string;
+		playerId: string;
+	};
 
 	return (
 		<main className="bg-purple-100 flex flex-col h-screen items-center">
@@ -46,7 +49,9 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 							'POST',
 							props.postQuestion
 								? `/games/${gameId}/questions/${props.index + 1}/start`
-								: `/games/${gameId}/questions/${props.index}/end`
+								: `/games/${gameId}/questions/${props.index}/end`,
+							null,
+							{ gameId: gameId, id: playerId }
 						);
 					} catch (e) {
 						alert(

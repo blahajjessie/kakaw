@@ -1,11 +1,7 @@
 import httpServer from '../server';
 import supertest from 'supertest';
 import correct from './testTools/quizzes/correct.json';
-
-interface CreationResponse {
-	gameId: string;
-	hostId: string;
-}
+import { CreationResponse } from './testTools/testDef';
 
 let request: supertest.SuperTest<supertest.Test>;
 let createRes: CreationResponse;
@@ -29,6 +25,7 @@ test('Quiz Upload', async () => {
 			expect(data.body).toBeDefined();
 			expect(data.body.gameId).toBeDefined();
 			expect(data.body.hostId).toBeDefined();
+			expect(data.body.token).toBeDefined();
 			createRes = data.body;
 		});
 });

@@ -89,6 +89,7 @@ test('Correct Quiz Format', async () => {
 			expect(data.body).toBeDefined();
 			expect(data.body.gameId).toBeDefined();
 			expect(data.body.hostId).toBeDefined();
+			expect(data.body.token).toBeDefined();
 		});
 });
 
