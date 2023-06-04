@@ -21,26 +21,30 @@ export interface Question {
 export interface LeaderboardEntry {
 	name: string;
 	score: number;
+	// positive for up, negative for down
+	positionChange: number;
+	// is this entry for the current player?
+	isSelf: boolean;
 }
 
 export type KakawGame =
 	| {
-		stage: Stage.WaitingRoom;
-	}
+			stage: Stage.WaitingRoom;
+	  }
 	| {
-		stage: Stage.Question;
-		questionIndex: number;
-		currentQuestion: Question;
-	}
+			stage: Stage.Question;
+			questionIndex: number;
+			currentQuestion: Question;
+	  }
 	| {
-		stage: Stage.PostQuestion;
-		questionIndex: number;
-		currentQuestion: Question;
-		scoreChange: number;
-		correct: boolean;
-		playerAnswer: number;
-		leaderboard: LeaderboardEntry[];
-	};
+			stage: Stage.PostQuestion;
+			questionIndex: number;
+			currentQuestion: Question;
+			scoreChange: number;
+			correct: boolean;
+			playerAnswer: number;
+			leaderboard: LeaderboardEntry[];
+	  };
 
 const kakawGameState = atom<KakawGame>({
 	key: 'kakawGameState',
@@ -112,7 +116,12 @@ export default function useKakawGame(): {
 						scoreChange: event.scoreChange,
 						correct: event.correct,
 						playerAnswer: event.yourAnswer,
-						leaderboard: event.leaderboard,
+						leaderboard: event.leaderboard.map((entry: any) => ({
+							name: entry.name,
+							score: entry.score,
+							positionChange: 0,
+							isSelf: entry.name == username,
+						})),
 					});
 					setUsername(event.username);
 					setScore(event.score);

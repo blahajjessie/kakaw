@@ -11,6 +11,7 @@ export interface HostQuestionPageProps {
 	question: Question;
 	index: number;
 	postQuestion: boolean;
+	onContinue?: () => void;
 }
 
 export default function HostQuestionPage(props: HostQuestionPageProps) {
@@ -43,26 +44,29 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 					// TODO get from backend
 					5
 				}
-				onEndQuestion={async () => {
-					try {
-						await apiCall(
-							'POST',
-							props.postQuestion
-								? `/games/${gameId}/questions/${props.index + 1}/start`
-								: `/games/${gameId}/questions/${props.index}/end`,
-							null,
-							{ gameId: gameId, id: playerId }
-						);
-					} catch (e) {
-						alert(
-							`${
-								props.postQuestion ? 'Going to next' : 'Ending'
-							} question failed. Please try again.`
-						);
-						console.error(e);
+				onContinue={async () => {
+					if (props.postQuestion) {
+						props.onContinue?.();
+					} else {
+						// end question
+						try {
+							await apiCall(
+								'POST',
+								`/games/${gameId}/questions/${props.index}/end`,
+								null,
+								{ gameId: gameId, id: playerId }
+							);
+						} catch (e) {
+							alert(
+								`${
+									props.postQuestion ? 'Going to next' : 'Ending'
+								} question failed. Please try again.`
+							);
+							console.error(e);
+						}
 					}
 				}}
-				buttonText={props.postQuestion ? 'Next Question' : 'End Guessing'}
+				buttonText={props.postQuestion ? 'View Leaderboard' : 'End Guessing'}
 			/>
 		</main>
 	);

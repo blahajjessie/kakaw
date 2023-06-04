@@ -1,10 +1,11 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NextPage } from 'next';
 
 import HostWaiting from '@/components/WaitingPages/HostWaiting';
 import { useRouter } from 'next/router';
 import useKakawGame, { Stage } from '@/lib/useKakawGame';
 import HostQuestionPage from '@/components/HostQuestionPage';
+import LeaderboardPage from '@/components/LeaderboardPage';
 
 const HostGameRouter: NextPage<{}> = () => {
 	const router = useRouter();
@@ -15,10 +16,15 @@ const HostGameRouter: NextPage<{}> = () => {
 
 	const { connected, error, game } = useKakawGame();
 
+	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
+
 	switch (game.stage) {
 		case Stage.WaitingRoom:
 			return <HostWaiting />;
 		case Stage.Question:
+			if (viewingLeaderboard) {
+				setViewingLeaderboard(false);
+			}
 			return (
 				<HostQuestionPage
 					question={game.currentQuestion}
@@ -27,13 +33,23 @@ const HostGameRouter: NextPage<{}> = () => {
 				/>
 			);
 		case Stage.PostQuestion:
-			return (
-				<HostQuestionPage
-					question={game.currentQuestion}
-					index={game.questionIndex}
-					postQuestion={true}
-				/>
-			);
+			if (viewingLeaderboard) {
+				return (
+					<LeaderboardPage
+						entries={game.leaderboard}
+						index={game.questionIndex}
+					/>
+				);
+			} else {
+				return (
+					<HostQuestionPage
+						question={game.currentQuestion}
+						index={game.questionIndex}
+						postQuestion={true}
+						onContinue={() => setViewingLeaderboard(true)}
+					/>
+				);
+			}
 	}
 	throw new Error('unreachable');
 };

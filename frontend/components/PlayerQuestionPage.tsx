@@ -16,8 +16,8 @@ export interface PlayerQuestionPageProps {
 	question: Question;
 	index: number;
 	startWithModal?: boolean;
-	showContinue?: boolean;
 	playerAnswer?: number;
+	onLeaderboardNavigation?: () => void;
 	scoreChange?: number;
 }
 
@@ -25,8 +25,8 @@ export default function PlayerQuestionPage({
 	question,
 	index,
 	startWithModal = false,
-	showContinue = false,
 	playerAnswer,
+	onLeaderboardNavigation,
 	scoreChange,
 }: PlayerQuestionPageProps) {
 	// which answer was actually given -- starts as null if the player hasn't answered yet; is
@@ -89,7 +89,7 @@ export default function PlayerQuestionPage({
 				qNum={index + 1}
 				qText={question.questionText}
 				endTime={question.endTime}
-				showContinue={showContinue}
+				onContinue={onLeaderboardNavigation}
 			></QuestionTop>
 			{/* Render the question answers */}
 			<QuestionAnswers
@@ -133,17 +133,13 @@ export default function PlayerQuestionPage({
 	);
 }
 
-export interface PlayerPostQuestionPageProps {
-	question: Question;
-	index: number;
-	playerAnswer: number;
-	scoreChange: number;
-}
+export type PlayerPostQuestionPageProps = Omit<
+	PlayerQuestionPageProps,
+	'startWithModal'
+> & { onLeaderboardNavigation: () => void };
 
 // this component is separate so that react replaces the PlayerQuestionPage instead of only
 // re-rendering it
 export function PlayerPostQuestionPage(props: PlayerPostQuestionPageProps) {
-	return (
-		<PlayerQuestionPage {...props} startWithModal={true} showContinue={true} />
-	);
+	return <PlayerQuestionPage {...props} startWithModal={true} />;
 }
