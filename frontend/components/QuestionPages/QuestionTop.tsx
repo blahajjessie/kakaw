@@ -67,7 +67,7 @@ export default function QuestionTop({
 						className="bg-orange-50 px-8 py-2 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
 						onClick={onContinue}
 					>
-						Continue
+						View Leaderboard
 					</button>
 				)}
 			</div>
@@ -100,10 +100,10 @@ export default function QuestionTop({
 			)}
 			{onContinue && (
 				<button
-					className="bg-orange-50 px-8 py-2 mr-4 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
+					className="bg-orange-50 w-56 py-2 mr-4 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
 					onClick={onContinue}
 				>
-					Continue
+					View Leaderboard
 				</button>
 			)}
 		</div>
