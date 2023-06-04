@@ -17,7 +17,7 @@ const HostGameRouter: NextPage<{}> = () => {
 
 	switch (game.stage) {
 		case Stage.WaitingRoom:
-			return <HostWaiting gameId={gameId} />;
+			return <HostWaiting />;
 		case Stage.Question:
 			return (
 				<HostQuestionPage

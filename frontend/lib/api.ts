@@ -3,20 +3,29 @@ import { useState } from 'react';
 export const API_BASE_URL = 'http://localhost:8080';
 export const WEBSOCKET_BASE_URL = 'ws://localhost:8080';
 
+interface userType {
+	gameId: string;
+	id: string;
+}
+
 export async function apiCall(
 	method: 'GET' | 'POST',
 	url: string,
-	body?: any
+	body?: any,
+	user?: userType
 ): Promise<any> {
 	const options: RequestInit = { method };
-	const token = sessionStorage.getItem('kakawToken');
 	options.headers = {};
+	console.log(user);
+	if (user) {
+		const token = sessionStorage.getItem(
+			`kakawToken/${user.gameId}/${user.id}`
+		);
+		options.headers['authorization'] = `Bearer ${token}`;
+	}
 	if (body) {
 		options.body = JSON.stringify(body);
 		options.headers['content-type'] = 'application/json';
-	}
-	if (token) {
-		options.headers['authorization'] = `Bearer ${token}`;
 	}
 
 	const req = await fetch(API_BASE_URL + url, options);

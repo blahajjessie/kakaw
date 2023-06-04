@@ -39,7 +39,7 @@ export default function Home({ code }: HomeProps) {
 
 			// we got an ID so redirect to the player page
 			console.log(`entering game: ${gameId}, ${id}`);
-			sessionStorage.setItem('kakawToken', token);
+			sessionStorage.setItem(`kakawToken/${gameId}/${id}`, token);
 			router.push(`/play/${gameId}/${id}`);
 		} catch (e) {
 			setError((e as Error).toString());

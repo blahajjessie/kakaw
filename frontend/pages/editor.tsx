@@ -89,7 +89,7 @@ export default function EditorPage() {
 				meta: meta,
 				questions: filterExplanations(questions),
 			});
-			sessionStorage.setItem('kakawToken', token);
+			sessionStorage.setItem(`kakawToken/${gameId}/${hostId}`, token);
 			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			console.error(e);

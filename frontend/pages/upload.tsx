@@ -58,7 +58,7 @@ export default function UploadPage() {
 				'/games',
 				quizData
 			);
-			sessionStorage.setItem('kakawToken', token);
+			sessionStorage.setItem(`kakawToken/${gameId}/${hostId}`, token);
 			router.push(`/host/${gameId}/${hostId}`);
 		} catch (e) {
 			setUploadStatus(UploadStatus.Error);

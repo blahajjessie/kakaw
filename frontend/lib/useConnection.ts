@@ -20,7 +20,9 @@ export default function useConnection({
 }: UseConnectionParams): void {
 	const router = useRouter();
 	const { gameId, playerId } = router.query;
-	const token = globalThis.sessionStorage?.getItem('kakawToken');
+	const token = globalThis.sessionStorage?.getItem(
+		`kakawToken/${gameId}/${playerId}`
+	);
 	// if the server sends an 'end' message, we store the reason to pass later when the connection
 	// is closed
 	const [closeReason, setCloseReason] = useState<string | undefined>(undefined);
