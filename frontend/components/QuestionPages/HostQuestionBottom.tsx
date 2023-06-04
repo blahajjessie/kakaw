@@ -3,14 +3,14 @@ import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 interface HostQuestionBottomProps {
 	numAnswered: number;
 	numPlayers: number;
-	onEndQuestion: () => void;
+	onContinue: () => void;
 	buttonText: string;
 }
 
 export default function HostQuestionBottom({
 	numAnswered,
 	numPlayers,
-	onEndQuestion,
+	onContinue,
 	buttonText,
 }: HostQuestionBottomProps) {
 	const mobileContent = (
@@ -20,7 +20,7 @@ export default function HostQuestionBottom({
 			</div>
 			<div
 				className="bg-orange-50 px-6 py-3 rounded-l-xl rounded-t-xl text-center shadow-heavy hover:brightness-110"
-				onClick={onEndQuestion}
+				onClick={onContinue}
 			>
 				{buttonText}
 			</div>
@@ -34,7 +34,7 @@ export default function HostQuestionBottom({
 			</div>
 			<div
 				className="bg-orange-50 px-8 py-3 rounded-l-xl text-center cursor-pointer shadow-heavy hover:brightness-110 2xl:py-4"
-				onClick={onEndQuestion}
+				onClick={onContinue}
 			>
 				{buttonText}
 			</div>

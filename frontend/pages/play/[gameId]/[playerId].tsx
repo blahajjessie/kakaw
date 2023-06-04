@@ -10,7 +10,7 @@ import LeaderboardPage from '@/components/LeaderboardPage';
 const PlayerGameRouter: NextPage<{}> = () => {
 	const { connected, error, game } = useKakawGame();
 
-	const [viewingLeaderboard, setViewingLeaderboard] = useState(true);
+	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
 
 	switch (game.stage) {
 		case Stage.WaitingRoom:

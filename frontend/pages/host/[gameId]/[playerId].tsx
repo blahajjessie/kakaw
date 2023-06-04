@@ -16,12 +16,15 @@ const HostGameRouter: NextPage<{}> = () => {
 
 	const { connected, error, game } = useKakawGame();
 
-	const [viewingLeaderboard, setViewingLeaderboard] = useState(true);
+	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
 
 	switch (game.stage) {
 		case Stage.WaitingRoom:
 			return <HostWaiting />;
 		case Stage.Question:
+			if (viewingLeaderboard) {
+				setViewingLeaderboard(false);
+			}
 			return (
 				<HostQuestionPage
 					question={game.currentQuestion}
@@ -31,13 +34,19 @@ const HostGameRouter: NextPage<{}> = () => {
 			);
 		case Stage.PostQuestion:
 			if (viewingLeaderboard) {
-				return <LeaderboardPage entries={game.leaderboard} onContinue={} />;
+				return (
+					<LeaderboardPage
+						entries={game.leaderboard}
+						index={game.questionIndex}
+					/>
+				);
 			} else {
 				return (
 					<HostQuestionPage
 						question={game.currentQuestion}
 						index={game.questionIndex}
 						postQuestion={true}
+						onContinue={() => setViewingLeaderboard(true)}
 					/>
 				);
 			}

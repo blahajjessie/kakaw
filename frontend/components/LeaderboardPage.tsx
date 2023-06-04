@@ -6,16 +6,24 @@ import LeaderboardEntry from '@/components/LeaderboardEntry';
 import { LeaderboardEntry as LeaderboardEntryType } from '@/lib/useKakawGame';
 
 import logo2 from 'public/logo2.png';
+import { apiCall } from '@/lib/api';
+import { useRouter } from 'next/router';
 
 export interface LeaderboardPageProps {
 	entries: LeaderboardEntryType[];
-	onContinue?: () => void | Promise<void>;
+	index?: number;
 }
 
 export default function LeaderboardPage({
 	entries,
-	onContinue,
+	index,
 }: LeaderboardPageProps) {
+	const router = useRouter();
+	const { gameId, playerId } = router.query as {
+		gameId: string;
+		playerId: string;
+	};
+
 	const entriesList = entries.map((entry, i) => (
 		<LeaderboardEntry
 			key={`${entry.name}_${i}`}
@@ -25,6 +33,20 @@ export default function LeaderboardPage({
 			isSelf={entry.isSelf}
 		/>
 	));
+
+	async function endQuestion() {
+		try {
+			await apiCall(
+				'POST',
+				`/games/${gameId}/questions/${index! + 1}/start`,
+				null,
+				{ gameId: gameId, id: playerId }
+			);
+		} catch (e) {
+			alert('Going to next question failed. Please try again');
+			console.error(e);
+		}
+	}
 
 	const mobileContent = (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
@@ -45,10 +67,10 @@ export default function LeaderboardPage({
 
 	const desktopContent = (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
-			{onContinue && (
+			{typeof index == 'number' && (
 				<button
 					className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-xl text-white shadow-heavy hover:brightness-110 2xl:text-2xl"
-					onClick={onContinue}
+					onClick={endQuestion}
 				>
 					Continue
 				</button>

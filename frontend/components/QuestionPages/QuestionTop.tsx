@@ -8,14 +8,14 @@ interface QuestionTopProps {
 	qNum: number;
 	qText: string;
 	endTime: number;
-	showContinue?: boolean;
+	onContinue?: () => void | Promise<void>;
 }
 
 export default function QuestionTop({
 	qNum,
 	qText,
 	endTime,
-	showContinue,
+	onContinue,
 }: QuestionTopProps) {
 	const delta = (endTime - Date.now()) / 1000;
 	const [minutes, setMinutes] = useState(Math.floor((delta / 60) % 60));
@@ -62,8 +62,11 @@ export default function QuestionTop({
 						/>
 					</div>
 				)}
-				{showContinue && (
-					<button className="bg-orange-50 px-8 py-2 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110">
+				{onContinue && (
+					<button
+						className="bg-orange-50 px-8 py-2 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
+						onClick={onContinue}
+					>
 						Continue
 					</button>
 				)}
@@ -95,8 +98,11 @@ export default function QuestionTop({
 					/>
 				</div>
 			)}
-			{showContinue && (
-				<button className="bg-orange-50 px-8 py-2 mr-4 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110">
+			{onContinue && (
+				<button
+					className="bg-orange-50 px-8 py-2 mr-4 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
+					onClick={onContinue}
+				>
 					Continue
 				</button>
 			)}
