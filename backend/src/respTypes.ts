@@ -8,7 +8,7 @@ export abstract class socketData {
 
 export type responseData =
 	| string
-	| BeginResp
+	| startResp
 	| EndResp
 	| ActionResp
 	| LeaderBoard[];
@@ -30,9 +30,9 @@ export class EndData implements socketData {
 }
 
 export class BeginData implements socketData {
-	name = 'beginQuestion';
-	data: BeginResp;
-	constructor(data: BeginResp) {
+	name = 'startQuestion';
+	data: startResp;
+	constructor(data: startResp) {
 		this.data = data;
 	}
 }
@@ -58,6 +58,7 @@ export class LeaderboardData implements socketData {
 export type newGameResp = {
 	gameId: GameId;
 	hostId: UserId;
+	token: String;
 };
 
 // export type createResp = {
@@ -67,11 +68,14 @@ export type newGameResp = {
 
 // Socket data fields:
 
-export type BeginResp = {
-	question: string; // question.questionText,
-	answers: string[]; // question.answerTexts,
+export type startResp = {
+	questionText: string; // question.questionText,
+	answerTexts: string[]; // question.answerTexts,
 	time: number; // game.timer.endTimestamp - Date.now(),
 	index: number; // game.activeQuestion,
+	score: number;
+	username: string;
+	totalQuestions: number;
 };
 
 export type EndResp = {
@@ -80,12 +84,19 @@ export type EndResp = {
 	scoreChange: number;
 	correct: boolean;
 	leaderboard: LeaderBoard[];
-	time: number;
+	positionChange: number;
+	responseTime: number;
+
+	questionText: string; // question.questionText,
+	answerTexts: string[]; // question.answerTexts,
+	index: number; // game.activeQuestion,
+	username: string;
+	explanations: string[] | null;
+	yourAnswer: number;
+	totalQuestions: number;
 };
 
-export type ActionResp = {
-	player: { id: UserId; username: string };
-};
+export type ActionResp = { players: object };
 
 export type LeaderBoard = {
 	name: string;

@@ -1,14 +1,14 @@
 import { Quiz, QuizQuestion } from './quiz';
 import {
 	BeginData,
-	BeginResp,
-	EndResp,
+	startResp,
 	LeaderBoard,
 	LeaderboardData,
+	ActionData,
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
-
+import { prefs } from './preferences';
 // // used ids for both players and host
 export type GameId = string;
 
@@ -46,49 +46,68 @@ export class Game {
 	activeQuestion = -1;
 	startTime = -1;
 	timer: NodeJS.Timeout | undefined = undefined;
-
+	hostTimeout: NodeJS.Timeout | undefined = undefined;
 	constructor(quiz: any) {
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
-		this.hostId = gen(8, []);
 		this.host = new User([], this.quizData.meta.author);
+		this.hostId = this.host.id;
 		games.set(this.id, this);
 	}
 
 	endQuestion() {
+		if (this.timer) {
+			clearTimeout(this.timer);
+			this.timer = undefined;
+		}
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
+		const totalQuestions = this.quizData.getQuestionCount();
 		this.players.forEach((u) => {
-			u.send(u.getEndData(board, this.activeQuestion));
+			u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
 		});
-		this.host.send(this.host.getEndData(board, this.activeQuestion));
+		this.host.send(
+			this.host.getEndData(board, this.activeQuestion, qd, totalQuestions)
+		);
 		this.quizOpen = false;
+
 		return;
 	}
 	getQuestionData() {
 		return this.quizData.getQuestionData(this.activeQuestion);
 	}
 
+	sendPlayerAction(uid: UserId) {
+		const user = this.getUser(uid);
+		if (!user) throw new Error('User issue');
+		const respObj = {
+			[uid]: user.name,
+		};
+		this.host.send(new ActionData({ players: respObj }));
+	}
 	// Input: Game Object
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
-		let question: BeginResp;
+		let question: startResp;
 		let pts: number;
 
 		this.activeQuestion++;
 		console.log(this.activeQuestion);
-
-		question = this.quizData.getQuestionMessage(this.activeQuestion);
+		const qn = this.activeQuestion;
+		const qt = this.quizData.getQuestionTime(qn);
 		pts = this.quizData.getPoints(this.activeQuestion);
 
-		const message = new BeginData(question);
 		this.getUsers().forEach((p: User) => {
+			p.initScore(this.activeQuestion, pts, qt);
+			const message = new BeginData(
+				p.getStartData(this.activeQuestion, this.quizData)
+			);
 			p.send(message);
-			p.initScore(this.activeQuestion, pts, question.time);
 		});
 		this.quizOpen = true;
-		this.timer = setTimeout(this.endQuestion, question.time * 1000);
+
+		this.timer = setTimeout(() => this.endQuestion(), qt);
 		this.startTime = Date.now();
 
 		return;
@@ -139,7 +158,56 @@ export class Game {
 	sendResults() {
 		this.host.send(new LeaderboardData(this.getLeaderboard()));
 	}
+	setHostTimeout() {
+		this.hostTimeout = setTimeout(
+			() => this.endGame(),
+			prefs.hostDisconnectDelay
+		);
+		console.log(
+			'Host disconnected. Waiting ' +
+				prefs.hostDisconnectDelay +
+				' ms for reconnect, gameId ' +
+				this.id
+		);
+	}
+	endHostTimeout() {
+		if (!this.hostTimeout) {
+			console.log(
+				'Host appears to be connected already (or connecting for the first time), gameId ' +
+					this.id
+			);
+			return;
+		}
+		clearTimeout(this.hostTimeout);
+		this.hostTimeout = undefined;
+		console.log('Host reconnected');
+	}
+	kickUser(uid: UserId, reason: string) {
+		const u = this.getUser(uid);
+		u.kick(reason);
+		this.players.delete(uid);
+	}
+	endGame() {
+		console.log(
+			'Host has been disconnected too long. Game should end now!, gameId ' +
+				this.id
+		);
+		this.getUsers().forEach((u) => {
+			this.kickUser(u.id, 'The game is over');
+		});
+		games.delete(this.id);
+	}
+	updateUser(uid: UserId) {
+		if (uid == this.hostId) {
+			this.updateHost();
+			return;
+		}
+		this.updatePlayer(uid);
+	}
+	updateHost() {
+		this.endHostTimeout();
+	}
+	updatePlayer(uid: UserId) {
+		console.log('Player has received its status update');
+	}
 }
-
-// // interface for user, mostly blank rn but will keep score or smth later.
-// // Userid is stored in the map for now

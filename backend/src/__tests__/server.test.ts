@@ -4,11 +4,7 @@ import correct from './testTools/quizzes/correct.json';
 
 import { WebSocket } from 'ws';
 import { waitForSocketState } from './testTools/connect';
-
-interface CreationResponse {
-	gameId: string;
-	hostId: string;
-}
+import { WEBSOCKET_BASE_URL, CreationResponse } from './testTools/testDef';
 
 let request: supertest.SuperTest<supertest.Test>;
 
@@ -24,6 +20,18 @@ describe('WebSocket Connection Tests', () => {
 	// Set Tests
 	let hostSocket: WebSocket;
 	let createRes: CreationResponse;
+	test('Quiz Does Not Exist', async () => {
+		const url = new URL('/connect', WEBSOCKET_BASE_URL);
+		url.searchParams.set('gameId', '55555');
+		url.searchParams.set('playerId', '55555');
+		url.searchParams.set('token', '55555');
+		const wrongSocket = new WebSocket(url);
+		wrongSocket.on('error', (err) => {
+			expect(err).toBeDefined();
+		});
+		await waitForSocketState(wrongSocket, WebSocket.CLOSED);
+	});
+
 	test('Quiz Upload', async () => {
 		await request
 			.post('/games')
@@ -34,6 +42,7 @@ describe('WebSocket Connection Tests', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
@@ -42,18 +51,33 @@ describe('WebSocket Connection Tests', () => {
 	test('Wrong Path', async () => {
 		const failSocket = new WebSocket(`ws://localhost:8080/con`);
 		failSocket.on('error', (err) => {
-			expect(err.message).toBe('socket hang up');
+			expect(err).toBeDefined();
 		});
+		await waitForSocketState(failSocket, failSocket.CLOSED);
 	});
 
 	// Tests to see if a Host can connect and receive data from the websocket
 	test('Successful Connection', async () => {
-		hostSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
-		);
-		hostSocket.on('message', function message() {
-			hostSocket.close();
-		});
+		const url = new URL('/connect', WEBSOCKET_BASE_URL);
+		url.searchParams.set('gameId', createRes.gameId);
+		url.searchParams.set('playerId', createRes.hostId);
+		url.searchParams.set('token', createRes.token);
+		hostSocket = new WebSocket(url);
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
+	});
+
+	test('Delete Game', async () => {
+		await request
+			.delete(`/games/${createRes.gameId}`)
+			.set({ authorization: 'Bearer ' + createRes.token })
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.ok).toBeDefined();
+				expect(data.ok).toStrictEqual(true);
+			});
+		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });

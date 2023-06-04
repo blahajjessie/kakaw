@@ -8,7 +8,7 @@ export function sendMessage(client: WebSocket, type: string, data: any) {
 	client.send(JSON.stringify({ type, ...data }));
 }
 
-function killConnection(client: WebSocket, reason: string) {
+export function killConnection(client: WebSocket, reason: string) {
 	sendMessage(client, 'end', { reason });
 	client.close();
 }
@@ -37,15 +37,19 @@ export function handleConnection(
 	if (user.getWs()) {
 		return killConnection(connection, 'You are already connected to this game');
 	}
-	user.addWs(connection);
 
-	connection.send('hello, world!');
+	user.addWs(connection);
+	game.updateUser(user.id);
 	connection.on('message', (data) => {
 		console.log(`player ${playerId} says: ${data}`);
 	});
 	// handle when the player leaves or we close the connection
 	connection.on('close', () => {
 		console.log(`player ${playerId} disconnected`);
+		if (game.hostId == playerId) {
+			console.warn('Host for ' + game.id + ' is leaving!');
+			game.setHostTimeout();
+		}
 		user.removeWs();
 	});
 }

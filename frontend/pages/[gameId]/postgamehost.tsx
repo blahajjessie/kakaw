@@ -1,5 +1,6 @@
 import Image from 'next/image';
 import Link from 'next/link';
+import Head from 'next/head';
 
 import postgame from 'public/postgame.png';
 
@@ -88,6 +89,9 @@ export default function PostgameHostPage() {
 
 	return (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
+			<Head>
+				<title>Postgame Results - Kakaw!</title>
+			</Head>
 			<Link
 				href="/"
 				className="absolute top-6 left-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl"

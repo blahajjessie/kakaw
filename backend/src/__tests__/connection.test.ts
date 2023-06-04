@@ -4,11 +4,7 @@ import correct from './testTools/quizzes/correct.json';
 
 import { WebSocket } from 'ws';
 import { waitForSocketState } from './testTools/connect';
-
-interface CreationResponse {
-	gameId: string;
-	hostId: string;
-}
+import { WEBSOCKET_BASE_URL, CreationResponse } from './testTools/testDef';
 
 let request: supertest.SuperTest<supertest.Test>;
 
@@ -36,24 +32,23 @@ describe('Multiple Connection Attempts', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
 
 	test('Second Connection is Destroyed', async () => {
-		hostSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
-		);
+		const url = new URL('/connect', WEBSOCKET_BASE_URL);
+		url.searchParams.set('gameId', createRes.gameId);
+		url.searchParams.set('playerId', createRes.hostId);
+		url.searchParams.set('token', createRes.token);
+		hostSocket = new WebSocket(url);
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
+		dupeSocket = new WebSocket(url);
 
-		hostSocket.on('message', () => {
-			dupeSocket = new WebSocket(
-				`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
-			);
-			hostSocket.close();
-		});
-
-		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 		await waitForSocketState(dupeSocket, WebSocket.CLOSED);
+		hostSocket.close();
+		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });
 
@@ -72,20 +67,33 @@ describe('Client can Message Host', () => {
 				expect(data.body).toBeDefined();
 				expect(data.body.gameId).toBeDefined();
 				expect(data.body.hostId).toBeDefined();
+				expect(data.body.token).toBeDefined();
 				createRes = data.body;
 			});
 	});
 
 	test('Message Server', async () => {
-		hostSocket = new WebSocket(
-			`ws://localhost:8080/connect?gameId=${createRes.gameId}&playerId=${createRes.hostId}`
-		);
+		const url = new URL('/connect', WEBSOCKET_BASE_URL);
+		url.searchParams.set('gameId', createRes.gameId);
+		url.searchParams.set('playerId', createRes.hostId);
+		url.searchParams.set('token', createRes.token);
+		hostSocket = new WebSocket(url);
+		await waitForSocketState(hostSocket, WebSocket.OPEN);
+		hostSocket.send(JSON.stringify({ ok: 'bongo' }));
+	});
 
-		hostSocket.on('message', () => {
-			hostSocket.send(JSON.stringify({ ok: 'bongo' }));
-			hostSocket.close();
-		});
-
+	test('Clean Up / Delete Game', async () => {
+		await request
+			.delete(`/games/${createRes.gameId}`)
+			.set({ authorization: 'Bearer ' + createRes.token })
+			.expect(200)
+			.then((data) => {
+				expect(data).toBeDefined();
+				expect(data.body).toBeDefined();
+				expect(data.ok).toBeDefined();
+				expect(data.ok).toStrictEqual(true);
+			});
+		hostSocket.close();
 		await waitForSocketState(hostSocket, WebSocket.CLOSED);
 	});
 });
