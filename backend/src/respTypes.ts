@@ -84,7 +84,6 @@ export type EndResp = {
 	scoreChange: number;
 	correct: boolean;
 	leaderboard: LeaderBoard[];
-	positionChange: number;
 	responseTime: number;
 
 	questionText: string; // question.questionText,
@@ -101,5 +100,7 @@ export type ActionResp = { players: object };
 export type LeaderBoard = {
 	name: string;
 	score: number;
+	positionChange: number,
+	isSelf: boolean,
 	correctAnswers: number[];
 };

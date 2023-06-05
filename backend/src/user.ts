@@ -44,6 +44,8 @@ export class User {
 		return {
 			name: this.name,
 			score: this.totalScore(),
+			positionChange: 0,
+			isSelf: false,
 			correctAnswers: this.getCorrect(),
 		};
 	}
@@ -65,23 +67,19 @@ export class User {
 		question: QuizQuestion,
 		totalQuestions: number
 	): EndData {
-		// calculate position change
-		const playerPosition = leaderBoard.findIndex(
-			(entry) => entry.name === this.name
-		);
-		const positionChange = NaN;
-		if (this.previousPosition > -1) {
-			const positionChange = this.previousPosition - playerPosition;
-		}
-		this.previousPosition = playerPosition;
 		return new EndData({
 			correctAnswers: question.correctAnswers,
 			explanations: question.explanations || null,
 			score: this.totalScore(),
 			scoreChange: this.answers[qn].score,
 			correct: this.answers[qn].correct,
-			leaderboard: leaderBoard,
-			positionChange: positionChange,
+			leaderboard: leaderBoard.map((entry) => {
+				if (entry.name === this.name) {
+				  return { ...entry, isSelf: true };
+				} else {
+				  return { ...entry, isSelf: false };
+				}
+			}),
 			responseTime: this.answers[qn].time,
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,
