@@ -5,7 +5,7 @@ import { useRouter } from 'next/router';
 
 import TimerSetter from '@/components/Fixtures/TimerSetter';
 import Qr from '@/components/Fixtures/QrCodeGeneration';
-import { WEBPAGE_BASE_URL } from '@/lib/baseUrl';
+import { FRONTEND_BASE_URL } from '@/lib/baseUrl';
 import { apiCall } from '@/lib/api';
 import { currentPlayersState } from '@/lib/useKakawGame';
 
@@ -80,7 +80,7 @@ export default function HostWaiting() {
 						</div>
 						<div className="text-8xl 2xl:text-9xl">{gameId}</div>
 						<div className="text-2xl 2xl:text-3xl whitespace-nowrap">
-							at {WEBPAGE_BASE_URL}
+							at {FRONTEND_BASE_URL}
 						</div>
 					</div>
 					<div className="bg-white flex flex-col justify-center items-center rounded-xl p-4">
