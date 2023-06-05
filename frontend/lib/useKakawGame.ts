@@ -80,6 +80,13 @@ export default function useKakawGame(): {
 	useConnection({
 		onOpen() {
 			setConnected(true);
+
+			// restore defaults
+			setError(undefined);
+			setGame({ stage: Stage.WaitingRoom });
+			setCurrentPlayers(new Map());
+			setUsername('');
+			setScore(0);
 		},
 
 		onMessage(type, event) {
@@ -139,8 +146,9 @@ export default function useKakawGame(): {
 		},
 
 		onError(error) {
+			console.error(error);
 			setConnected(false);
-			setError('The connection was interrupted.');
+			setError('The connection was interrupted');
 		},
 
 		onClose(reason) {
@@ -148,7 +156,7 @@ export default function useKakawGame(): {
 			if (typeof reason == 'string') {
 				setError(`The server closed the connection: ${reason}`);
 			} else {
-				setError('The connection was interrupted.');
+				setError('The connection was interrupted');
 			}
 		},
 	});
