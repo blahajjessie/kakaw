@@ -2,30 +2,29 @@ import { render, screen, fireEvent } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import './mocks/matchMedia.mock';
 import { rest } from 'msw';
+import { RecoilRoot } from 'recoil';
 import { setupServer } from 'msw/node';
 import 'whatwg-fetch';
+import mockRouter from 'next-router-mock';
+import { createDynamicRouteParser } from 'next-router-mock/dynamic-routes';
 import HostWaiting from '@/components/WaitingPages/HostWaiting';
-import { playerListContext } from '@/components/Context/ShareContext';
+import Canvas from 'canvas';
 
 const URL = 'http://localhost:8080/games/55555/questions/0/start';
-const badURL = 'http://localhost:8080/games/44444/questions/0/start';
 
-window.alert = jest.fn();
+jest.mock('next/router', () => require('next-router-mock'));
 
 const server = setupServer(
 	rest.post(URL, async (req, res, ctx) => {
-		return res(ctx.status(201), ctx.json(JSON.stringify({ ok: true })));
-	}),
-	rest.post(badURL, async (req, res, ctx) => {
-		return res(
-			ctx.status(404),
-			ctx.json(JSON.stringify({ ok: false, err: 'Quiz Does Not Exist' }))
-		);
+		return res(ctx.status(201), ctx.json({ ok: true }));
 	})
 );
 
+mockRouter.useParser(createDynamicRouteParser(['/host/[gameId]/[playerId]']));
+
 beforeAll(() => {
 	server.listen();
+	mockRouter.push('/host/55555/67676');
 });
 
 afterEach(() => server.resetHandlers());
@@ -34,49 +33,18 @@ afterAll(() => server.close());
 
 test('Host Waiting Renders', async () => {
 	render(
-		<playerListContext.Provider value={['Player1', 'Player2']}>
-			<HostWaiting hostId={'55555'} />
-		</playerListContext.Provider>
+		<RecoilRoot>
+			<HostWaiting />
+		</RecoilRoot>
 	);
 	await screen.findByText('55555');
-	await screen.findByText('Player2');
-});
-
-test('Time Set w/Text', async () => {
-	render(
-		<playerListContext.Provider value={['Player1', 'Player2']}>
-			<HostWaiting hostId={'55555'} />
-		</playerListContext.Provider>
-	);
-	const time = screen.getByTestId('time');
-	await userEvent.type(time, '420');
-});
-
-test('Max Player Set w/Text', async () => {
-	render(
-		<playerListContext.Provider value={['Player1', 'Player2']}>
-			<HostWaiting hostId={'55555'} />
-		</playerListContext.Provider>
-	);
-	const maxPlayer = screen.getByTestId('playerCount');
-	await userEvent.type(maxPlayer, '100');
 });
 
 test('Host Start Quiz', async () => {
 	render(
-		<playerListContext.Provider value={['Player1', 'Player2']}>
-			<HostWaiting hostId={'55555'} />
-		</playerListContext.Provider>
+		<RecoilRoot>
+			<HostWaiting />
+		</RecoilRoot>
 	);
 	await userEvent.click(screen.getByText('Start'));
-});
-
-test('Host Start Failure', async () => {
-    const alertMock = jest.spyOn(window,'alert').mockImplementation(); 
-	render(
-		<playerListContext.Provider value={['Player1', 'Player2']}>
-			<HostWaiting hostId={'44444'} />
-		</playerListContext.Provider>
-	);
-    fireEvent.click(screen.getByRole('button', {name: 'Start'}));
 });

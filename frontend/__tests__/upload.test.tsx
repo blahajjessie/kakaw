@@ -83,6 +83,6 @@ test('Upload File', async () => {
 	fireEvent.change(uploadInput, { target: { files: [file] } });
 	const fileTitle = await screen.findByText('test.json');
 	expect(fileTitle).not.toBe(null);
-	await userEvent.click(screen.getByText('Upload'));
+	fireEvent.click(screen.getByText('Upload'));
 	await screen.findByText('Uploading...');
 });
