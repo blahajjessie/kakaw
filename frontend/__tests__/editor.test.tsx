@@ -6,15 +6,10 @@ import { RecoilRoot } from 'recoil';
 import { setupServer } from 'msw/node';
 import 'whatwg-fetch';
 import mockRouter from 'next-router-mock';
-import Home from '@/pages/index';
+import EditorPage from '@/pages/editor';
 
 jest.mock('next/router', () => require('next-router-mock'));
 
-test('Renders Home', async () => {
-	render(
-		<RecoilRoot>
-			<Home code="55555" />
-		</RecoilRoot>
-	);
-	await screen.findByText('Host your own Quiz!');
+test('Renders Editor', async () => {
+	render(<EditorPage />);
 });
