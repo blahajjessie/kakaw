@@ -28,7 +28,7 @@ export default function HostQuestionBottom({
 	);
 
 	const desktopContent = (
-		<div className="w-full bg-gray-100 flex flex-row items-center justify-between font-extrabold text-lg xl:text-xl 2xl:text-2xl">
+		<div className="w-full bg-gray-100 flex flex-row items-center justify-between font-extrabold text-lg xl:text-xl 2xl:text-2xl z-10">
 			<div className="flex flex-col justify-center px-4 py-3 self-stretch text-center 2xl:py-4">
 				{numAnswered}/{numPlayers} Answered
 			</div>
