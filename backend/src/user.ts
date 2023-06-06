@@ -3,7 +3,13 @@ import { gen } from './code';
 
 import { sendMessage, killConnection } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
-import { EndData, LeaderBoard, socketData, startResp, PlayerResults } from './respTypes';
+import {
+	EndData,
+	LeaderBoard,
+	socketData,
+	startResp,
+	PlayerResults,
+} from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -24,17 +30,17 @@ export class User {
 		return scores.reduce((a, b) => a + b);
 	}
 	getCorrect(): number {
-        return this.answers.reduce((count, ans) => {
-          if (ans.correct) count++;
-          return count;
-        }, 0);
-    }
-    getIncorrect(): number {
-        return this.answers.reduce((count, ans) => {
-          if (!ans.correct) count++;
-          return count;
-        }, 0);
-    }
+		return this.answers.reduce((count, ans) => {
+			if (ans.correct) count++;
+			return count;
+		}, 0);
+	}
+	getIncorrect(): number {
+		return this.answers.reduce((count, ans) => {
+			if (!ans.correct) count++;
+			return count;
+		}, 0);
+	}
 	answer(qn: number, time: number, choice: number) {
 		this.answers[qn].time = time;
 		this.answers[qn].answer = choice;
@@ -47,21 +53,21 @@ export class User {
 		this.answers[qn] = new AnswerObj(qPoints, qTime, 0, 0);
 	}
 	getPlayerResultsComponent(): PlayerResults {
-        return {
-            username: this.name,
-            score: this.totalScore(),
-            numCorrect: this.getCorrect(),
-            numWrong: this.getIncorrect(),
-        }
-    }
-    getLeaderboardComponent(): LeaderBoard {
-        return {
-            name: this.name,
-            score: this.totalScore(),
-            positionChange: 0,
-            isSelf: false,
-        };
-    }
+		return {
+			username: this.name,
+			score: this.totalScore(),
+			numCorrect: this.getCorrect(),
+			numWrong: this.getIncorrect(),
+		};
+	}
+	getLeaderboardComponent(): LeaderBoard {
+		return {
+			name: this.name,
+			score: this.totalScore(),
+			positionChange: 0,
+			isSelf: false,
+		};
+	}
 	getStartData(qn: number, quiz: Quiz): startResp {
 		const question = quiz.getQuestionData(qn);
 		return {

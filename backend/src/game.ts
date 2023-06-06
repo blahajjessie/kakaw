@@ -6,7 +6,7 @@ import {
 	ActionData,
 	PlayerResults,
 	PlayerRespData,
-	PlayerResultRespData
+	PlayerResultRespData,
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
@@ -179,29 +179,29 @@ export class Game {
 		return leaderboard;
 	}
 	getPlayerResults(): PlayerResults[] {
-        let playerResults: PlayerResults[] = [];
-        this.players.forEach(function (player: User) {
-            playerResults.push(player.getPlayerResultsComponent());
-        });
-        playerResults.sort((a, b) => b.score - a.score);
-        return playerResults;
-    }
-    sendResults() {
-        const leaderboard = this.getLeaderboard();
-        const players = this.getPlayerResults();
-        const resultResp = new PlayerResultRespData(leaderboard, players);
-        this.host.send(resultResp);
-        this.players.forEach((player: User) => {
-            const playerResult = {
-                leaderboard: leaderboard,
-                numCorrect: player.getCorrect(),
-                numWrong: player.getIncorrect(),
-                username: player.name,
-                score: player.totalScore()
-            };
-            player.send(new PlayerRespData(playerResult));
-        });
-    }
+		let playerResults: PlayerResults[] = [];
+		this.players.forEach(function (player: User) {
+			playerResults.push(player.getPlayerResultsComponent());
+		});
+		playerResults.sort((a, b) => b.score - a.score);
+		return playerResults;
+	}
+	sendResults() {
+		const leaderboard = this.getLeaderboard();
+		const players = this.getPlayerResults();
+		const resultResp = new PlayerResultRespData(leaderboard, players);
+		this.host.send(resultResp);
+		this.players.forEach((player: User) => {
+			const playerResult = {
+				leaderboard: leaderboard,
+				numCorrect: player.getCorrect(),
+				numWrong: player.getIncorrect(),
+				username: player.name,
+				score: player.totalScore(),
+			};
+			player.send(new PlayerRespData(playerResult));
+		});
+	}
 	setHostTimeout() {
 		this.hostTimeout = setTimeout(
 			() => this.endGame(),
