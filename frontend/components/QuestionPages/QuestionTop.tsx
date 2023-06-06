@@ -78,7 +78,7 @@ export default function QuestionTop({
 	);
 
 	const desktopContent = (
-		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold shadow-heavy">
+		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold shadow-heavy fixed top-0" style={{ zIndex: 1 }}>
 			<div className="w-32 bg-orange-50 shrink-0 flex flex-row items-center self-stretch pl-8 rounded-r-xl text-center text-3xl shadow-heavy 2xl:w-48 2xl:pl-12 2xl:text-4xl">
 				Q{qNum}
 			</div>

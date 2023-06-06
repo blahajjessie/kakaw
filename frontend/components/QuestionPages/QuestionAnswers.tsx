@@ -83,7 +83,6 @@ function StyledAnswers({
 					onMouseEnter={() => handleMouseEnter(index)}
 					onMouseLeave={() => handleMouseLeave(index)}
 				>
-					{/* Flip Animation */}
 					<div
 						className={`${styles['answer-container']} ${
 							selectedAnswer === index ? styles.flip : ''
@@ -138,7 +137,7 @@ interface QuestionAnswersProps {
 
 export default function QuestionAnswers(props: QuestionAnswersProps) {
 	const mobileContainerClass =
-		'w-11/12 h-2/3 flex flex-col justify-between font-extrabold text-lg my-2';
+		'w-11/12 h-2/3 flex flex-wrap justify-around font-extrabold text-lg my-2';
 
 	const desktopContainerClass =
 		'flex flex-wrap items-center justify-center grow gap-x-16 w-full font-extrabold text-3xl my-2 2xl:text-4xl';

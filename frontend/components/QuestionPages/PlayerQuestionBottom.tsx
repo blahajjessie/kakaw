@@ -12,7 +12,7 @@ export default function PlayerQuestionBottom({
 	scoreChange,
 }: PlayerQuestionBottomProps) {
 	const mobileContent = (
-		<div className="w-full h-1/10 bg-gray-100 flex flex-row justify-between rounded-t-xl font-extrabold text-lg">
+		<div className="w-full h-1/10 bg-gray-100 flex flex-row justify-between rounded-t-xl font-extrabold text-lg fixed bottom-0">
 			<div className="flex flex-col justify-center px-2 py-3 ml-4 self-stretch text-center">
 				{name}
 			</div>
@@ -28,7 +28,7 @@ export default function PlayerQuestionBottom({
 	);
 
 	const desktopContent = (
-		<div className="w-full bg-gray-100 flex flex-row items-center justify-between font-extrabold text-lg xl:text-xl 2xl:text-2xl">
+		<div className="w-full bg-gray-100 flex flex-row items-center justify-between font-extrabold text-lg xl:text-xl 2xl:text-2xl fixed bottom-0">
 			<div className="flex flex-col justify-center px-4 py-3 self-stretch text-center 2xl:py-4">
 				{name}
 			</div>
