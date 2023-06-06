@@ -8,6 +8,7 @@ app.use(express.json());
 
 import registerGameRoutes from './gameRunner';
 import { getGame, gameExist } from './game';
+import { prefs } from './preferences';
 registerGameRoutes(app);
 
 // create websocket "server" which really piggybacks on the express server
@@ -20,10 +21,10 @@ const webSocketServer = new WebSocket.Server({
 	// certain connections from express to ws
 	noServer: true,
 });
-const httpServer = app.listen(8080);
+const httpServer = app.listen(prefs.backendPort);
 
 httpServer.on('listening', () => {
-	console.log('listening on localhost:8080');
+	console.log('listening on localhost:' + prefs.backendPort);
 });
 
 // triggered when the client attempts to "upgrade" a connection from HTTP to WebSocket. we need to
