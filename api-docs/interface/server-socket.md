@@ -71,8 +71,7 @@ Sends a player their end of game results (TODO)
 #### Fields:
 - `leaderboard` ([`Leaderboard[]`](host-http.md#leaderboard))
 - `numCorrect`(number) : The number of correct answers the player made
-- `numWrong` (number) : The number of incorrect answers the player made
-- `numEmpty` (number) : The number of questions not answered
+- `numWrong` (number) : The number of incorrect answers the player made + questions that the player did not answer at all
 - `username` (string) : The username of the player
 - `score` (number) : the player's score
 
@@ -84,7 +83,6 @@ Sends the host the results for all players (TODO?)
 - `players`: array containing objects with the following keys (same meaning as in `playerResults`):
     - `numCorrect` (number)
     - `numWrong` (number)
-    - `numEmpty` (number)
     - `username` (string)
     - `score` (number)
 
