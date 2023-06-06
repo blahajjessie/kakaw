@@ -90,13 +90,12 @@ export class Game {
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
 		let question: startResp;
-		let pts: number;
 
 		this.activeQuestion++;
 		console.log(this.activeQuestion);
 		const qn = this.activeQuestion;
 		const qt = this.quizData.getQuestionTime(qn);
-		pts = this.quizData.getPoints(this.activeQuestion);
+		const pts = this.quizData.getPoints(this.activeQuestion);
 
 		this.getUsers().forEach((p: User) => {
 			p.initScore(this.activeQuestion, pts, qt);
@@ -209,5 +208,26 @@ export class Game {
 	}
 	updatePlayer(uid: UserId) {
 		console.log('Player has received its status update');
+	}
+
+	sendEndQuestionState(u: User){
+
+		const qd = this.getQuestionData();
+		const board = this.getLeaderboard();
+		const totalQuestions = this.quizData.getQuestionCount();
+		u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
+	}
+	sendMidQuestionState(p: User){
+		const qn = this.activeQuestion;
+		const qt = this.quizData.getQuestionTime(qn);
+		const pts = this.quizData.getPoints(this.activeQuestion);
+			p.initScore(this.activeQuestion, pts, qt);
+			const message = new BeginData(
+				p.getStartData(this.activeQuestion, this.quizData)
+			);
+			message.data.time = 0;
+			p.send(message);
+
+
 	}
 }
