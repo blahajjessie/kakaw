@@ -14,7 +14,11 @@ returns user's total score
 
 ## `getCorrect` ()
 
-returns an array of question indices that the user answered correctly
+returns the number of correct answers
+
+## `getIncorrect` ()
+
+returns the number of wrong/unanswered answers
 
 ## `answer` (qn: number, time: number, choice: number)
 
@@ -27,6 +31,10 @@ takes in a question number and quiz question in order to score the user's answer
 ## `initScore` (qn: number, qPoints: number, qTime: number)
 
 takes in a question number, question points, and question time and creates a new AnswerObj in `answers`
+
+## `getPlayerResultsComponent` ()
+
+returns the username, score, number of correct answers, and number of wrong/unanswered questions
 
 ## `getLeaderboardComponent` ()
 

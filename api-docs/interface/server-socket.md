@@ -54,7 +54,6 @@ The same message is sent to the host, but the information about the answer choic
 - `scoreChange` (number) = how much their score increased due to this question, The host will receive garbage
 - `correct` (boolean) : if the player's answer to the question is correct. The host will receive garbage
 - `leaderboard`: sorted array of [Leaderboard](host-http.md#leaderboard) to represent the player score
-- `positionChange`: How much the position has changed in the leaderboard. 0 if the position has stayed the same, negative if it has decreased. Sends `NaN` if this is the player's first answered question.
 - `responseTime` (number) : the amount of time the player took to answer the question (ms)
 - `questionText` (string) : The question
 - `answerTexts` (string[]) : string[] of the answer choices

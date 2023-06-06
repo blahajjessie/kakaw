@@ -65,9 +65,13 @@ takes a username and adds it to the map of players if it's not already being use
 
 generates a new leaderboard by sorting the leaderboard components of each player based on descending score, then calculates and changes each player's leaderboard component `positionChange` utilizing the recorded player's previous position (NaN if this is the first question they answered) and their current position in the newly generated leaderboard
 
+## `getPlayerResults` ()
+
+gets all player data
+
 ## `sendResults` ()
 
-sends the leaderboard data of all players to the host
+sends the leaderboard and data of all players to the host, and sends the leaderboard and only the corresponding player data to the player
 
 ## `setHostTimeout` ()
 
