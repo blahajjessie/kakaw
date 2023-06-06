@@ -63,9 +63,9 @@ export class Game {
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
 
-		this.players.forEach((player:User)=>{
+		this.players.forEach((player: User) => {
 			player.scorePlayer(qn, qd);
-		})
+		});
 
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
@@ -149,9 +149,7 @@ export class Game {
 	}
 
 	getLeaderboard(): LeaderBoard[] {
-
 		// score question
-
 
 		// generate new leaderboard
 		let leaderboard: LeaderBoard[] = [];
