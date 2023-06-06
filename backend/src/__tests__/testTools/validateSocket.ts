@@ -27,6 +27,20 @@ export function validate(message: any) {
 			break;
 		}
 		case 'results': {
+			expect(message.playerResults).toBeDefined();
+			break;
+		}
+		case 'player': {
+			expect(message.data.leaderboard).toBeDefined();
+			expect(message.data.username).toBeDefined();
+			expect(message.data.score).toBeDefined();
+			expect(message.data.numCorrect).toBeDefined();
+			expect(message.data.numWrong).toBeDefined();
+			break;
+		}
+		case 'playerResults': {
+			// expect(message.data.leaderboard).toBeDefined();
+			// expect(message.data.players).toBeDefined();
 			break;
 		}
 		default:
