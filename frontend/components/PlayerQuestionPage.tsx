@@ -108,25 +108,15 @@ export default function PlayerQuestionPage({
 			{/* Render the modal when showModal is true */}
 			{showModal && (
 				<div
-					className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50"
+					className="fixed top-0 left-0 w-screen h-screen flex items-center justify-center bg-black bg-opacity-50 cursor-pointer z-20"
 					onClick={toggleModal}
 				>
 					{/* Render the selected image if selectedAnswer is not null */}
 					{finalAnswer !== null && (
-						<div className="w-11/12 h-full flex flex-col items-center justify-center">
-							<Image
-								alt="Popup Image"
-								src={feedbackImage}
-								width={400}
-								className="-mb-6"
-							/>
+						<div className="w-full h-full flex flex-col items-center justify-center">
+							<Image alt="Popup Image" src={feedbackImage} width={400} />
 						</div>
 					)}
-
-					{/* Close button */}
-					<button className="absolute top-4 right-4 text-white text-xl">
-						Close
-					</button>
 				</div>
 			)}
 		</main>
