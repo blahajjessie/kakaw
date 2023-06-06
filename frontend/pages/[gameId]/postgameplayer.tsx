@@ -9,15 +9,13 @@ import postgame from 'public/postgame.png';
 const postgameData = {
 	name: 'Player 1',
 	correct: 16,
-	wrong: 8,
-	unanswered: 2,
+	incorrect: 8,
 };
 
 export default function PostgamePlayerPage() {
 	// Calculate the rank text based on % correct
 	const rank = (() => {
-		const total =
-			postgameData.correct + postgameData.wrong + postgameData.unanswered;
+		const total = postgameData.correct + postgameData.incorrect;
 		const percentCorrect = (100 * postgameData.correct) / total;
 
 		if (percentCorrect === 100) {
@@ -63,14 +61,9 @@ export default function PostgamePlayerPage() {
 									color: '#9EE09E',
 								},
 								{
-									title: 'Wrong',
-									value: postgameData.wrong,
+									title: 'Incorrect',
+									value: postgameData.incorrect,
 									color: '#FF6663',
-								},
-								{
-									title: 'Unanswered',
-									value: postgameData.unanswered,
-									color: '#FDFD97',
 								},
 							]}
 						/>
@@ -80,10 +73,7 @@ export default function PostgamePlayerPage() {
 								Correct: {postgameData.correct}
 							</div>
 							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
-								Wrong: {postgameData.wrong}
-							</div>
-							<div className="w-fit bg-yellow-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
-								Unanswered: {postgameData.unanswered}
+								Wrong: {postgameData.incorrect}
 							</div>
 						</div>
 

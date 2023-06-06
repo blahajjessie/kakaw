@@ -8,32 +8,27 @@ const postgameData = [
 	{
 		name: 'Player 1',
 		correct: 16,
-		wrong: 8,
-		unanswered: 2,
+		incorrect: 10,
 	},
 	{
 		name: 'Player 2',
 		correct: 20,
-		wrong: 4,
-		unanswered: 2,
+		incorrect: 6,
 	},
 	{
 		name: 'Player 3',
 		correct: 20,
-		wrong: 6,
-		unanswered: 0,
+		incorrect: 6,
 	},
 	{
 		name: 'Player 4',
 		correct: 15,
-		wrong: 10,
-		unanswered: 1,
+		incorrect: 11,
 	},
 	{
 		name: 'Player 5',
 		correct: 24,
-		wrong: 2,
-		unanswered: 0,
+		incorrect: 2,
 	},
 ];
 
@@ -44,7 +39,7 @@ interface percentCounts {
 export default function PostgameHostPage() {
 	// Build array of % correct as whole numbers for all players
 	const percentCorrectArray = postgameData.map(
-		(p) => (100 * p.correct) / (p.correct + p.wrong + p.unanswered)
+		(p) => (100 * p.correct) / (p.correct + p.incorrect)
 	);
 
 	// Create object mapping of % correct to number of occurrences
