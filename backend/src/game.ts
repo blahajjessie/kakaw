@@ -174,7 +174,11 @@ export class Game {
 		return leaderboard;
 	}
 	sendResults() {
-		this.host.send(new LeaderboardData(this.getLeaderboard()));
+		const leaderboard = this.getLeaderboard();
+		this.host.send(new LeaderboardData(leaderboard));
+		this.players.forEach((player: User) => {
+			player.send(new LeaderboardData(leaderboard));
+		});
 	}
 	setHostTimeout() {
 		this.hostTimeout = setTimeout(
