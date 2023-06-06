@@ -137,6 +137,17 @@ export class Game {
 			this.iterateUsers((u: User) => u.id),
 			username
 		);
+		// Score active questions!
+		for (let i = 0; i <= this.activeQuestion; i++) {
+			// leave these unanswered ig
+			u.initScore(
+				i,
+				this.quizData.getPoints(i),
+				this.quizData.getQuestionTime(i)
+			);
+			// if the question is active, theyll get a score twice, but wont hurt.
+			u.scorePlayer(i, this.quizData.getQuestionData(i));
+		}
 		console.log(u.id);
 		this.players.set(u.id, u);
 		return u.id;
@@ -207,27 +218,32 @@ export class Game {
 		this.endHostTimeout();
 	}
 	updatePlayer(uid: UserId) {
+		const u = this.getUser(uid);
+		if (this.quizOpen) {
+			this.sendMidQuestionState(u);
+		} else if (this.activeQuestion >= this.quizData.getQuestionCount()) {
+			console.log('leaderboard');
+		} else if (this.activeQuestion < 0) {
+			this.sendEndQuestionState(u);
+		}
 		console.log('Player has received its status update');
 	}
 
-	sendEndQuestionState(u: User){
-
+	sendEndQuestionState(u: User) {
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
 		u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
 	}
-	sendMidQuestionState(p: User){
+	sendMidQuestionState(u: User) {
 		const qn = this.activeQuestion;
 		const qt = this.quizData.getQuestionTime(qn);
 		const pts = this.quizData.getPoints(this.activeQuestion);
-			p.initScore(this.activeQuestion, pts, qt);
-			const message = new BeginData(
-				p.getStartData(this.activeQuestion, this.quizData)
-			);
-			message.data.time = 0;
-			p.send(message);
-
-
+		u.initScore(this.activeQuestion, pts, qt);
+		const message = new BeginData(
+			u.getStartData(this.activeQuestion, this.quizData)
+		);
+		message.data.time = 0;
+		u.send(message);
 	}
 }
