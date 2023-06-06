@@ -119,7 +119,7 @@ export default function EditorTutorial({
 			{state === 'questions' &&
 				insertLarge(
 					<div>
-						You can change the timer and add up to 4 answers for each question.
+						You can change the timer and add up to 6 answers for each question.
 						Answer explanations are optional, but must either be defined for
 						every answer or left blank for each question.
 					</div>
