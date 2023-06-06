@@ -68,11 +68,8 @@ export class PlayerResultRespData implements socketData {
 		players: PlayerResults[];
 	};
 
-	constructor(leaderboard: LeaderBoard[], players: PlayerResults[]) {
-		this.data = {
-			leaderboard,
-			players,
-		};
+	constructor(data: PlayerResultsResp) {
+		this.data = data;
 	}
 }
 

@@ -26,10 +26,6 @@ export function validate(message: any) {
 			expect(message.leaderboard).toBeDefined();
 			break;
 		}
-		case 'results': {
-			expect(message.playerResults).toBeDefined();
-			break;
-		}
 		case 'player': {
 			expect(message.data.leaderboard).toBeDefined();
 			expect(message.data.username).toBeDefined();

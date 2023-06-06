@@ -189,7 +189,8 @@ export class Game {
 	sendResults() {
 		const leaderboard = this.getLeaderboard();
 		const players = this.getPlayerResults();
-		const resultResp = new PlayerResultRespData(leaderboard, players);
+		const hostData = {leaderboard, players}
+		const resultResp = new PlayerResultRespData(hostData);
 		this.host.send(resultResp);
 		this.players.forEach((player: User) => {
 			const playerResult = {
