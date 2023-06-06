@@ -42,7 +42,7 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 				numAnswered={currentPlayers.size}
 				numPlayers={
 					// TODO get from backend
-					5
+					999999
 				}
 				onContinue={async () => {
 					if (props.postQuestion) {
