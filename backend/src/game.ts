@@ -226,7 +226,10 @@ export class Game {
 		} else if (this.activeQuestion < 0) {
 			this.sendEndQuestionState(u);
 		}
-		console.log('Player has received its status update');
+		else{
+			console.log("game hasn't started; Nothing!")
+		}
+		console.log('Player'+ u.name + ' has received its status update');
 	}
 
 	sendEndQuestionState(u: User) {
@@ -243,7 +246,8 @@ export class Game {
 		const message = new BeginData(
 			u.getStartData(this.activeQuestion, this.quizData)
 		);
-		message.data.time = 0;
+		const elapsed = Date.now() - this.startTime
+		message.data.time = qt-elapsed;
 		u.send(message);
 	}
 }
