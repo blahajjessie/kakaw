@@ -11,6 +11,8 @@ export type responseData =
 	| startResp
 	| EndResp
 	| ActionResp
+	| PlayerResp
+    | PlayerResultsResp
 	| LeaderBoard[];
 
 export class closeConnection implements socketData {
@@ -43,6 +45,35 @@ export class ActionData implements socketData {
 	constructor(data: ActionResp) {
 		this.data = data;
 	}
+}
+
+export class PlayerRespData implements socketData {
+    name = 'player';
+    data: {
+        leaderboard: LeaderBoard[];
+        username: string;
+        score: number;
+        numCorrect: number;
+        numWrong: number;
+    }
+    constructor(data: PlayerResp) {
+        this.data = data;
+    }
+}
+
+export class PlayerResultRespData implements socketData {
+    name = 'playerResults';
+    data: {
+      leaderboard: LeaderBoard[];
+      players: PlayerResults[];
+    };
+
+    constructor(leaderboard: LeaderBoard[], players: PlayerResults[]) {
+      this.data = {
+        leaderboard,
+        players,
+      };
+    }
 }
 
 export class LeaderboardData implements socketData {
@@ -97,12 +128,29 @@ export type EndResp = {
 
 export type ActionResp = { players: object };
 
+export type PlayerResp = {
+    leaderboard: LeaderBoard[],
+    numCorrect: number,
+    numWrong: number,
+    username: string,
+    score: number,
+}
+
+export type PlayerResultsResp = {
+    leaderboard: LeaderBoard[], 
+    players: PlayerResults[],
+}
+
 export type LeaderBoard = {
-	name: string;
-	score: number;
-	positionChange: number;
-	isSelf: boolean;
-	correctAnswers: number[];
-	incorrectAnswers: number[];
-	missingAnswers: number[];
+    name: string;
+    score: number;
+    positionChange: number;
+    isSelf: boolean;
 };
+
+export type PlayerResults = {
+    username: string;
+    score: number;
+    numCorrect: number;
+    numWrong: number;
+}

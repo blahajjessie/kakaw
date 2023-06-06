@@ -3,7 +3,7 @@ import { gen } from './code';
 
 import { sendMessage, killConnection } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
-import { EndData, LeaderBoard, socketData, startResp } from './respTypes';
+import { EndData, LeaderBoard, socketData, startResp, PlayerResults } from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -23,24 +23,18 @@ export class User {
 		let scores = this.answers.map((s: AnswerObj) => s.score);
 		return scores.reduce((a, b) => a + b);
 	}
-	getCorrect(): number[] {
-		return this.answers.reduce((indices, ans, i) => {
-			if (ans.correct) indices.push(i);
-			return indices;
-		}, new Array<number>());
-	}
-	getIncorrect(): number[] {
-		return this.answers.reduce((indices, ans, i) => {
-			if (!ans.correct) indices.push(i);
-			return indices;
-		}, new Array<number>());
-	}
-	getMissing(): number[] {
-		return this.answers.reduce((indices, ans, i) => {
-			if (typeof ans === 'undefined') indices.push(i);
-			return indices;
-		}, new Array<number>());
-	}
+	getCorrect(): number {
+        return this.answers.reduce((count, ans) => {
+          if (ans.correct) count++;
+          return count;
+        }, 0);
+    }
+    getIncorrect(): number {
+        return this.answers.reduce((count, ans) => {
+          if (!ans.correct) count++;
+          return count;
+        }, 0);
+    }
 	answer(qn: number, time: number, choice: number) {
 		this.answers[qn].time = time;
 		this.answers[qn].answer = choice;
@@ -52,17 +46,22 @@ export class User {
 	initScore(qn: number, qPoints: number, qTime: number) {
 		this.answers[qn] = new AnswerObj(qPoints, qTime, 0, 0);
 	}
-	getLeaderboardComponent(): LeaderBoard {
-		return {
-			name: this.name,
-			score: this.totalScore(),
-			positionChange: 0,
-			isSelf: false,
-			correctAnswers: this.getCorrect(),
-			incorrectAnswers: this.getIncorrect(),
-			missingAnswers: this.getMissing(),
-		};
-	}
+	getPlayerResultsComponent(): PlayerResults {
+        return {
+            username: this.name,
+            score: this.totalScore(),
+            numCorrect: this.getCorrect(),
+            numWrong: this.getIncorrect(),
+        }
+    }
+    getLeaderboardComponent(): LeaderBoard {
+        return {
+            name: this.name,
+            score: this.totalScore(),
+            positionChange: 0,
+            isSelf: false,
+        };
+    }
 	getStartData(qn: number, quiz: Quiz): startResp {
 		const question = quiz.getQuestionData(qn);
 		return {
