@@ -124,7 +124,8 @@ export default function HostWaiting() {
 					</div>
 					<div className="flex flex-row justify-end m-2">
 						<div className="rounded-xl bg-purple-100 text-2xl w-52 text-white text-center m-2 px-6 py-1">
-							{currentPlayers.size}/{maxPlayers}
+							{currentPlayers.size}{' '}
+							{currentPlayers.size == 1 ? 'player' : 'players'}
 						</div>
 					</div>
 				</div>

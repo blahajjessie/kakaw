@@ -10,7 +10,6 @@ import failKaw from '@/public/fail_kaw.png';
 
 const HostGameRouter: NextPage<{}> = () => {
 	const { connected, error, game } = useKakawGame();
-
 	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
 
 	if (!connected) {

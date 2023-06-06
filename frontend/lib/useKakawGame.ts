@@ -75,7 +75,7 @@ export default function useKakawGame(): {
 	const [currentPlayers, setCurrentPlayers] =
 		useRecoilState(currentPlayersState);
 	const [username, setUsername] = useRecoilState(usernameState);
-	const [score, setScore] = useRecoilState(scoreState);
+	const [_score, setScore] = useRecoilState(scoreState);
 
 	useConnection({
 		onOpen() {
@@ -108,6 +108,7 @@ export default function useKakawGame(): {
 					});
 					setUsername(event.username);
 					setScore(event.score);
+					setCurrentPlayers(new Map());
 					break;
 				case 'endQuestion':
 					setGame({
