@@ -219,17 +219,16 @@ export class Game {
 	}
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
-		if (this.quizOpen) {
-			this.sendMidQuestionState(u);
-		} else if (this.activeQuestion >= this.quizData.getQuestionCount()) {
+		if (this.activeQuestion >= this.quizData.getQuestionCount()) {
 			console.log('leaderboard');
 		} else if (this.activeQuestion < 0) {
+			console.log("game hasn't started; Nothing!");
+		} else if (this.quizOpen) {
+			this.sendMidQuestionState(u);
+		} else {
 			this.sendEndQuestionState(u);
 		}
-		else{
-			console.log("game hasn't started; Nothing!")
-		}
-		console.log('Player'+ u.name + ' has received its status update');
+		console.log('Player' + u.name + ' has received its status update');
 	}
 
 	sendEndQuestionState(u: User) {
@@ -246,8 +245,8 @@ export class Game {
 		const message = new BeginData(
 			u.getStartData(this.activeQuestion, this.quizData)
 		);
-		const elapsed = Date.now() - this.startTime
-		message.data.time = qt-elapsed;
+		const elapsed = Date.now() - this.startTime;
+		message.data.time = qt - elapsed;
 		u.send(message);
 	}
 }
