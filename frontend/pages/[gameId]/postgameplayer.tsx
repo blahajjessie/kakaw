@@ -48,7 +48,7 @@ export default function PostgamePlayerPage() {
 					How you did
 				</div>
 
-				<div className="w-full h-3/4 bg-purple-500 flex items-center justify-center p-8 pt-10 -mt-6 text-lg rounded-3xl z-10 sm:h-2/3 sm:p-12 sm:rounded-xl md:text-xl 2xl:text-3xl">
+				<div className="w-full h-3/4 bg-purple-500 flex items-center justify-center p-8 pt-10 -mt-6 text-lg rounded-3xl z-10 sm:h-2/3 sm:p-12 sm:rounded-xl md:text-xl lg:text-2xl 2xl:text-3xl">
 					<div className="w-full h-full flex flex-col items-center justify-around bg-gray-100 bg-opacity-50 rounded-xl shadow-heavy py-8 sm:flex-row sm:w-11/12 sm:py-0 md:px-8 lg:px-24 xl:px-36 2xl:px-40">
 						<PieChart
 							className="w-1/2 h-1/4 min-w-[3em] min-h-[3em] sm:w-1/4 sm:h-full md:w-1/5"
@@ -61,7 +61,7 @@ export default function PostgamePlayerPage() {
 									color: '#9EE09E',
 								},
 								{
-									title: 'Incorrect',
+									title: 'Incorrect or Unanswered',
 									value: postgameData.incorrect,
 									color: '#FF6663',
 								},
@@ -69,11 +69,11 @@ export default function PostgamePlayerPage() {
 						/>
 
 						<div className="flex flex-col items-center justify-center gap-4 text-black sm:gap-6 2xl:gap-10">
-							<div className="w-fit bg-green-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
+							<div className="w-2/3 bg-green-200 px-2 py-1 rounded-lg shadow-heavy sm:w-36 md:w-48 lg:w-52 2xl:w-64 2xl:px-4 2xl:py-2">
 								Correct: {postgameData.correct}
 							</div>
-							<div className="w-fit bg-red-200 px-2 py-1 rounded-lg shadow-heavy 2xl:px-4 2xl:py-2">
-								Wrong: {postgameData.incorrect}
+							<div className="w-2/3 bg-red-200 px-2 py-1 rounded-lg shadow-heavy sm:w-36 md:w-48 lg:w-52 2xl:w-64 2xl:px-4 2xl:py-2">
+								Incorrect or Unanswered: {postgameData.incorrect}
 							</div>
 						</div>
 
