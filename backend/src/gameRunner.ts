@@ -3,8 +3,8 @@ import { GameId, Game, gameExist, getGame } from './game';
 import { UserId } from './user';
 import { newGameResp } from './respTypes';
 import { generateToken, validateToken } from './auth';
-
-// first key is gameId
+import { prefs } from './preferences';
+import cors from 'cors';
 
 function validateGame(req: Request, res: Response, next: NextFunction) {
 	const params = req.params;
@@ -94,6 +94,14 @@ function validateHostToken(req: Request, res: Response, next: NextFunction) {
 export default function registerGameRoutes(app: Express) {
 	app.use('/games/:gameId/', validateGame);
 	app.use('/games/:gameId/questions/:index/', validateQuestion);
+	if (prefs.corsOff) {
+		let corsOptions = {
+			origin: prefs.frontEndUrl,
+			optionsSuccessStatus: 200, // some legacy browsers (IE11, various SmartTVs) choke on 204
+		};
+		console.log('CORS is off. Allowing requests from ' + prefs.frontEndUrl);
+		app.use(cors(corsOptions));
+	}
 
 	app.post('/games', (req, res) => {
 		if (!req.body) {
