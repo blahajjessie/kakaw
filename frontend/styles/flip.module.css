@@ -29,3 +29,9 @@
 .answer-back {
 	transform: rotateY(180deg);
 }
+
+@media (min-width: 768px) {
+	.container {
+		padding-top: 100px; /* adjust this value as needed */
+	}
+}

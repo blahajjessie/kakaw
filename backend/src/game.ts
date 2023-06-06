@@ -90,13 +90,12 @@ export class Game {
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
 		let question: startResp;
-		let pts: number;
 
 		this.activeQuestion++;
 		console.log(this.activeQuestion);
 		const qn = this.activeQuestion;
 		const qt = this.quizData.getQuestionTime(qn);
-		pts = this.quizData.getPoints(this.activeQuestion);
+		const pts = this.quizData.getPoints(this.activeQuestion);
 
 		this.getUsers().forEach((p: User) => {
 			p.initScore(this.activeQuestion, pts, qt);
@@ -138,6 +137,17 @@ export class Game {
 			this.iterateUsers((u: User) => u.id),
 			username
 		);
+		// Score active questions!
+		for (let i = 0; i <= this.activeQuestion; i++) {
+			// leave these unanswered ig
+			u.initScore(
+				i,
+				this.quizData.getPoints(i),
+				this.quizData.getQuestionTime(i)
+			);
+			// if the question is active, theyll get a score twice, but wont hurt.
+			u.scorePlayer(i, this.quizData.getQuestionData(i));
+		}
 		console.log(u.id);
 		this.players.set(u.id, u);
 		return u.id;
@@ -200,7 +210,6 @@ export class Game {
 	updateUser(uid: UserId) {
 		if (uid == this.hostId) {
 			this.updateHost();
-			return;
 		}
 		this.updatePlayer(uid);
 	}
@@ -208,6 +217,34 @@ export class Game {
 		this.endHostTimeout();
 	}
 	updatePlayer(uid: UserId) {
-		console.log('Player has received its status update');
+		const u = this.getUser(uid);
+		if (this.activeQuestion >= this.quizData.getQuestionCount()) {
+			console.log('Player should receive leaderboard');
+		} else if (this.activeQuestion < 0) {
+		} else if (this.quizOpen) {
+			this.sendMidQuestionState(u);
+		} else {
+			this.sendEndQuestionState(u);
+		}
+		console.log('Player ' + u.name + ' has received its status update');
+	}
+
+	sendEndQuestionState(u: User) {
+		const qd = this.getQuestionData();
+		const board = this.getLeaderboard();
+		const totalQuestions = this.quizData.getQuestionCount();
+		u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
+	}
+	sendMidQuestionState(u: User) {
+		const qn = this.activeQuestion;
+		const qt = this.quizData.getQuestionTime(qn);
+		const pts = this.quizData.getPoints(this.activeQuestion);
+		u.initScore(this.activeQuestion, pts, qt);
+		const message = new BeginData(
+			u.getStartData(this.activeQuestion, this.quizData)
+		);
+		const elapsed = Date.now() - this.startTime;
+		message.data.time = qt - elapsed;
+		u.send(message);
 	}
 }
