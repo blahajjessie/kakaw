@@ -154,10 +154,12 @@ export class Game {
 			leaderboard.push(player.getLeaderboardComponent());
 		});
 		leaderboard.sort((a, b) => b.score - a.score);
-		
+
 		// calculate position change for all players
 		this.players.forEach(function (player: User) {
-			const playerPosition = leaderboard.findIndex((entry) => entry.name === player.name);
+			const playerPosition = leaderboard.findIndex(
+				(entry) => entry.name === player.name
+			);
 			let positionChange = NaN;
 			if (player.previousPosition > -1) {
 				positionChange = player.previousPosition - playerPosition;

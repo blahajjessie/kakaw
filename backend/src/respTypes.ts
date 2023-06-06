@@ -100,7 +100,9 @@ export type ActionResp = { players: object };
 export type LeaderBoard = {
 	name: string;
 	score: number;
-	positionChange: number,
-	isSelf: boolean,
+	positionChange: number;
+	isSelf: boolean;
 	correctAnswers: number[];
+	incorrectAnswers: number[];
+	missingAnswers: number[];
 };

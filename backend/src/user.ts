@@ -29,6 +29,18 @@ export class User {
 			return indices;
 		}, new Array<number>());
 	}
+	getIncorrect(): number[] {
+		return this.answers.reduce((indices, ans, i) => {
+			if (!ans.correct) indices.push(i);
+			return indices;
+		}, new Array<number>());
+	}
+	getMissing(): number[] {
+		return this.answers.reduce((indices, ans, i) => {
+			if (typeof ans === 'undefined') indices.push(i);
+			return indices;
+		}, new Array<number>());
+	}
 	answer(qn: number, time: number, choice: number) {
 		this.answers[qn].time = time;
 		this.answers[qn].answer = choice;
@@ -47,6 +59,8 @@ export class User {
 			positionChange: 0,
 			isSelf: false,
 			correctAnswers: this.getCorrect(),
+			incorrectAnswers: this.getIncorrect(),
+			missingAnswers: this.getMissing(),
 		};
 	}
 	getStartData(qn: number, quiz: Quiz): startResp {
@@ -75,9 +89,9 @@ export class User {
 			correct: this.answers[qn].correct,
 			leaderboard: leaderBoard.map((entry) => {
 				if (entry.name === this.name) {
-				  return { ...entry, isSelf: true };
+					return { ...entry, isSelf: true };
 				} else {
-				  return { ...entry, isSelf: false };
+					return { ...entry, isSelf: false };
 				}
 			}),
 			responseTime: this.answers[qn].time,
