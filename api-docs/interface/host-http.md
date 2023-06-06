@@ -64,21 +64,19 @@ skips the rest of the current question’s timer if not ended yet, and shows pla
 ## Show results
 
 #### Endpoint:
- `GET /games/:id/results`:
+ `GET /games/:id/results` (TODO: possibly change to `POST /games/:id/end`?):
 - `:id:` the id of the game that should be sent
 
 #### Description:
-Returns all player names with their respective score and all their correct answers after the game has finished.
+This request indicates that the game is over and causes the server to send the post-game results information to everyone.
 
 #### Server Event:
-Sends the end of game results to all players also
+Sends the end of game results (a `results` WebSocket message) to all players and the host.
 
 #### Response:
-`{ok: bool, err?: string, results: Leaderboard[]}`
+`{ok: bool, err?: string}`
 - `ok` is a message stating whether the results succeeded
 - `err` is a message indicating some reason that it may have failed
-- `results` is an array of [Leaderboard](###leaderboard) objects
-- `correctness`(number[]) : An array of the score that each player got, in percent (TODO)
 
 ## Get Export
 #### Description: 

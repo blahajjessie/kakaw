@@ -76,10 +76,22 @@ Sends a player their end of game results (TODO)
 - `username` (string) : The username of the player
 - `score` (number) : the player's score
 
+## `hostResults`
+Sends the host the results for all players (TODO?)
+
+#### Fields:
+- `leaderboard` ([`Leaderboard[]`](host-http.md#leaderboard))
+- `players`: array containing objects with the following keys (same meaning as in `playerResults`):
+    - `numCorrect` (number)
+    - `numWrong` (number)
+    - `numEmpty` (number)
+    - `username` (string)
+    - `score` (number)
+
 
 ## `playerAction`
 
-Sends usernames and IDs when a player completes an action. 
+Sends usernames and IDs when a player completes an action (joining the game or answering a question).
 
 #### Fields: 
 - `players`: an object with keys of playerId's and values of usernames.

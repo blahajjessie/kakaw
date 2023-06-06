@@ -62,6 +62,11 @@ export class Game {
 		}
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
+
+		this.players.forEach((player: User) => {
+			player.scorePlayer(qn, qd);
+		});
+
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
 		this.players.forEach((u) => {
@@ -144,13 +149,11 @@ export class Game {
 	}
 
 	getLeaderboard(): LeaderBoard[] {
-		const qn = this.activeQuestion;
-		const qd = this.getQuestionData();
+		// score question
 
 		// generate new leaderboard
 		let leaderboard: LeaderBoard[] = [];
 		this.players.forEach(function (player: User) {
-			player.scorePlayer(qn, qd);
 			leaderboard.push(player.getLeaderboardComponent());
 		});
 		leaderboard.sort((a, b) => b.score - a.score);
