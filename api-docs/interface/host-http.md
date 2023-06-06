@@ -64,7 +64,7 @@ skips the rest of the current question’s timer if not ended yet, and shows pla
 ## Show results
 
 #### Endpoint:
- `GET /games/:id/results` (TODO: possibly change to `POST /games/:id/end`?):
+ `POST /games/:id/end`:
 - `:id:` the id of the game that should be sent
 
 #### Description:
