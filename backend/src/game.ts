@@ -210,7 +210,6 @@ export class Game {
 	updateUser(uid: UserId) {
 		if (uid == this.hostId) {
 			this.updateHost();
-			return;
 		}
 		this.updatePlayer(uid);
 	}
