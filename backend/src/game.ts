@@ -205,36 +205,30 @@ export class Game {
 			this.updateHost();
 		}
 	}
-	sendPlayerUpdates(users: User[]){
-
-		
-			let respObj:any = new Object();
-			for (let u of users){
-				respObj[u.id] = u.name
-			}
-			this.host.send(new ActionData({ players: respObj }));
-		
+	sendPlayerUpdates(users: User[]) {
+		let respObj: any = new Object();
+		for (let u of users) {
+			respObj[u.id] = u.name;
+		}
+		this.host.send(new ActionData({ players: respObj }));
 	}
 	updateHost() {
 		this.endHostTimeout();
 		// show players joined so far
-		let actioned:User[] = [];
-		if(this.activeQuestion < 0){
-			this.players.forEach((u)=>{
+		let actioned: User[] = [];
+		if (this.activeQuestion < 0) {
+			this.players.forEach((u) => {
 				actioned.push(u);
-			})
+			});
 		}
-		if (this.quizOpen){
-			this.players.forEach(u=>{
-				if (u.answers[this.activeQuestion].answer != -1){
-					actioned.push(u)
+		if (this.quizOpen) {
+			this.players.forEach((u) => {
+				if (u.answers[this.activeQuestion].answer != -1) {
+					actioned.push(u);
 				}
-			})
-
-
+			});
 		}
-		if (actioned.length >0) this.sendPlayerUpdates(actioned);
-
+		if (actioned.length > 0) this.sendPlayerUpdates(actioned);
 	}
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
