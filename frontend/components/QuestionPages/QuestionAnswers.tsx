@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import MatchMediaWrapper from '@/components/MatchMediaWrapper';
 import Image from 'next/image';
 import XMarkImage from 'public/remove1.png';
 import CheckMarkImage from 'public/checkmark1.png';
@@ -14,18 +13,21 @@ const colors = [
 	'bg-pink-400',
 ];
 
-type StyledAnswersProps = QuestionAnswersProps & {
-	containerClass: string;
-};
+interface QuestionAnswersProps {
+	answers: string[];
+	explanations?: string[];
+	onAnswerClick?: (answerIndex: number) => void | Promise<void>;
+	playerAnswer?: number;
+	correctAnswers?: number[];
+}
 
-function StyledAnswers({
-	containerClass,
+export default function QuestionAnswers({
 	answers,
 	explanations,
 	onAnswerClick,
 	playerAnswer,
 	correctAnswers,
-}: StyledAnswersProps) {
+}: QuestionAnswersProps) {
 	// which answer the player clicked most recently -- could be their answer, or they could be
 	// viewing an explanation
 	const [selectedAnswer, setSelectedAnswer] = useState<number | null>(
@@ -74,11 +76,11 @@ function StyledAnswers({
 	};
 
 	return (
-		<div className={containerClass}>
+		<div className="w-full flex flex-wrap items-center justify-center grow my-2 font-extrabold text-lg sm:text-2xl lg:text-3xl 2xl:text-4xl overflow-y-scroll">
 			{answers.map((answer, index) => (
 				<div
 					key={index}
-					className={`relative ${colors[index]} grid items-center justify-center rounded-xl w-2/5 h-2/5 px-16 py-8 my-2 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
+					className={`relative ${colors[index]} grid items-center justify-center rounded-xl w-full h-1/5 sm:w-2/5 sm:h-2/5 px-16 py-8 m-1 sm:m-3 text-center overflow-y-auto shadow-heavy cursor-pointer hover:brightness-110`}
 					onClick={() => handleAnswerClick(index)}
 					onMouseEnter={() => handleMouseEnter(index)}
 					onMouseLeave={() => handleMouseLeave(index)}
@@ -95,23 +97,14 @@ function StyledAnswers({
 					{index === firstClickedAnswer &&
 						selectedAnswer !== null &&
 						!isHovering && (
-							<div
-								className="absolute bottom-0 left-0 flex justify-center items-center"
-								style={{
-									width: '100%',
-									height: '25%',
-									background: '#FF7200',
-									boxShadow: '0px 4px 4px rgba(0, 0, 0, 0.25)',
-									borderRadius: '15px',
-								}}
-							>
-								<p style={{ color: 'white', fontSize: '30px' }}>You Answered</p>
+							<div className="w-full h-1/4 bg-orange-200 absolute bottom-0 left-0 flex justify-center items-center rounded-xl text-white shadow-heavy py-0.5">
+								You Answered
 							</div>
 						)}
 
 					{/* Display X or Y image if the current index matches selectedAnswerIndex */}
 					{correctAnswers && (
-						<div className="absolute top-0 right-0 h-16 w-16">
+						<div className="absolute top-0 right-0 h-12 w-12 sm:h-16 sm:w-16">
 							<Image
 								src={
 									correctAnswers.includes(index) ? CheckMarkImage : XMarkImage
@@ -124,33 +117,5 @@ function StyledAnswers({
 				</div>
 			))}
 		</div>
-	);
-}
-
-interface QuestionAnswersProps {
-	answers: string[];
-	explanations?: string[];
-	onAnswerClick?: (answerIndex: number) => void | Promise<void>;
-	playerAnswer?: number;
-	correctAnswers?: number[];
-}
-
-export default function QuestionAnswers(props: QuestionAnswersProps) {
-	const mobileContainerClass =
-		'w-11/12 h-2/3 flex flex-wrap justify-around font-extrabold text-lg my-2';
-
-	const desktopContainerClass =
-		'flex flex-wrap items-center justify-center grow gap-x-16 w-full font-extrabold text-3xl my-2 2xl:text-4xl';
-
-	// Render the appropriate content based on the screen size
-	return (
-		<MatchMediaWrapper
-			mobileContent={
-				<StyledAnswers {...props} containerClass={mobileContainerClass} />
-			}
-			desktopContent={
-				<StyledAnswers {...props} containerClass={desktopContainerClass} />
-			}
-		/>
 	);
 }

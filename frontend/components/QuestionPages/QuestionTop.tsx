@@ -78,11 +78,11 @@ export default function QuestionTop({
 	);
 
 	const desktopContent = (
-		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold shadow-heavy fixed top-0" style={{ zIndex: 1 }}>
+		<div className="bg-gray-100 w-full flex flex-row items-center justify-between font-extrabold shadow-heavy z-10">
 			<div className="w-32 bg-orange-50 shrink-0 flex flex-row items-center self-stretch pl-8 rounded-r-xl text-center text-3xl shadow-heavy 2xl:w-48 2xl:pl-12 2xl:text-4xl">
 				Q{qNum}
 			</div>
-			<div className="w-full h-full max-h-20 text-lg text-center mx-4 px-4 py-6 overflow-auto xl:text-xl 2xl:text-2xl 2xl:py-8">
+			<div className="w-full h-full text-lg text-center mx-4 px-4 py-6 overflow-auto xl:text-xl 2xl:text-2xl 2xl:py-8">
 				{qText}
 			</div>
 			{endTime !== Infinity && (
@@ -100,7 +100,7 @@ export default function QuestionTop({
 			)}
 			{onContinue && (
 				<button
-					className="bg-orange-50 w-56 py-2 mr-4 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
+					className="bg-orange-50 w-1/4 xl:w-1/5 p-2 mr-4 rounded-xl text-center cursor-pointer shadow-heavy hover:brightness-110"
 					onClick={onContinue}
 				>
 					View Leaderboard
