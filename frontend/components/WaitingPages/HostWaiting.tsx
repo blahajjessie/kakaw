@@ -1,9 +1,7 @@
-import { useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import TimerSetter from '@/components/Fixtures/TimerSetter';
 import Qr from '@/components/Fixtures/QrCodeGeneration';
 import { FRONTEND_BASE_URL } from '@/lib/baseUrl';
 import { apiCall } from '@/lib/api';
