@@ -27,8 +27,6 @@ const colors = [
 export default function HostWaiting() {
 	const currentPlayers = useRecoilValue(currentPlayersState);
 
-	const [timeLimit, setTimeLimit] = useState<number>(15);
-	const [maxPlayers, setMaxPlayers] = useState<number>(5);
 	const router = useRouter();
 	const { gameId, playerId } = router.query as {
 		gameId: string;
@@ -74,33 +72,13 @@ export default function HostWaiting() {
 				/>
 				<div className="bg-gray-100 flex flex-col sm:grow sm:flex-row items-center justify-center sm:justify-between font-extrabold shadow-heavy rounded-xl p-3">
 					<div className="sm:mx-4">{qrCode}</div>
-					<div className="flex flex-col items-center justify-center sm:mx-4">
+					<div className="flex flex-col grow items-center justify-center sm:mx-4">
 						<div className="text-4xl 2xl:text-5xl whitespace-nowrap">
 							Join with the code:
 						</div>
 						<div className="text-8xl 2xl:text-9xl">{gameId}</div>
 						<div className="text-2xl 2xl:text-3xl whitespace-nowrap">
 							at {FRONTEND_BASE_URL}
-						</div>
-					</div>
-					<div className="bg-white flex flex-col justify-center items-center rounded-xl p-4">
-						<div className="text-4xl xl:text-5xl mb-2">Settings:</div>
-						<div className="flex flex-col text-xl xl:text-2xl">
-							<div className="flex flex-row items-center justify-between mt-2">
-								<div className="mr-2">Time Limit:</div>
-								<TimerSetter
-									initTimerValue={timeLimit}
-									onChange={(v) => setTimeLimit(v)}
-								/>
-							</div>
-							<div className="flex flex-row items-center justify-between mt-2">
-								<div className="mr-2">Max Players:</div>
-								<TimerSetter
-									initTimerValue={maxPlayers}
-									onChange={(v) => setMaxPlayers(v)}
-									indicateSeconds={false}
-								/>
-							</div>
 						</div>
 					</div>
 				</div>
