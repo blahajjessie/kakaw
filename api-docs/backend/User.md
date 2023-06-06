@@ -54,7 +54,7 @@ returns the WebSocket connection
 
 ## `kick` (reason: string)
 
-takes a reason, remove user from sessions, and sends the reason to the user
+takes a reason, kills the player's WebSocket connection, and sends the reason to the user
 
 ## `send` (message: socketData)
 

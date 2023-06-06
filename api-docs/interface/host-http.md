@@ -16,9 +16,10 @@ The game opens on the server side, and is now accepting players via the join cod
 Upon receipt of this, the host should display a screen showing a list of players. 
 
 #### Response:
-`{gameId: string, hostId: string}`
+`{gameId: string, hostId: string, token: string}`
 - `gameId` is the id of the game that was started
 - `hostId` is the id of the host
+- `token` is the generated token string based on the gameId, hostId, and server secret that will be used for authentication for future endpoints
 
 ## Start a question
 #### Description:
@@ -134,4 +135,5 @@ This contains data about a player's score. An array of these can be used to send
 
 - `name` (string) : the player's username 
 - `score` (number) : the score of the player
-- `positionChange` (number) : The amount that the player's score has changed (TODO)
+- `positionChange` (number) : the amount that the player's score has changed 
+- `isSelf` (boolean) : indication of whether or not this data pertains to the current player
