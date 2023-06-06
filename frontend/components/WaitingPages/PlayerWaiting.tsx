@@ -3,7 +3,7 @@ import Head from 'next/head';
 
 import logo2 from '@/public/logo2.png';
 
-export default function playerWaiting() {
+export default function PlayerWaiting() {
 	return (
 		<main className="bg-purple-100 flex min-h-screen flex-col items-center justify-center">
 			<Head>

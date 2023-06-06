@@ -22,7 +22,7 @@
 		"node": "^18.13.0"
 	},
 	"scripts": {
-		"test": "jest --runInBand --coverage --forceExit --detectOpenHandles --silent",
+		"test": "jest --runInBand --coverage --forceExit --silent",
 		"test-verbose": "jest --runInBand --coverage --forceExit --detectOpenHandles",
 		"format": "prettier -w src",
 		"check-format": "prettier -c src"

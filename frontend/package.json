@@ -7,7 +7,8 @@
 		"build": "next build",
 		"start": "next start",
 		"lint": "next lint",
-		"test": "jest --coverage",
+		"test": "jest --runInBand --coverage --silent",
+		"test-verbose": "jest --runInBand --coverage",
 		"format": "prettier -w --no-error-on-unmatched-pattern pages public styles components",
 		"check-format": "prettier -c --no-error-on-unmatched-pattern pages public styles components"
 	},
@@ -39,6 +40,9 @@
 		"identity-obj-proxy": "^3.0.0",
 		"jest": "^29.5.0",
 		"jest-environment-jsdom": "^29.5.0",
-		"prettier": "^2.8.7"
+		"msw": "^1.2.1",
+		"next-router-mock": "^0.9.3",
+		"prettier": "^2.8.7",
+		"whatwg-fetch": "^3.6.2"
 	}
 }
