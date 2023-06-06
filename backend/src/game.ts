@@ -219,15 +219,14 @@ export class Game {
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
 		if (this.activeQuestion >= this.quizData.getQuestionCount()) {
-			console.log('leaderboard');
+			console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
-			console.log("game hasn't started; Nothing!");
 		} else if (this.quizOpen) {
 			this.sendMidQuestionState(u);
 		} else {
 			this.sendEndQuestionState(u);
 		}
-		console.log('Player' + u.name + ' has received its status update');
+		console.log('Player ' + u.name + ' has received its status update');
 	}
 
 	sendEndQuestionState(u: User) {
