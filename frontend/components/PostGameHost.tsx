@@ -93,7 +93,7 @@ export default function PostGameHost({ players }: PostGameHostProps) {
 				Quit
 			</Link>
 			<button
-				className="absolute top-6 right-48 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl 2xl:right-52"
+				className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl"
 				onClick={exportQuiz}
 			>
 				Export Quiz

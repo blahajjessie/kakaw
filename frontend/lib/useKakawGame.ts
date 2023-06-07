@@ -30,7 +30,7 @@ export interface LeaderboardEntry {
 	name: string;
 	score: number;
 	// positive for up, negative for down
-	positionChange: number;
+	positionChange: number | null;
 	// is this entry for the current player?
 	isSelf: boolean;
 }
@@ -154,7 +154,7 @@ export default function useKakawGame(): {
 						leaderboard: event.leaderboard.map((entry: any) => ({
 							name: entry.name,
 							score: entry.score,
-							positionChange: 0,
+							positionChange: entry.positionChange,
 							isSelf: entry.name == username,
 						})),
 						totalQuestions: event.totalQuestions,
