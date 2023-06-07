@@ -5,9 +5,14 @@
 - Install Node.js
 - Navigate to the `kakaw/frontend` directory
 - Install dependencies: `npm install`
-- Run the development server: `npm run dev`
+- For development, run `npm run dev`
+- For production, compile the application with `npm run build`, and then launch the server with `npm run start`.
 
-This should allow you to view the kakaw site locally at [http://localhost:3000](http://localhost:3000). Changes to any pages or components should automatically trigger recompilations upon saving.
+Most functionality doesn't work if the backend isn't running -- consult `backend/README.md` for instructions to run that.
+
+To host this publicly (i.e. on some domain instead of `localhost`), change the constants in `frontend/lib/baseUrl.ts` to use the correct domain, scheme (hopefully `https`/`wss` if you have set up TLS), and port (or lack thereof if you are on the default ones), and then recompile.
+
+In development, this allows you to view the kakaw site locally at [http://localhost:3000](http://localhost:3000). Changes to any pages or components should automatically trigger recompilations upon saving.
 
 ## Development
 
