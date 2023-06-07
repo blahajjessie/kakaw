@@ -3,43 +3,29 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 import postgame from 'public/postgame.png';
-
-const postgameData = [
-	{
-		name: 'Player 1',
-		correct: 16,
-		incorrect: 10,
-	},
-	{
-		name: 'Player 2',
-		correct: 20,
-		incorrect: 6,
-	},
-	{
-		name: 'Player 3',
-		correct: 20,
-		incorrect: 6,
-	},
-	{
-		name: 'Player 4',
-		correct: 15,
-		incorrect: 11,
-	},
-	{
-		name: 'Player 5',
-		correct: 24,
-		incorrect: 2,
-	},
-];
+import { PostGameEntry } from '@/lib/useKakawGame';
+import { useRouter } from 'next/router';
+import { apiCall } from '@/lib/api';
+import downloadQuiz from '@/lib/download-quiz';
 
 interface percentCounts {
 	[percent: string]: number;
 }
 
-export default function PostgameHostPage() {
+export interface PostGameHostProps {
+	players: PostGameEntry[];
+}
+
+export default function PostGameHost({ players }: PostGameHostProps) {
+	const router = useRouter();
+	const { gameId, playerId } = router.query as {
+		gameId: string;
+		playerId: string;
+	};
+
 	// Build array of % correct as whole numbers for all players
-	const percentCorrectArray = postgameData.map(
-		(p) => (100 * p.correct) / (p.correct + p.incorrect)
+	const percentCorrectArray = players.map(
+		(p) => (100 * p.numCorrect) / (p.numCorrect + p.numWrong)
 	);
 
 	// Create object mapping of % correct to number of occurrences
@@ -79,8 +65,21 @@ export default function PostgameHostPage() {
 
 	// Calculate average score
 	const averagePercentCorrect = (
-		percentCorrectArray.reduce((a, b) => a + b) / percentCorrectArray.length
+		percentCorrectArray.reduce((a, b) => a + b, 0) / percentCorrectArray.length
 	).toFixed(0);
+
+	async function exportQuiz() {
+		try {
+			const quiz = await apiCall('GET', `/games/${gameId}/export-quiz`, null, {
+				gameId,
+				id: playerId,
+			});
+			downloadQuiz(quiz);
+		} catch (e) {
+			alert('Exporting quiz failed. Please try again');
+			console.error(e);
+		}
+	}
 
 	return (
 		<main className="w-full h-screen bg-purple-100 flex flex-col items-center justify-center font-extrabold">
@@ -93,11 +92,11 @@ export default function PostgameHostPage() {
 			>
 				Quit
 			</Link>
-			<button className="absolute top-6 right-48 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl 2xl:right-52">
+			<button
+				className="absolute top-6 right-48 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl 2xl:right-52"
+				onClick={exportQuiz}
+			>
 				Export Quiz
-			</button>
-			<button className="absolute top-6 right-6 bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white shadow-heavy hover:brightness-110 2xl:text-xl">
-				Play Again
 			</button>
 
 			<div className="w-4/5 h-full flex flex-col items-center justify-center">
