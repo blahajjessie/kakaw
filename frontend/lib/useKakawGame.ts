@@ -82,6 +82,8 @@ export const usernameState = atom({ key: 'usernameState', default: '' });
 
 export const scoreState = atom({ key: 'scoreState', default: 0 });
 
+export const totalPlayersState = atom({ key: 'totalPlayers', default: 0 });
+
 export default function useKakawGame(): {
 	connected: boolean;
 	error?: string;
@@ -95,6 +97,7 @@ export default function useKakawGame(): {
 		useRecoilState(currentPlayersState);
 	const [username, setUsername] = useRecoilState(usernameState);
 	const [_score, setScore] = useRecoilState(scoreState);
+	const [_totalPlayers, setTotalPlayers] = useRecoilState(totalPlayersState);
 
 	useConnection({
 		onOpen() {
@@ -128,6 +131,7 @@ export default function useKakawGame(): {
 					setUsername(event.username);
 					setScore(event.score);
 					setCurrentPlayers(new Map());
+					setTotalPlayers(event.totalPlayers);
 					break;
 				case 'endQuestion':
 					setGame({
@@ -152,6 +156,7 @@ export default function useKakawGame(): {
 					});
 					setUsername(event.username);
 					setScore(event.score);
+					setTotalPlayers(event.totalPlayers);
 					break;
 
 				case 'playerAction':

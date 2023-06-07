@@ -1,6 +1,10 @@
 import QuestionTop from '@/components/QuestionPages/QuestionTop';
 import QuestionAnswers from '@/components/QuestionPages/QuestionAnswers';
-import { Question, currentPlayersState } from '@/lib/useKakawGame';
+import {
+	Question,
+	currentPlayersState,
+	totalPlayersState,
+} from '@/lib/useKakawGame';
 import HostQuestionBottom from './QuestionPages/HostQuestionBottom';
 import { useRecoilValue } from 'recoil';
 import { useRouter } from 'next/router';
@@ -16,6 +20,7 @@ export interface HostQuestionPageProps {
 
 export default function HostQuestionPage(props: HostQuestionPageProps) {
 	const currentPlayers = useRecoilValue(currentPlayersState);
+	const totalPlayers = useRecoilValue(totalPlayersState);
 
 	const router = useRouter();
 	const { gameId, playerId } = router.query as {
@@ -40,10 +45,7 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 			></QuestionAnswers>
 			<HostQuestionBottom
 				numAnswered={currentPlayers.size}
-				numPlayers={
-					// TODO get from backend
-					999999
-				}
+				numPlayers={totalPlayers}
 				onContinue={async () => {
 					if (props.postQuestion) {
 						props.onContinue?.();
