@@ -284,6 +284,7 @@ export class Game {
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
 		if (this.activeQuestion >= this.quizData.getQuestionCount()) {
+			this.sendLeaderboard(u)
 			console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
 		} else if (this.quizOpen) {
@@ -293,7 +294,33 @@ export class Game {
 		}
 		console.log('Player ' + u.name + ' has received its status update');
 	}
+	sendLeaderboard(u:User){
+		const leaderboard = this.getLeaderboard();
 
+		if (u.id == this.hostId){
+			const players = this.getPlayerResults();
+			const hostData = { leaderboard, players };
+			const resultResp = new HostRespData(hostData);
+			this.host.send(resultResp);
+		}
+		else{
+			const playerResult = {
+				leaderboard: leaderboard.map((entry) => {
+					if (entry.name === u.name) {
+						return { ...entry, isSelf: true };
+					} else {
+						return { ...entry, isSelf: false };
+					}
+				}),
+				numCorrect: u.getCorrect(),
+				numWrong: u.getIncorrect(),
+				username: u.name,
+				score: u.totalScore(),
+			};
+			u.send(new PlayerRespData(playerResult));
+		}
+
+	}
 	sendEndQuestionState(u: User) {
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
