@@ -3,7 +3,13 @@ import { gen } from './code';
 
 import { sendMessage, killConnection } from './connection';
 import { Quiz, QuizQuestion } from './quiz';
-import { EndData, LeaderBoard, socketData, startResp } from './respTypes';
+import {
+	EndData,
+	LeaderBoard,
+	socketData,
+	startResp,
+	PlayerResults,
+} from './respTypes';
 import { AnswerObj } from './answer';
 
 // // for clarity, a gameID is just a string
@@ -23,11 +29,17 @@ export class User {
 		let scores = this.answers.map((s: AnswerObj) => s.score);
 		return scores.reduce((a, b) => a + b);
 	}
-	getCorrect(): number[] {
-		return this.answers.reduce((indices, ans, i) => {
-			if (ans.correct) indices.push(i);
-			return indices;
-		}, new Array<number>());
+	getCorrect(): number {
+		return this.answers.reduce((count, ans) => {
+			if (ans.correct) count++;
+			return count;
+		}, 0);
+	}
+	getIncorrect(): number {
+		return this.answers.reduce((count, ans) => {
+			if (!ans.correct) count++;
+			return count;
+		}, 0);
 	}
 	answer(qn: number, time: number, choice: number) {
 		this.answers[qn].time = time;
@@ -40,11 +52,20 @@ export class User {
 	initScore(qn: number, qPoints: number, qTime: number) {
 		this.answers[qn] = new AnswerObj(qPoints, qTime, 0, 0);
 	}
+	getPlayerResultsComponent(): PlayerResults {
+		return {
+			username: this.name,
+			score: this.totalScore(),
+			numCorrect: this.getCorrect(),
+			numWrong: this.getIncorrect(),
+		};
+	}
 	getLeaderboardComponent(): LeaderBoard {
 		return {
 			name: this.name,
 			score: this.totalScore(),
-			correctAnswers: this.getCorrect(),
+			positionChange: 0,
+			isSelf: false,
 		};
 	}
 	getStartData(qn: number, quiz: Quiz): startResp {
@@ -65,23 +86,19 @@ export class User {
 		question: QuizQuestion,
 		totalQuestions: number
 	): EndData {
-		// calculate position change
-		const playerPosition = leaderBoard.findIndex(
-			(entry) => entry.name === this.name
-		);
-		const positionChange = NaN;
-		if (this.previousPosition > -1) {
-			const positionChange = this.previousPosition - playerPosition;
-		}
-		this.previousPosition = playerPosition;
 		return new EndData({
 			correctAnswers: question.correctAnswers,
 			explanations: question.explanations || null,
 			score: this.totalScore(),
 			scoreChange: this.answers[qn].score,
 			correct: this.answers[qn].correct,
-			leaderboard: leaderBoard,
-			positionChange: positionChange,
+			leaderboard: leaderBoard.map((entry) => {
+				if (entry.name === this.name) {
+					return { ...entry, isSelf: true };
+				} else {
+					return { ...entry, isSelf: false };
+				}
+			}),
 			responseTime: this.answers[qn].time,
 			questionText: question.questionText,
 			answerTexts: question.answerTexts,

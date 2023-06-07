@@ -5,7 +5,6 @@ import useConnection from './useConnection';
 
 export enum Stage {
 	WaitingRoom,
-	Kicked,
 	Question,
 	PostQuestion,
 	PostGame,
@@ -31,9 +30,6 @@ export interface LeaderboardEntry {
 export type KakawGame =
 	| {
 		stage: Stage.WaitingRoom;
-	}
-	| {
-		stage: Stage.Kicked;
 	}
 	| {
 		stage: Stage.Question;
@@ -79,11 +75,18 @@ export default function useKakawGame(): {
 	const [currentPlayers, setCurrentPlayers] =
 		useRecoilState(currentPlayersState);
 	const [username, setUsername] = useRecoilState(usernameState);
-	const [score, setScore] = useRecoilState(scoreState);
+	const [_score, setScore] = useRecoilState(scoreState);
 
 	useConnection({
 		onOpen() {
 			setConnected(true);
+
+			// restore defaults
+			setError(undefined);
+			setGame({ stage: Stage.WaitingRoom });
+			setCurrentPlayers(new Map());
+			setUsername('');
+			setScore(0);
 		},
 
 		onMessage(type, event) {
@@ -105,6 +108,7 @@ export default function useKakawGame(): {
 					});
 					setUsername(event.username);
 					setScore(event.score);
+					setCurrentPlayers(new Map());
 					break;
 
 				case 'endQuestion':
@@ -132,10 +136,6 @@ export default function useKakawGame(): {
 					setScore(event.score);
 					break;
 
-				case 'end':
-					setGame({ stage: Stage.Kicked });
-					break;
-
 				case 'playerAction':
 					setCurrentPlayers(
 						new Map([
@@ -148,8 +148,9 @@ export default function useKakawGame(): {
 		},
 
 		onError(error) {
+			console.error(error);
 			setConnected(false);
-			setError('The connection was interrupted.');
+			setError('The connection was interrupted');
 		},
 
 		onClose(reason) {
@@ -157,7 +158,7 @@ export default function useKakawGame(): {
 			if (typeof reason == 'string') {
 				setError(`The server closed the connection: ${reason}`);
 			} else {
-				setError('The connection was interrupted.');
+				setError('The connection was interrupted');
 			}
 		},
 	});

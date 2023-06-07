@@ -25,4 +25,10 @@ takes in a question number, returns the answer choice options as an array of num
 
 returns the amount of time (in _seconds_) for the question, or the default if it does not exist
 
-### `QuizValidate` function
+## `getPoints` (qn: number)
+
+takes in a question number and returns the question's dedicated number of points if it exists, otherwise returns the default number of points
+
+## `getQuestionCount` ()
+
+returns the total number of questions in the quiz
