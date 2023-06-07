@@ -8,11 +8,13 @@ import { NextPage } from 'next';
 import LeaderboardPage from '@/components/LeaderboardPage';
 import logo from '@/public/logo2.png';
 import failKaw from '@/public/fail_kaw.png';
+import Podium from '@/components/Podium';
 
 const PlayerGameRouter: NextPage<{}> = () => {
 	const { connected, error, game } = useKakawGame();
 
 	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
+	const [viewingPodium, setViewingPodium] = useState(true);
 
 	if (!connected) {
 		return (
@@ -37,6 +39,7 @@ const PlayerGameRouter: NextPage<{}> = () => {
 					image={logo}
 				/>
 			);
+
 		case Stage.Question:
 			if (viewingLeaderboard) {
 				setViewingLeaderboard(false);
@@ -47,6 +50,7 @@ const PlayerGameRouter: NextPage<{}> = () => {
 					index={game.questionIndex}
 				/>
 			);
+
 		case Stage.PostQuestion:
 			if (viewingLeaderboard) {
 				return <LeaderboardPage entries={game.leaderboard} />;
@@ -60,6 +64,20 @@ const PlayerGameRouter: NextPage<{}> = () => {
 						scoreChange={game.scoreChange}
 					/>
 				);
+			}
+
+		case Stage.PostGamePlayer:
+			if (viewingPodium) {
+				return (
+					<Podium
+						player1={game.leaderboard[0]}
+						player2={game.leaderboard[1]}
+						player3={game.leaderboard[2]}
+						onContinue={() => setViewingPodium(false)}
+					/>
+				);
+			} else {
+				throw 'unimplemented';
 			}
 	}
 	throw new Error('unreachable');

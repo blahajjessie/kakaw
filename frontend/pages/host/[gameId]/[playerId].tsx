@@ -7,10 +7,12 @@ import HostQuestionPage from '@/components/HostQuestionPage';
 import LeaderboardPage from '@/components/LeaderboardPage';
 import MessagePage from '@/components/MessagePage';
 import failKaw from '@/public/fail_kaw.png';
+import Podium from '@/components/Podium';
 
 const HostGameRouter: NextPage<{}> = () => {
 	const { connected, error, game } = useKakawGame();
 	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
+	const [viewingPodium, setViewingPodium] = useState(true);
 
 	if (!connected) {
 		return (
@@ -56,6 +58,20 @@ const HostGameRouter: NextPage<{}> = () => {
 						onContinue={() => setViewingLeaderboard(true)}
 					/>
 				);
+			}
+
+		case Stage.PostGameHost:
+			if (viewingPodium) {
+				return (
+					<Podium
+						player1={game.leaderboard[0]}
+						player2={game.leaderboard[1]}
+						player3={game.leaderboard[2]}
+						onContinue={() => setViewingPodium(false)}
+					/>
+				);
+			} else {
+				throw 'unimplemented';
 			}
 	}
 	throw new Error('unreachable');
