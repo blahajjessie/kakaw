@@ -112,7 +112,7 @@ describe('Question Controls', () => {
 
 	test('Results', async () => {
 		await request
-			.get(`/games/${createRes.gameId}/results`)
+			.post(`/games/${createRes.gameId}/end`)
 			.set({ authorization: 'Bearer ' + createRes.token })
 			.expect(200)
 			.then((data) => {

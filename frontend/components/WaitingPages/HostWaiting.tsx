@@ -1,16 +1,15 @@
-import { useState } from 'react';
 import Image from 'next/image';
 import Head from 'next/head';
 import { useRouter } from 'next/router';
 
-import TimerSetter from '@/components/Fixtures/TimerSetter';
 import Qr from '@/components/Fixtures/QrCodeGeneration';
-import { WEBPAGE_BASE_URL } from '@/lib/baseUrl';
+import { FRONTEND_BASE_URL } from '@/lib/baseUrl';
 import { apiCall } from '@/lib/api';
 import { currentPlayersState } from '@/lib/useKakawGame';
 
 import logo2 from '@/public/logo2.png';
-import { useRecoilValue } from 'recoil';
+import XMarkImage from 'public/remove1.png';
+import { useRecoilState } from 'recoil';
 
 interface hostProps {
 	gameId: string;
@@ -25,15 +24,34 @@ const colors = [
 ];
 
 export default function HostWaiting() {
-	const currentPlayers = useRecoilValue(currentPlayersState);
+	const [currentPlayers, setCurrentPlayers] =
+		useRecoilState(currentPlayersState);
 
-	const [timeLimit, setTimeLimit] = useState<number>(15);
-	const [maxPlayers, setMaxPlayers] = useState<number>(5);
 	const router = useRouter();
 	const { gameId, playerId } = router.query as {
 		gameId: string;
 		playerId: string;
 	};
+
+	async function deletePlayer(playerIdToDelete: string) {
+		try {
+			await apiCall(
+				'DELETE',
+				`/games/${gameId}/players/${playerIdToDelete}`,
+				null,
+				{
+					gameId: gameId,
+					id: playerId,
+				}
+			);
+			const newCurrentPlayers = new Map(currentPlayers);
+			newCurrentPlayers.delete(playerIdToDelete);
+			setCurrentPlayers(newCurrentPlayers);
+		} catch (e) {
+			alert('Removing player failed. Please try again.');
+			console.error(e);
+		}
+	}
 
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
@@ -74,33 +92,13 @@ export default function HostWaiting() {
 				/>
 				<div className="bg-gray-100 flex flex-col sm:grow sm:flex-row items-center justify-center sm:justify-between font-extrabold shadow-heavy rounded-xl p-3">
 					<div className="sm:mx-4">{qrCode}</div>
-					<div className="flex flex-col items-center justify-center sm:mx-4">
+					<div className="flex flex-col grow items-center justify-center sm:mx-4">
 						<div className="text-4xl 2xl:text-5xl whitespace-nowrap">
 							Join with the code:
 						</div>
 						<div className="text-8xl 2xl:text-9xl">{gameId}</div>
 						<div className="text-2xl 2xl:text-3xl whitespace-nowrap">
-							at {WEBPAGE_BASE_URL}
-						</div>
-					</div>
-					<div className="bg-white flex flex-col justify-center items-center rounded-xl p-4">
-						<div className="text-4xl xl:text-5xl mb-2">Settings:</div>
-						<div className="flex flex-col text-xl xl:text-2xl">
-							<div className="flex flex-row items-center justify-between mt-2">
-								<div className="mr-2">Time Limit:</div>
-								<TimerSetter
-									initTimerValue={timeLimit}
-									onChange={(v) => setTimeLimit(v)}
-								/>
-							</div>
-							<div className="flex flex-row items-center justify-between mt-2">
-								<div className="mr-2">Max Players:</div>
-								<TimerSetter
-									initTimerValue={maxPlayers}
-									onChange={(v) => setMaxPlayers(v)}
-									indicateSeconds={false}
-								/>
-							</div>
+							at {FRONTEND_BASE_URL}
 						</div>
 					</div>
 				</div>
@@ -113,18 +111,25 @@ export default function HostWaiting() {
 					<div className="grid grid-cols-2 gap-y-4 w-full text-2xl p-4 overflow-auto mt-12 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
 						{playersArray.map((player, index) => (
 							<div
-								className={`text-white text-center w-52 rounded-xl py-1 ${
+								className={`relative group w-56 text-white text-center rounded-xl px-4 py-1 ${
 									colors[index % 5]
 								}`}
 								key={player.id}
 							>
-								{player.username}
+								<div className="w-full truncate">{player.username}</div>
+								<Image
+									src={XMarkImage}
+									alt="X icon"
+									className="hover:brightness-125 absolute -top-2 -right-2 w-6 h-6 cursor-pointer invisible group-hover:visible"
+									onClick={async () => deletePlayer(player.id)}
+								/>
 							</div>
 						))}
 					</div>
 					<div className="flex flex-row justify-end m-2">
 						<div className="rounded-xl bg-purple-100 text-2xl w-52 text-white text-center m-2 px-6 py-1">
-							{currentPlayers.size}/{maxPlayers}
+							{currentPlayers.size}{' '}
+							{currentPlayers.size == 1 ? 'player' : 'players'}
 						</div>
 					</div>
 				</div>

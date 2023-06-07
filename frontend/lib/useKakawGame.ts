@@ -29,22 +29,22 @@ export interface LeaderboardEntry {
 
 export type KakawGame =
 	| {
-			stage: Stage.WaitingRoom;
-	  }
+		stage: Stage.WaitingRoom;
+	}
 	| {
-			stage: Stage.Question;
-			questionIndex: number;
-			currentQuestion: Question;
-	  }
+		stage: Stage.Question;
+		questionIndex: number;
+		currentQuestion: Question;
+	}
 	| {
-			stage: Stage.PostQuestion;
-			questionIndex: number;
-			currentQuestion: Question;
-			scoreChange: number;
-			correct: boolean;
-			playerAnswer: number;
-			leaderboard: LeaderboardEntry[];
-	  };
+		stage: Stage.PostQuestion;
+		questionIndex: number;
+		currentQuestion: Question;
+		scoreChange: number;
+		correct: boolean;
+		playerAnswer: number;
+		leaderboard: LeaderboardEntry[];
+	};
 
 const kakawGameState = atom<KakawGame>({
 	key: 'kakawGameState',
@@ -75,11 +75,18 @@ export default function useKakawGame(): {
 	const [currentPlayers, setCurrentPlayers] =
 		useRecoilState(currentPlayersState);
 	const [username, setUsername] = useRecoilState(usernameState);
-	const [score, setScore] = useRecoilState(scoreState);
+	const [_score, setScore] = useRecoilState(scoreState);
 
 	useConnection({
 		onOpen() {
 			setConnected(true);
+
+			// restore defaults
+			setError(undefined);
+			setGame({ stage: Stage.WaitingRoom });
+			setCurrentPlayers(new Map());
+			setUsername('');
+			setScore(0);
 		},
 
 		onMessage(type, event) {
@@ -101,7 +108,9 @@ export default function useKakawGame(): {
 					});
 					setUsername(event.username);
 					setScore(event.score);
+					setCurrentPlayers(new Map());
 					break;
+
 				case 'endQuestion':
 					setGame({
 						stage: Stage.PostQuestion,
@@ -139,8 +148,9 @@ export default function useKakawGame(): {
 		},
 
 		onError(error) {
+			console.error(error);
 			setConnected(false);
-			setError('The connection was interrupted.');
+			setError('The connection was interrupted');
 		},
 
 		onClose(reason) {
@@ -148,7 +158,7 @@ export default function useKakawGame(): {
 			if (typeof reason == 'string') {
 				setError(`The server closed the connection: ${reason}`);
 			} else {
-				setError('The connection was interrupted.');
+				setError('The connection was interrupted');
 			}
 		},
 	});

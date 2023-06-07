@@ -185,7 +185,7 @@ export default function registerGameRoutes(app: Express) {
 		}
 	);
 
-	app.get('/games/:gameId/results', validateHostToken, (req, res) => {
+	app.post('/games/:gameId/end', validateHostToken, (req, res) => {
 		const gameId = req.params.gameId;
 		const game = getGame(gameId)!;
 
