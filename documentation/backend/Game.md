@@ -91,12 +91,24 @@ kicks all users in the game and removes the game from the active games map due t
 
 ## `updateUser` (uid: UserId)
 
-takes a user id and handles the end of a host timeout if the user id belongs to the host or logs a message into the console if it belongs to a player
+takes a user id and handles the end of a host timeout if the user id belongs to the host or the end of a player timeout if it belongs to a player
+
+## `sendPlayerUpdates` ()
+
+sends player action data
 
 ## `updateHost` ()
 
-calls endHostTimeout()
+updates host status
 
 ## `updatePlayer` (uid: UserId)
 
-logs into the console that 'Player has received its status update'
+updates player status
+
+## `sendEndQuestionState` (u: User)
+
+takes a user and sends the end state data to that user after a question has ended
+
+## `sendMidQuestionState` (u: User)
+
+takes a user and sends the mid-question state data to that user
