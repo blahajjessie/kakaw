@@ -299,7 +299,10 @@ export class Game {
 	}
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
-		if (this.activeQuestion >= this.quizData.getQuestionCount() - 1 && !this.quizOpen) {
+		if (
+			this.activeQuestion >= this.quizData.getQuestionCount() - 1 &&
+			!this.quizOpen
+		) {
 			this.sendLeaderboard(u);
 			console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
