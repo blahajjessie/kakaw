@@ -3,18 +3,27 @@ import PlayerQuestionPage, {
 	PlayerPostQuestionPage,
 } from '@/components/PlayerQuestionPage';
 import MessagePage from '@/components/MessagePage';
-import useKakawGame, { Stage } from '@/lib/useKakawGame';
+import useKakawGame, {
+	Stage,
+	scoreState,
+	usernameState,
+} from '@/lib/useKakawGame';
 import { NextPage } from 'next';
 import LeaderboardPage from '@/components/LeaderboardPage';
 import logo from '@/public/logo2.png';
 import failKaw from '@/public/fail_kaw.png';
 import Podium from '@/components/Podium';
+import PostGamePlayer from '@/components/PostGamePlayer';
+import { useRecoilValue } from 'recoil';
 
 const PlayerGameRouter: NextPage<{}> = () => {
 	const { connected, error, game } = useKakawGame();
 
 	const [viewingLeaderboard, setViewingLeaderboard] = useState(false);
 	const [viewingPodium, setViewingPodium] = useState(true);
+
+	const username = useRecoilValue(usernameState);
+	const score = useRecoilValue(scoreState);
 
 	if (!connected) {
 		return (
@@ -53,7 +62,12 @@ const PlayerGameRouter: NextPage<{}> = () => {
 
 		case Stage.PostQuestion:
 			if (viewingLeaderboard) {
-				return <LeaderboardPage entries={game.leaderboard} />;
+				return (
+					<LeaderboardPage
+						entries={game.leaderboard}
+						totalQuestions={game.totalQuestions}
+					/>
+				);
 			} else {
 				return (
 					<PlayerPostQuestionPage
@@ -77,7 +91,7 @@ const PlayerGameRouter: NextPage<{}> = () => {
 					/>
 				);
 			} else {
-				throw 'unimplemented';
+				return <PostGamePlayer {...game} username={username} score={score} />;
 			}
 	}
 	throw new Error('unreachable');

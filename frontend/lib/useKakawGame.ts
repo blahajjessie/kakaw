@@ -43,6 +43,7 @@ export type KakawGame =
 			stage: Stage.Question;
 			questionIndex: number;
 			currentQuestion: Question;
+			totalQuestions: number;
 	  }
 	| {
 			stage: Stage.PostQuestion;
@@ -52,6 +53,7 @@ export type KakawGame =
 			correct: boolean;
 			playerAnswer: number;
 			leaderboard: LeaderboardEntry[];
+			totalQuestions: number;
 	  }
 	| {
 			stage: Stage.PostGameHost;
@@ -127,6 +129,7 @@ export default function useKakawGame(): {
 							// time remaining. This should make timers easier to implement.
 							endTime: Date.now() + event.time,
 						},
+						totalQuestions: event.totalQuestions,
 					});
 					setUsername(event.username);
 					setScore(event.score);
@@ -153,6 +156,7 @@ export default function useKakawGame(): {
 							positionChange: 0,
 							isSelf: entry.name == username,
 						})),
+						totalQuestions: event.totalQuestions,
 					});
 					setUsername(event.username);
 					setScore(event.score);

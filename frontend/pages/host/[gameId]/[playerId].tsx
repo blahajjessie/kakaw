@@ -8,6 +8,7 @@ import LeaderboardPage from '@/components/LeaderboardPage';
 import MessagePage from '@/components/MessagePage';
 import failKaw from '@/public/fail_kaw.png';
 import Podium from '@/components/Podium';
+import PostGameHost from '@/components/PostGameHost';
 
 const HostGameRouter: NextPage<{}> = () => {
 	const { connected, error, game } = useKakawGame();
@@ -47,6 +48,7 @@ const HostGameRouter: NextPage<{}> = () => {
 					<LeaderboardPage
 						entries={game.leaderboard}
 						index={game.questionIndex}
+						totalQuestions={game.totalQuestions}
 					/>
 				);
 			} else {
@@ -71,7 +73,7 @@ const HostGameRouter: NextPage<{}> = () => {
 					/>
 				);
 			} else {
-				throw 'unimplemented';
+				return <PostGameHost players={game.players} />;
 			}
 	}
 	throw new Error('unreachable');
