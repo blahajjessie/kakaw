@@ -10,7 +10,7 @@ import { apiCall } from '@/lib/api';
 import { currentPlayersState } from '@/lib/useKakawGame';
 
 import logo2 from '@/public/logo2.png';
-import { useRecoilValue } from 'recoil';
+import { useRecoilState } from 'recoil';
 
 interface hostProps {
 	gameId: string;
@@ -25,7 +25,8 @@ const colors = [
 ];
 
 export default function HostWaiting() {
-	const currentPlayers = useRecoilValue(currentPlayersState);
+	const [currentPlayers, setCurrentPlayers] =
+		useRecoilState(currentPlayersState);
 
 	const [timeLimit, setTimeLimit] = useState<number>(15);
 	const [maxPlayers, setMaxPlayers] = useState<number>(5);
@@ -34,6 +35,26 @@ export default function HostWaiting() {
 		gameId: string;
 		playerId: string;
 	};
+
+	async function deletePlayer(playerIdToDelete: string) {
+		try {
+			await apiCall(
+				'DELETE',
+				`/games/${gameId}/players/${playerIdToDelete}`,
+				null,
+				{
+					gameId: gameId,
+					id: playerId,
+				}
+			);
+			const newCurrentPlayers = new Map(currentPlayers);
+			newCurrentPlayers.delete(playerIdToDelete);
+			setCurrentPlayers(newCurrentPlayers);
+		} catch (e) {
+			alert('Removing player failed. Please try again.');
+			console.error(e);
+		}
+	}
 
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
@@ -113,10 +134,11 @@ export default function HostWaiting() {
 					<div className="grid grid-cols-2 gap-y-4 w-full text-2xl p-4 overflow-auto mt-12 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
 						{playersArray.map((player, index) => (
 							<div
-								className={`text-white text-center w-52 rounded-xl py-1 ${
+								className={`hover:bg-red-600 cursor-pointer text-white text-center w-52 rounded-xl py-1 ${
 									colors[index % 5]
 								}`}
 								key={player.id}
+								onClick={async () => deletePlayer(player.id)}
 							>
 								{player.username}
 							</div>

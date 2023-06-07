@@ -3,6 +3,7 @@ import PlayerQuestionPage, {
 	PlayerPostQuestionPage,
 } from '@/components/PlayerQuestionPage';
 import PlayerWaiting from '@/components/WaitingPages/PlayerWaiting';
+import PlayerKicked from '@/components/WaitingPages/PlayerKicked';
 import useKakawGame, { Stage } from '@/lib/useKakawGame';
 import { NextPage } from 'next';
 import LeaderboardPage from '@/components/LeaderboardPage';
@@ -15,6 +16,8 @@ const PlayerGameRouter: NextPage<{}> = () => {
 	switch (game.stage) {
 		case Stage.WaitingRoom:
 			return <PlayerWaiting />;
+		case Stage.Kicked:
+			return <PlayerKicked />;
 		case Stage.Question:
 			if (viewingLeaderboard) {
 				setViewingLeaderboard(false);

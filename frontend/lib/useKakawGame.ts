@@ -5,6 +5,7 @@ import useConnection from './useConnection';
 
 export enum Stage {
 	WaitingRoom,
+	Kicked,
 	Question,
 	PostQuestion,
 	PostGame,
@@ -29,22 +30,25 @@ export interface LeaderboardEntry {
 
 export type KakawGame =
 	| {
-			stage: Stage.WaitingRoom;
-	  }
+		stage: Stage.WaitingRoom;
+	}
 	| {
-			stage: Stage.Question;
-			questionIndex: number;
-			currentQuestion: Question;
-	  }
+		stage: Stage.Kicked;
+	}
 	| {
-			stage: Stage.PostQuestion;
-			questionIndex: number;
-			currentQuestion: Question;
-			scoreChange: number;
-			correct: boolean;
-			playerAnswer: number;
-			leaderboard: LeaderboardEntry[];
-	  };
+		stage: Stage.Question;
+		questionIndex: number;
+		currentQuestion: Question;
+	}
+	| {
+		stage: Stage.PostQuestion;
+		questionIndex: number;
+		currentQuestion: Question;
+		scoreChange: number;
+		correct: boolean;
+		playerAnswer: number;
+		leaderboard: LeaderboardEntry[];
+	};
 
 const kakawGameState = atom<KakawGame>({
 	key: 'kakawGameState',
@@ -102,6 +106,7 @@ export default function useKakawGame(): {
 					setUsername(event.username);
 					setScore(event.score);
 					break;
+
 				case 'endQuestion':
 					setGame({
 						stage: Stage.PostQuestion,
@@ -125,6 +130,10 @@ export default function useKakawGame(): {
 					});
 					setUsername(event.username);
 					setScore(event.score);
+					break;
+
+				case 'end':
+					setGame({ stage: Stage.Kicked });
 					break;
 
 				case 'playerAction':

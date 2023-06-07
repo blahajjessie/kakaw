@@ -9,7 +9,7 @@ interface userType {
 }
 
 export async function apiCall(
-	method: 'GET' | 'POST',
+	method: 'GET' | 'POST' | 'DELETE',
 	url: string,
 	body?: any,
 	user?: userType
