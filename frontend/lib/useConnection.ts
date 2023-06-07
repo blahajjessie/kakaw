@@ -1,4 +1,4 @@
-import { WEBSOCKET_BASE_URL } from '@/lib/api';
+import { WEBSOCKET_BASE_URL } from '@/lib/baseUrl';
 import { useState } from 'react';
 import { useRouter } from 'next/router';
 import useWebSocket from 'react-use-websocket';
