@@ -6,7 +6,7 @@ import {
 	ActionData,
 	PlayerResults,
 	PlayerRespData,
-	PlayerResultRespData,
+	HostRespData,
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
@@ -190,7 +190,7 @@ export class Game {
 		const leaderboard = this.getLeaderboard();
 		const players = this.getPlayerResults();
 		const hostData = { leaderboard, players };
-		const resultResp = new PlayerResultRespData(hostData);
+		const resultResp = new HostRespData(hostData);
 		this.host.send(resultResp);
 		this.players.forEach((player: User) => {
 			const playerResult = {

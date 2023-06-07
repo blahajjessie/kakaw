@@ -12,7 +12,7 @@ export type responseData =
 	| EndResp
 	| ActionResp
 	| PlayerResp
-	| PlayerResultsResp
+	| HostResp
 	| LeaderBoard[];
 
 export class closeConnection implements socketData {
@@ -48,7 +48,7 @@ export class ActionData implements socketData {
 }
 
 export class PlayerRespData implements socketData {
-	name = 'player';
+	name = 'playerResults';
 	data: {
 		leaderboard: LeaderBoard[];
 		username: string;
@@ -61,14 +61,14 @@ export class PlayerRespData implements socketData {
 	}
 }
 
-export class PlayerResultRespData implements socketData {
-	name = 'playerResults';
+export class HostRespData implements socketData {
+	name = 'hostResults';
 	data: {
 		leaderboard: LeaderBoard[];
 		players: PlayerResults[];
 	};
 
-	constructor(data: PlayerResultsResp) {
+	constructor(data: HostResp) {
 		this.data = data;
 	}
 }
@@ -133,7 +133,7 @@ export type PlayerResp = {
 	score: number;
 };
 
-export type PlayerResultsResp = {
+export type HostResp = {
 	leaderboard: LeaderBoard[];
 	players: PlayerResults[];
 };
