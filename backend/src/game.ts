@@ -3,8 +3,10 @@ import {
 	BeginData,
 	startResp,
 	LeaderBoard,
-	LeaderboardData,
 	ActionData,
+	PlayerResults,
+	PlayerRespData,
+	HostRespData,
 } from './respTypes';
 import { gen } from './code';
 import { UserId, User } from './user';
@@ -62,6 +64,11 @@ export class Game {
 		}
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
+
+		this.players.forEach((player: User) => {
+			player.scorePlayer(qn, qd);
+		});
+
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
 		this.players.forEach((u) => {
@@ -154,19 +161,63 @@ export class Game {
 	}
 
 	getLeaderboard(): LeaderBoard[] {
-		const qn = this.activeQuestion;
-		const qd = this.getQuestionData();
+		// score question
 
+		// generate new leaderboard
 		let leaderboard: LeaderBoard[] = [];
 		this.players.forEach(function (player: User) {
-			player.scorePlayer(qn, qd);
 			leaderboard.push(player.getLeaderboardComponent());
 		});
 		leaderboard.sort((a, b) => b.score - a.score);
+
+		// calculate position change for all players
+		this.players.forEach(function (player: User) {
+			const playerPosition = leaderboard.findIndex(
+				(entry) => entry.name === player.name
+			);
+			let positionChange = NaN;
+			if (player.previousPosition > -1) {
+				positionChange = player.previousPosition - playerPosition;
+			}
+			const entry = leaderboard.find((entry) => entry.name === player.name);
+			if (entry) {
+				entry.positionChange = positionChange;
+			}
+			player.previousPosition = playerPosition;
+		});
+
 		return leaderboard;
 	}
+	getPlayerResults(): PlayerResults[] {
+		let playerResults: PlayerResults[] = [];
+		this.players.forEach(function (player: User) {
+			playerResults.push(player.getPlayerResultsComponent());
+		});
+		playerResults.sort((a, b) => b.score - a.score);
+		return playerResults;
+	}
 	sendResults() {
-		this.host.send(new LeaderboardData(this.getLeaderboard()));
+		const leaderboard = this.getLeaderboard();
+		const players = this.getPlayerResults();
+		const hostData = { leaderboard, players };
+		const resultResp = new HostRespData(hostData);
+		this.host.send(resultResp);
+		this.players.forEach((player: User) => {
+			const playerResult = {
+				leaderboard: leaderboard.map((entry) => {
+					if (entry.name === player.name) {
+						return { ...entry, isSelf: true };
+					} else {
+						return { ...entry, isSelf: false };
+					}
+				}),
+				numCorrect: player.getCorrect(),
+				numWrong: player.getIncorrect(),
+				username: player.name,
+				score: player.totalScore(),
+			};
+			player.send(new PlayerRespData(playerResult));
+		});
 	}
 	setHostTimeout() {
 		this.hostTimeout = setTimeout(
