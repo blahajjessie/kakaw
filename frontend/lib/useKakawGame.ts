@@ -29,22 +29,22 @@ export interface LeaderboardEntry {
 
 export type KakawGame =
 	| {
-			stage: Stage.WaitingRoom;
-	  }
+		stage: Stage.WaitingRoom;
+	}
 	| {
-			stage: Stage.Question;
-			questionIndex: number;
-			currentQuestion: Question;
-	  }
+		stage: Stage.Question;
+		questionIndex: number;
+		currentQuestion: Question;
+	}
 	| {
-			stage: Stage.PostQuestion;
-			questionIndex: number;
-			currentQuestion: Question;
-			scoreChange: number;
-			correct: boolean;
-			playerAnswer: number;
-			leaderboard: LeaderboardEntry[];
-	  };
+		stage: Stage.PostQuestion;
+		questionIndex: number;
+		currentQuestion: Question;
+		scoreChange: number;
+		correct: boolean;
+		playerAnswer: number;
+		leaderboard: LeaderboardEntry[];
+	};
 
 const kakawGameState = atom<KakawGame>({
 	key: 'kakawGameState',
@@ -110,6 +110,7 @@ export default function useKakawGame(): {
 					setScore(event.score);
 					setCurrentPlayers(new Map());
 					break;
+
 				case 'endQuestion':
 					setGame({
 						stage: Stage.PostQuestion,
