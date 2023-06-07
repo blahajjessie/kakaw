@@ -7,7 +7,8 @@ export enum Stage {
 	WaitingRoom,
 	Question,
 	PostQuestion,
-	PostGame,
+	PostGameHost,
+	PostGamePlayer,
 }
 
 export interface Question {
@@ -16,6 +17,13 @@ export interface Question {
 	endTime: number;
 	explanations?: string[];
 	correctAnswers?: number[];
+}
+
+export interface PostGameEntry {
+	numCorrect: number;
+	numWrong: number;
+	username: string;
+	score: number;
 }
 
 export interface LeaderboardEntry {
@@ -44,6 +52,17 @@ export type KakawGame =
 			correct: boolean;
 			playerAnswer: number;
 			leaderboard: LeaderboardEntry[];
+	  }
+	| {
+			stage: Stage.PostGameHost;
+			leaderboard: LeaderboardEntry[];
+			players: PostGameEntry[];
+	  }
+	| {
+			stage: Stage.PostGamePlayer;
+			leaderboard: LeaderboardEntry[];
+			numCorrect: number;
+			numWrong: number;
 	  };
 
 const kakawGameState = atom<KakawGame>({
@@ -142,6 +161,25 @@ export default function useKakawGame(): {
 							...Object.entries(event.players as Record<string, string>),
 						])
 					);
+					break;
+
+				case 'playerResults':
+					setGame({
+						stage: Stage.PostGamePlayer,
+						leaderboard: event.leaderboard,
+						numCorrect: event.numCorrect,
+						numWrong: event.numWrong,
+					});
+					setUsername(event.username);
+					setScore(event.score);
+					break;
+
+				case 'hostResults':
+					setGame({
+						stage: Stage.PostGameHost,
+						leaderboard: event.leaderboard,
+						players: event.players,
+					});
 					break;
 			}
 		},
