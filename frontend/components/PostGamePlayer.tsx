@@ -86,13 +86,7 @@ export default function PostGamePlayer(props: PostGameEntry) {
 				>
 					Quit
 				</Link>
-				<button className="grow bg-purple-50 self-end px-8 py-2 rounded-lg text-lg text-white text-center shadow-heavy hover:brightness-110 2xl:text-xl sm:absolute sm:top-6 sm:right-48 2xl:right-52">
-					Export Quiz
-				</button>
 			</div>
-			<button className="w-3/4 self-center bg-purple-50 self-end px-8 py-2 mb-2 rounded-lg text-lg text-white text-center shadow-heavy hover:brightness-110 sm:absolute sm:top-6 sm:right-6 sm:w-fit 2xl:text-xl">
-				Play Again
-			</button>
 		</main>
 	);
 }
