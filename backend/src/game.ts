@@ -194,7 +194,13 @@ export class Game {
 		this.host.send(resultResp);
 		this.players.forEach((player: User) => {
 			const playerResult = {
-				leaderboard: leaderboard,
+				leaderboard: leaderboard.map((entry) => {
+					if (entry.name === player.name) {
+						return { ...entry, isSelf: true };
+					} else {
+						return { ...entry, isSelf: false };
+					}
+				}),
 				numCorrect: player.getCorrect(),
 				numWrong: player.getIncorrect(),
 				username: player.name,
