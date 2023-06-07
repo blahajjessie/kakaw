@@ -72,10 +72,24 @@ export class Game {
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
 		this.players.forEach((u) => {
-			u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
+			u.send(
+				u.getEndData(
+					board,
+					this.activeQuestion,
+					qd,
+					totalQuestions,
+					this.players.size
+				)
+			);
 		});
 		this.host.send(
-			this.host.getEndData(board, this.activeQuestion, qd, totalQuestions)
+			this.host.getEndData(
+				board,
+				this.activeQuestion,
+				qd,
+				totalQuestions,
+				this.players.size
+			)
 		);
 		this.quizOpen = false;
 
@@ -99,7 +113,7 @@ export class Game {
 		this.getUsers().forEach((p: User) => {
 			p.initScore(this.activeQuestion, pts, qt);
 			const message = new BeginData(
-				p.getStartData(this.activeQuestion, this.quizData)
+				p.getStartData(this.activeQuestion, this.quizData, this.players.size)
 			);
 			p.send(message);
 		});
@@ -325,7 +339,15 @@ export class Game {
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
-		u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions));
+		u.send(
+			u.getEndData(
+				board,
+				this.activeQuestion,
+				qd,
+				totalQuestions,
+				this.players.size
+			)
+		);
 	}
 	sendMidQuestionState(u: User) {
 		const qn = this.activeQuestion;
@@ -333,7 +355,7 @@ export class Game {
 		const pts = this.quizData.getPoints(this.activeQuestion);
 		u.initScore(this.activeQuestion, pts, qt);
 		const message = new BeginData(
-			u.getStartData(this.activeQuestion, this.quizData)
+			u.getStartData(this.activeQuestion, this.quizData, this.players.size)
 		);
 		const elapsed = Date.now() - this.startTime;
 		message.data.time = qt - elapsed;
