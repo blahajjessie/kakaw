@@ -146,10 +146,10 @@ describe('Player Control', () => {
 		// Leaderboard Field Validation
 		expect(serverMessage.leaderboard[0].name).toBeDefined();
 		expect(serverMessage.leaderboard[0].score).toBeDefined();
-		expect(serverMessage.leaderboard[0].correctAnswers).toBeDefined();
+		// expect(serverMessage.leaderboard[0].correctAnswers).toBeDefined();
 		expect(serverMessage.leaderboard[0].name).toStrictEqual('Jorge');
 		// expect(serverMessage.leaderboard[0].score).toStrictEqual(4);
-		expect(serverMessage.leaderboard[0].correctAnswers).toStrictEqual([0]);
+		// expect(serverMessage.leaderboard[0].correctAnswers).toStrictEqual([0]);
 	});
 
 	test('Start Second Question', async () => {

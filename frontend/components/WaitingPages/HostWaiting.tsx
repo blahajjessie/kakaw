@@ -8,7 +8,8 @@ import { apiCall } from '@/lib/api';
 import { currentPlayersState } from '@/lib/useKakawGame';
 
 import logo2 from '@/public/logo2.png';
-import { useRecoilValue } from 'recoil';
+import XMarkImage from 'public/remove1.png';
+import { useRecoilState } from 'recoil';
 
 interface hostProps {
 	gameId: string;
@@ -23,13 +24,34 @@ const colors = [
 ];
 
 export default function HostWaiting() {
-	const currentPlayers = useRecoilValue(currentPlayersState);
+	const [currentPlayers, setCurrentPlayers] =
+		useRecoilState(currentPlayersState);
 
 	const router = useRouter();
 	const { gameId, playerId } = router.query as {
 		gameId: string;
 		playerId: string;
 	};
+
+	async function deletePlayer(playerIdToDelete: string) {
+		try {
+			await apiCall(
+				'DELETE',
+				`/games/${gameId}/players/${playerIdToDelete}`,
+				null,
+				{
+					gameId: gameId,
+					id: playerId,
+				}
+			);
+			const newCurrentPlayers = new Map(currentPlayers);
+			newCurrentPlayers.delete(playerIdToDelete);
+			setCurrentPlayers(newCurrentPlayers);
+		} catch (e) {
+			alert('Removing player failed. Please try again.');
+			console.error(e);
+		}
+	}
 
 	// Sends the Server a call to start the game
 	// NOTE: The server does send json to respond
@@ -89,12 +111,18 @@ export default function HostWaiting() {
 					<div className="grid grid-cols-2 gap-y-4 w-full text-2xl p-4 overflow-auto mt-12 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
 						{playersArray.map((player, index) => (
 							<div
-								className={`text-white text-center w-52 rounded-xl py-1 ${
+								className={`relative group w-56 text-white text-center rounded-xl px-4 py-1 ${
 									colors[index % 5]
 								}`}
 								key={player.id}
 							>
-								{player.username}
+								<div className="w-full truncate">{player.username}</div>
+								<Image
+									src={XMarkImage}
+									alt="X icon"
+									className="hover:brightness-125 absolute -top-2 -right-2 w-6 h-6 cursor-pointer invisible group-hover:visible"
+									onClick={async () => deletePlayer(player.id)}
+								/>
 							</div>
 						))}
 					</div>
