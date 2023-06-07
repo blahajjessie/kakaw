@@ -149,6 +149,8 @@ export class Game {
 		}
 		console.log(u.id);
 		this.players.set(u.id, u);
+		if (this.activeQuestion < 0) this.sendPlayerUpdates([u]);
+
 		return u.id;
 	}
 
@@ -284,7 +286,7 @@ export class Game {
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
 		if (this.activeQuestion >= this.quizData.getQuestionCount()) {
-			this.sendLeaderboard(u)
+			this.sendLeaderboard(u);
 			console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
 		} else if (this.quizOpen) {
@@ -294,16 +296,15 @@ export class Game {
 		}
 		console.log('Player ' + u.name + ' has received its status update');
 	}
-	sendLeaderboard(u:User){
+	sendLeaderboard(u: User) {
 		const leaderboard = this.getLeaderboard();
 
-		if (u.id == this.hostId){
+		if (u.id == this.hostId) {
 			const players = this.getPlayerResults();
 			const hostData = { leaderboard, players };
 			const resultResp = new HostRespData(hostData);
 			this.host.send(resultResp);
-		}
-		else{
+		} else {
 			const playerResult = {
 				leaderboard: leaderboard.map((entry) => {
 					if (entry.name === u.name) {
@@ -319,7 +320,6 @@ export class Game {
 			};
 			u.send(new PlayerRespData(playerResult));
 		}
-
 	}
 	sendEndQuestionState(u: User) {
 		const qd = this.getQuestionData();
