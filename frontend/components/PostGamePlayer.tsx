@@ -5,18 +5,13 @@ import Head from 'next/head';
 import { PieChart } from 'react-minimal-pie-chart';
 
 import postgame from 'public/postgame.png';
+import { PostGameEntry } from '@/lib/useKakawGame';
 
-const postgameData = {
-	name: 'Player 1',
-	correct: 16,
-	incorrect: 8,
-};
-
-export default function PostgamePlayerPage() {
+export default function PostGamePlayer(props: PostGameEntry) {
 	// Calculate the rank text based on % correct
 	const rank = (() => {
-		const total = postgameData.correct + postgameData.incorrect;
-		const percentCorrect = (100 * postgameData.correct) / total;
+		const total = props.numCorrect + props.numWrong;
+		const percentCorrect = (100 * props.numCorrect) / total;
 
 		if (percentCorrect === 100) {
 			return 'Perfect!';
@@ -57,12 +52,12 @@ export default function PostgamePlayerPage() {
 							data={[
 								{
 									title: 'Correct',
-									value: postgameData.correct,
+									value: props.numCorrect,
 									color: '#9EE09E',
 								},
 								{
 									title: 'Incorrect or Unanswered',
-									value: postgameData.incorrect,
+									value: props.numWrong,
 									color: '#FF6663',
 								},
 							]}
@@ -70,10 +65,10 @@ export default function PostgamePlayerPage() {
 
 						<div className="flex flex-col items-center justify-center gap-4 text-black sm:gap-6 2xl:gap-10">
 							<div className="w-2/3 bg-green-200 px-2 py-1 rounded-lg shadow-heavy sm:w-36 md:w-48 lg:w-52 2xl:w-64 2xl:px-4 2xl:py-2">
-								Correct: {postgameData.correct}
+								Correct: {props.numCorrect}
 							</div>
 							<div className="w-2/3 bg-red-200 px-2 py-1 rounded-lg shadow-heavy sm:w-36 md:w-48 lg:w-52 2xl:w-64 2xl:px-4 2xl:py-2">
-								Incorrect or Unanswered: {postgameData.incorrect}
+								Incorrect or Unanswered: {props.numWrong}
 							</div>
 						</div>
 

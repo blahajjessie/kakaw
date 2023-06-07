@@ -195,7 +195,7 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.get('/games/:gameId/export-quiz', (req, res) => {
+	app.get('/games/:gameId/export-quiz', validateHostToken, (req, res) => {
 		const gameId = req.params.gameId;
 		const game = getGame(gameId);
 		res.status(200).json(game.quizData);
