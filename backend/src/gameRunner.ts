@@ -226,7 +226,6 @@ export default function registerGameRoutes(app: Express) {
 		// Generate Code and Set User Entry
 		let playerToken = generateToken(req.params.gameId, uid);
 		res.status(201).json({ ok: true, id: uid, token: playerToken });
-		game.sendPlayerAction(uid);
 		return;
 	});
 
@@ -275,7 +274,7 @@ export default function registerGameRoutes(app: Express) {
 			}
 
 			res.status(200).send({ ok: true });
-			game.sendPlayerAction(userId);
+			game.sendPlayerUpdates([game.getUser(userId)]);
 			return;
 		}
 	);
