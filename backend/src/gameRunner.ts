@@ -274,7 +274,7 @@ export default function registerGameRoutes(app: Express) {
 			}
 
 			res.status(200).send({ ok: true });
-			game.sendPlayerUpdates([game.getUser(userId)]);
+			game.actionArr.push(game.getUser(userId));
 			return;
 		}
 	);

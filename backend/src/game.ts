@@ -49,7 +49,13 @@ export class Game {
 	startTime = -1;
 	timer: NodeJS.Timeout | undefined = undefined;
 	hostTimeout: NodeJS.Timeout | undefined = undefined;
+	actionArr:Array<User> = [];
+	actionTimer:NodeJS.Timeout |undefined;
 	constructor(quiz: any) {
+		this.actionTimer = setInterval(()=>{
+			this.sendPlayerUpdates(this.actionArr);
+		this.actionArr = []}
+			 ,100)
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
 		this.host = new User([], this.quizData.meta.author);
@@ -103,7 +109,7 @@ export class Game {
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
 		let question: startResp;
-
+		this.actionArr = []
 		this.activeQuestion++;
 		console.log(this.activeQuestion);
 		const qn = this.activeQuestion;
@@ -163,7 +169,7 @@ export class Game {
 		}
 		console.log(u.id);
 		this.players.set(u.id, u);
-		if (this.activeQuestion < 0) this.sendPlayerUpdates([u]);
+		if (this.activeQuestion < 0) this.actionArr.push(u);
 
 		return u.id;
 	}
@@ -295,7 +301,7 @@ export class Game {
 				}
 			});
 		}
-		if (actioned.length > 0) this.sendPlayerUpdates(actioned);
+		if (actioned.length > 0) this.actionArr = this.actionArr.concat(actioned);
 	}
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
