@@ -1,8 +1,8 @@
 export const prefs = {
-	hostDisconnectDelay: 5000,
+	hostDisconnectDelay: 10000,
 	corsOff: true,
 	frontEndUrl: 'http://localhost:3000',
 	backendPort: 8080,
 	debug: false,
-	actionUpdateFrequency: 50,
+	actionUpdateFrequency: 1000,
 };

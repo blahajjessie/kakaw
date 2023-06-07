@@ -70,6 +70,8 @@ export class Game {
 			clearTimeout(this.timer);
 			this.timer = undefined;
 		}
+		this.quizOpen = false;
+		this.actionArr = [];
 		const qn = this.activeQuestion;
 		const qd = this.getQuestionData();
 
@@ -99,7 +101,6 @@ export class Game {
 				this.players.size
 			)
 		);
-		this.quizOpen = false;
 
 		return;
 	}

@@ -114,7 +114,7 @@ export default function useKakawGame(): {
 		},
 
 		onMessage(type, event) {
-			console.log(`received message: ${type}, ${JSON.stringify(event)}`);
+			//console.log(`received message: ${type}, ${JSON.stringify(event)}`);
 
 			switch (type) {
 				case 'startQuestion':
