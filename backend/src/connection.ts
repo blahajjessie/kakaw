@@ -1,4 +1,5 @@
 import { Game } from './game';
+import { prefs } from './preferences';
 import { User, UserId } from './user';
 import { WebSocket } from 'ws';
 // first key is game ID, second key is player ID
@@ -18,6 +19,7 @@ export function handleConnection(
 	game: Game,
 	playerId: UserId
 ) {
+	if (prefs.debug)
 	console.log(
 		`player ${playerId} attempting connection to game ${game.quizData.getName()}`
 	);
@@ -41,10 +43,12 @@ export function handleConnection(
 	user.addWs(connection);
 	game.updateUser(user.id);
 	connection.on('message', (data) => {
+		if (prefs.debug)
 		console.log(`player ${playerId} says: ${data}`);
 	});
 	// handle when the player leaves or we close the connection
 	connection.on('close', () => {
+		if (prefs.debug)
 		console.log(`player ${playerId} disconnected`);
 		if (game.hostId == playerId) {
 			console.warn('Host for ' + game.id + ' is leaving!');

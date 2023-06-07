@@ -11,6 +11,7 @@ import {
 	PlayerResults,
 } from './respTypes';
 import { AnswerObj } from './answer';
+import { prefs } from './preferences';
 
 // // for clarity, a gameID is just a string
 export type UserId = string;
@@ -134,6 +135,7 @@ export class User {
 	}
 	send(message: socketData) {
 		if (!this.connection) {
+			if (prefs.debug)
 			console.log('user not connected' + this.name);
 			return;
 		}

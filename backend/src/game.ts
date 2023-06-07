@@ -53,9 +53,11 @@ export class Game {
 	actionTimer:NodeJS.Timeout |undefined;
 	constructor(quiz: any) {
 		this.actionTimer = setInterval(()=>{
-			this.sendPlayerUpdates(this.actionArr);
-		this.actionArr = []}
-			 ,100)
+			if (this.actionArr.length >0){
+				this.sendPlayerUpdates(this.actionArr);
+			}
+			this.actionArr = []}
+			 ,50)
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
 		this.host = new User([], this.quizData.meta.author);
@@ -111,6 +113,7 @@ export class Game {
 		let question: startResp;
 		this.actionArr = []
 		this.activeQuestion++;
+		if (prefs.debug)
 		console.log(this.activeQuestion);
 		const qn = this.activeQuestion;
 		const qt = this.quizData.getQuestionTime(qn);
@@ -138,6 +141,7 @@ export class Game {
 		return [...this.players.values()];
 	}
 	getUser(id: UserId): User {
+		if (prefs.debug)
 		console.log(id);
 		if (id == this.hostId) return this.host;
 		if (!this.players.get(id)) throw new Error('Invalid user');
@@ -167,6 +171,7 @@ export class Game {
 			// if the question is active, they'll get a score twice, but wont hurt.
 			u.scorePlayer(i, this.quizData.getQuestionData(i));
 		}
+		if (prefs.debug)
 		console.log(u.id);
 		this.players.set(u.id, u);
 		if (this.activeQuestion < 0) this.actionArr.push(u);
@@ -238,6 +243,7 @@ export class Game {
 			() => this.endGame(),
 			prefs.hostDisconnectDelay
 		);
+		if (prefs.debug)
 		console.log(
 			'Host disconnected. Waiting ' +
 				prefs.hostDisconnectDelay +
@@ -247,6 +253,7 @@ export class Game {
 	}
 	endHostTimeout() {
 		if (!this.hostTimeout) {
+			if (prefs.debug)
 			console.log(
 				'Host appears to be connected already (or connecting for the first time), gameId ' +
 					this.id
@@ -263,6 +270,7 @@ export class Game {
 		this.players.delete(uid);
 	}
 	endGame() {
+		if (prefs.debug)
 		console.log(
 			'Host has been disconnected too long. Game should end now!, gameId ' +
 				this.id
@@ -310,6 +318,7 @@ export class Game {
 			!this.quizOpen
 		) {
 			this.sendLeaderboard(u);
+			if (prefs.debug)
 			console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
 		} else if (this.quizOpen) {
@@ -317,6 +326,7 @@ export class Game {
 		} else {
 			this.sendEndQuestionState(u);
 		}
+		if (prefs.debug)
 		console.log('Player ' + u.name + ' has received its status update');
 	}
 	sendLeaderboard(u: User) {
