@@ -10,6 +10,7 @@ import { apiCall } from '@/lib/api';
 import { currentPlayersState } from '@/lib/useKakawGame';
 
 import logo2 from '@/public/logo2.png';
+import XMarkImage from 'public/remove1.png';
 import { useRecoilState } from 'recoil';
 
 interface hostProps {
@@ -134,13 +135,18 @@ export default function HostWaiting() {
 					<div className="grid grid-cols-2 gap-y-4 w-full text-2xl p-4 overflow-auto mt-12 md:grid-cols-3 lg:grid-cols-4 2xl:grid-cols-5">
 						{playersArray.map((player, index) => (
 							<div
-								className={`hover:bg-red-600 cursor-pointer text-white text-center w-52 rounded-xl py-1 ${
+								className={`relative group w-56 text-white text-center rounded-xl px-4 py-1 ${
 									colors[index % 5]
 								}`}
 								key={player.id}
-								onClick={async () => deletePlayer(player.id)}
 							>
-								{player.username}
+								<div className="w-full truncate">{player.username}</div>
+								<Image
+									src={XMarkImage}
+									alt="X icon"
+									className="hover:brightness-125 absolute -top-2 -right-2 w-6 h-6 cursor-pointer invisible group-hover:visible"
+									onClick={async () => deletePlayer(player.id)}
+								/>
 							</div>
 						))}
 					</div>

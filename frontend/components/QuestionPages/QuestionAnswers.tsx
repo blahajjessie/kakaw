@@ -104,7 +104,7 @@ export default function QuestionAnswers({
 
 					{/* Display X or Y image if the current index matches selectedAnswerIndex */}
 					{correctAnswers && (
-						<div className="absolute top-0 right-0 h-12 w-12 sm:h-16 sm:w-16">
+						<div className="absolute top-0 right-0 h-10 w-10 sm:h-12 sm:w-12 lg:h-16 lg:w-16">
 							<Image
 								src={
 									correctAnswers.includes(index) ? CheckMarkImage : XMarkImage
