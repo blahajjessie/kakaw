@@ -13,7 +13,7 @@ export default function LeaderboardEntry({
 }: LeaderboardEntryType) {
 	// show up, down, or equal icon based on if/how player's position has changed
 	const positionIcon =
-		positionChange > 0 ? (
+		positionChange === null ? undefined : positionChange > 0 ? (
 			<Image alt="position change icon" src={lb_up} width={20} />
 		) : positionChange < 0 ? (
 			<Image

@@ -10,6 +10,7 @@ import QuestionEditor from '@/components/EditorPages/QuestionEditor';
 import { apiCall } from '@/lib/api';
 
 import { QuizMeta, QuizQuestion } from '@/lib/editorQuiz';
+import { default as downloadQuizFile } from '@/lib/download-quiz';
 
 export default function EditorPage() {
 	const [page, setPage] = useState(0);
@@ -63,22 +64,10 @@ export default function EditorPage() {
 	}
 
 	function downloadQuiz() {
-		const quizFile = new Blob(
-			[
-				JSON.stringify({
-					meta: meta,
-					questions: filterExplanations(questions),
-				}),
-			],
-			{
-				type: 'application/json',
-			}
-		);
-		const temp = document.createElement('a');
-		temp.href = URL.createObjectURL(quizFile);
-		temp.download = meta.title + '.json';
-		document.body.appendChild(temp);
-		temp.click();
+		downloadQuizFile({
+			meta,
+			questions: filterExplanations(questions),
+		});
 	}
 
 	async function startQuiz() {

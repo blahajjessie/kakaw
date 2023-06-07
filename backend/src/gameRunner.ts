@@ -195,7 +195,7 @@ export default function registerGameRoutes(app: Express) {
 		return;
 	});
 
-	app.get('/games/:gameId/export-quiz', (req, res) => {
+	app.get('/games/:gameId/export-quiz', validateHostToken, (req, res) => {
 		const gameId = req.params.gameId;
 		const game = getGame(gameId);
 		res.status(200).json(game.quizData);
@@ -226,7 +226,6 @@ export default function registerGameRoutes(app: Express) {
 		// Generate Code and Set User Entry
 		let playerToken = generateToken(req.params.gameId, uid);
 		res.status(201).json({ ok: true, id: uid, token: playerToken });
-		game.sendPlayerAction(uid);
 		return;
 	});
 
@@ -275,7 +274,7 @@ export default function registerGameRoutes(app: Express) {
 			}
 
 			res.status(200).send({ ok: true });
-			game.sendPlayerAction(userId);
+			game.sendPlayerUpdates([game.getUser(userId)]);
 			return;
 		}
 	);

@@ -7,7 +7,8 @@ export enum Stage {
 	WaitingRoom,
 	Question,
 	PostQuestion,
-	PostGame,
+	PostGameHost,
+	PostGamePlayer,
 }
 
 export interface Question {
@@ -18,33 +19,53 @@ export interface Question {
 	correctAnswers?: number[];
 }
 
+export interface PostGameEntry {
+	numCorrect: number;
+	numWrong: number;
+	username: string;
+	score: number;
+}
+
 export interface LeaderboardEntry {
 	name: string;
 	score: number;
 	// positive for up, negative for down
-	positionChange: number;
+	positionChange: number | null;
 	// is this entry for the current player?
 	isSelf: boolean;
 }
 
 export type KakawGame =
 	| {
-		stage: Stage.WaitingRoom;
-	}
+			stage: Stage.WaitingRoom;
+	  }
 	| {
-		stage: Stage.Question;
-		questionIndex: number;
-		currentQuestion: Question;
-	}
+			stage: Stage.Question;
+			questionIndex: number;
+			currentQuestion: Question;
+			totalQuestions: number;
+	  }
 	| {
-		stage: Stage.PostQuestion;
-		questionIndex: number;
-		currentQuestion: Question;
-		scoreChange: number;
-		correct: boolean;
-		playerAnswer: number;
-		leaderboard: LeaderboardEntry[];
-	};
+			stage: Stage.PostQuestion;
+			questionIndex: number;
+			currentQuestion: Question;
+			scoreChange: number;
+			correct: boolean;
+			playerAnswer: number;
+			leaderboard: LeaderboardEntry[];
+			totalQuestions: number;
+	  }
+	| {
+			stage: Stage.PostGameHost;
+			leaderboard: LeaderboardEntry[];
+			players: PostGameEntry[];
+	  }
+	| {
+			stage: Stage.PostGamePlayer;
+			leaderboard: LeaderboardEntry[];
+			numCorrect: number;
+			numWrong: number;
+	  };
 
 const kakawGameState = atom<KakawGame>({
 	key: 'kakawGameState',
@@ -63,6 +84,8 @@ export const usernameState = atom({ key: 'usernameState', default: '' });
 
 export const scoreState = atom({ key: 'scoreState', default: 0 });
 
+export const totalPlayersState = atom({ key: 'totalPlayers', default: 0 });
+
 export default function useKakawGame(): {
 	connected: boolean;
 	error?: string;
@@ -76,6 +99,7 @@ export default function useKakawGame(): {
 		useRecoilState(currentPlayersState);
 	const [username, setUsername] = useRecoilState(usernameState);
 	const [_score, setScore] = useRecoilState(scoreState);
+	const [_totalPlayers, setTotalPlayers] = useRecoilState(totalPlayersState);
 
 	useConnection({
 		onOpen() {
@@ -105,10 +129,12 @@ export default function useKakawGame(): {
 							// time remaining. This should make timers easier to implement.
 							endTime: Date.now() + event.time,
 						},
+						totalQuestions: event.totalQuestions,
 					});
 					setUsername(event.username);
 					setScore(event.score);
 					setCurrentPlayers(new Map());
+					setTotalPlayers(event.totalPlayers);
 					break;
 
 				case 'endQuestion':
@@ -128,12 +154,14 @@ export default function useKakawGame(): {
 						leaderboard: event.leaderboard.map((entry: any) => ({
 							name: entry.name,
 							score: entry.score,
-							positionChange: 0,
+							positionChange: entry.positionChange,
 							isSelf: entry.name == username,
 						})),
+						totalQuestions: event.totalQuestions,
 					});
 					setUsername(event.username);
 					setScore(event.score);
+					setTotalPlayers(event.totalPlayers);
 					break;
 
 				case 'playerAction':
@@ -143,6 +171,25 @@ export default function useKakawGame(): {
 							...Object.entries(event.players as Record<string, string>),
 						])
 					);
+					break;
+
+				case 'playerResults':
+					setGame({
+						stage: Stage.PostGamePlayer,
+						leaderboard: event.leaderboard,
+						numCorrect: event.numCorrect,
+						numWrong: event.numWrong,
+					});
+					setUsername(event.username);
+					setScore(event.score);
+					break;
+
+				case 'hostResults':
+					setGame({
+						stage: Stage.PostGameHost,
+						leaderboard: event.leaderboard,
+						players: event.players,
+					});
 					break;
 			}
 		},

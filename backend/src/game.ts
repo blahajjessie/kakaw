@@ -99,14 +99,6 @@ export class Game {
 		return this.quizData.getQuestionData(this.activeQuestion);
 	}
 
-	sendPlayerAction(uid: UserId) {
-		const user = this.getUser(uid);
-		if (!user) throw new Error('User issue');
-		const respObj = {
-			[uid]: user.name,
-		};
-		this.host.send(new ActionData({ players: respObj }));
-	}
 	// Input: Game Object
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
@@ -166,11 +158,13 @@ export class Game {
 				this.quizData.getPoints(i),
 				this.quizData.getQuestionTime(i)
 			);
-			// if the question is active, theyll get a score twice, but wont hurt.
+			// if the question is active, they'll get a score twice, but wont hurt.
 			u.scorePlayer(i, this.quizData.getQuestionData(i));
 		}
 		console.log(u.id);
 		this.players.set(u.id, u);
+		if (this.activeQuestion < 0) this.sendPlayerUpdates([u]);
+
 		return u.id;
 	}
 
@@ -273,17 +267,43 @@ export class Game {
 		games.delete(this.id);
 	}
 	updateUser(uid: UserId) {
+		this.updatePlayer(uid);
 		if (uid == this.hostId) {
 			this.updateHost();
 		}
-		this.updatePlayer(uid);
+	}
+	sendPlayerUpdates(users: User[]) {
+		let respObj: any = new Object();
+		for (let u of users) {
+			respObj[u.id] = u.name;
+		}
+		this.host.send(new ActionData({ players: respObj }));
 	}
 	updateHost() {
 		this.endHostTimeout();
+		// show players joined so far
+		let actioned: User[] = [];
+		if (this.activeQuestion < 0) {
+			this.players.forEach((u) => {
+				actioned.push(u);
+			});
+		}
+		if (this.quizOpen) {
+			this.players.forEach((u) => {
+				if (u.answers[this.activeQuestion].answer != -1) {
+					actioned.push(u);
+				}
+			});
+		}
+		if (actioned.length > 0) this.sendPlayerUpdates(actioned);
 	}
 	updatePlayer(uid: UserId) {
 		const u = this.getUser(uid);
-		if (this.activeQuestion >= this.quizData.getQuestionCount()) {
+		if (
+			this.activeQuestion >= this.quizData.getQuestionCount() - 1 &&
+			!this.quizOpen
+		) {
+			this.sendLeaderboard(u);
 			console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
 		} else if (this.quizOpen) {
@@ -293,7 +313,31 @@ export class Game {
 		}
 		console.log('Player ' + u.name + ' has received its status update');
 	}
+	sendLeaderboard(u: User) {
+		const leaderboard = this.getLeaderboard();
 
+		if (u.id == this.hostId) {
+			const players = this.getPlayerResults();
+			const hostData = { leaderboard, players };
+			const resultResp = new HostRespData(hostData);
+			this.host.send(resultResp);
+		} else {
+			const playerResult = {
+				leaderboard: leaderboard.map((entry) => {
+					if (entry.name === u.name) {
+						return { ...entry, isSelf: true };
+					} else {
+						return { ...entry, isSelf: false };
+					}
+				}),
+				numCorrect: u.getCorrect(),
+				numWrong: u.getIncorrect(),
+				username: u.name,
+				score: u.totalScore(),
+			};
+			u.send(new PlayerRespData(playerResult));
+		}
+	}
 	sendEndQuestionState(u: User) {
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();

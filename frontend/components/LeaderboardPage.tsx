@@ -12,11 +12,13 @@ import { useRouter } from 'next/router';
 export interface LeaderboardPageProps {
 	entries: LeaderboardEntryType[];
 	index?: number;
+	totalQuestions: number;
 }
 
 export default function LeaderboardPage({
 	entries,
 	index,
+	totalQuestions,
 }: LeaderboardPageProps) {
 	const router = useRouter();
 	const { gameId, playerId } = router.query as {
@@ -35,16 +37,28 @@ export default function LeaderboardPage({
 	));
 
 	async function endQuestion() {
-		try {
-			await apiCall(
-				'POST',
-				`/games/${gameId}/questions/${index! + 1}/start`,
-				null,
-				{ gameId: gameId, id: playerId }
-			);
-		} catch (e) {
-			alert('Going to next question failed. Please try again');
-			console.error(e);
+		if (index === totalQuestions - 1) {
+			try {
+				await apiCall('POST', `/games/${gameId}/end`, null, {
+					gameId,
+					id: playerId,
+				});
+			} catch (e) {
+				alert('Loading results page failed. Please try again');
+				console.error(e);
+			}
+		} else {
+			try {
+				await apiCall(
+					'POST',
+					`/games/${gameId}/questions/${index! + 1}/start`,
+					null,
+					{ gameId: gameId, id: playerId }
+				);
+			} catch (e) {
+				alert('Going to next question failed. Please try again');
+				console.error(e);
+			}
 		}
 	}
 
