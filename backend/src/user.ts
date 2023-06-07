@@ -68,7 +68,7 @@ export class User {
 			isSelf: false,
 		};
 	}
-	getStartData(qn: number, quiz: Quiz, tp:number): startResp {
+	getStartData(qn: number, quiz: Quiz, tp: number): startResp {
 		const question = quiz.getQuestionData(qn);
 		return {
 			questionText: question.questionText,
@@ -78,7 +78,7 @@ export class User {
 			username: this.name,
 			score: this.totalScore(),
 			totalQuestions: quiz.getQuestionCount(),
-			totalPlayers: tp
+			totalPlayers: tp,
 		};
 	}
 	getEndData(
@@ -86,7 +86,7 @@ export class User {
 		qn: number,
 		question: QuizQuestion,
 		totalQuestions: number,
-		totalPlayers:number
+		totalPlayers: number
 	): EndData {
 		return new EndData({
 			correctAnswers: question.correctAnswers,
@@ -108,7 +108,7 @@ export class User {
 			username: this.name,
 			yourAnswer: this.answers[qn].answer,
 			totalQuestions: totalQuestions,
-			totalPlayers:totalPlayers
+			totalPlayers: totalPlayers,
 		});
 	}
 	addWs(sock: WebSocket) {

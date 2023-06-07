@@ -72,10 +72,24 @@ export class Game {
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
 		this.players.forEach((u) => {
-			u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions, this.players.size));
+			u.send(
+				u.getEndData(
+					board,
+					this.activeQuestion,
+					qd,
+					totalQuestions,
+					this.players.size
+				)
+			);
 		});
 		this.host.send(
-			this.host.getEndData(board, this.activeQuestion, qd, totalQuestions, this.players.size)
+			this.host.getEndData(
+				board,
+				this.activeQuestion,
+				qd,
+				totalQuestions,
+				this.players.size
+			)
 		);
 		this.quizOpen = false;
 
@@ -284,7 +298,15 @@ export class Game {
 		const qd = this.getQuestionData();
 		const board = this.getLeaderboard();
 		const totalQuestions = this.quizData.getQuestionCount();
-		u.send(u.getEndData(board, this.activeQuestion, qd, totalQuestions, this.players.size));
+		u.send(
+			u.getEndData(
+				board,
+				this.activeQuestion,
+				qd,
+				totalQuestions,
+				this.players.size
+			)
+		);
 	}
 	sendMidQuestionState(u: User) {
 		const qn = this.activeQuestion;

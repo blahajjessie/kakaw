@@ -104,7 +104,7 @@ export type startResp = {
 	score: number;
 	username: string;
 	totalQuestions: number;
-	totalPlayers:number;
+	totalPlayers: number;
 };
 
 export type EndResp = {
