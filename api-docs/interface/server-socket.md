@@ -40,7 +40,8 @@ Sent by server whenever a new question is available
 - `index` (number): the number of the question being started.
 - `score` (number): player’s current score, the host will receive garbage
 - `username`: the name of the player
-- `totalQuestions`: the total number of questions in the quiz
+- `totalQuestions` (number): the total number of questions in the quiz
+- `totalPlayers` (number): the total number of players in the game
 
 
 ## `endQuestion`
@@ -62,7 +63,9 @@ The same message is sent to the host, but the information about the answer choic
 - `explanations` (string[] | null) : The explanations for right and wrong answers. 
         Sends `null` if there are no explanations in the quiz, otherwise an array of strings
 - `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
-- `totalQuestions`: the total number of questions in the quiz
+- `totalQuestions` (number): the total number of questions in the quiz
+- `totalPlayers` (number): the total number of players in the game
+
 
 ## `playerResults`
 Sends a player their end of game results (TODO)

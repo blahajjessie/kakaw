@@ -136,6 +136,7 @@ export default function useKakawGame(): {
 					setCurrentPlayers(new Map());
 					setTotalPlayers(event.totalPlayers);
 					break;
+
 				case 'endQuestion':
 					setGame({
 						stage: Stage.PostQuestion,

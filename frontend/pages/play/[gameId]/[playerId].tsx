@@ -31,8 +31,9 @@ const PlayerGameRouter: NextPage<{}> = () => {
 				pageTitle="Disconnected"
 				heading="Disconnected"
 				body={`${
-					error ?? 'The connection was interrupted'
-				}. You may be able to rejoin by reloading the page.`}
+					error ??
+					'The connection was interrupted. You may be able to rejoin by reloading the page'
+				}.`}
 				image={failKaw}
 			/>
 		);
