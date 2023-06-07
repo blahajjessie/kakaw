@@ -3,6 +3,7 @@ import Link from 'next/link';
 import Head from 'next/head';
 
 import postgame from 'public/postgame.png';
+import { PostGameEntry } from '@/lib/useKakawGame';
 
 const postgameData = [
 	{
@@ -36,7 +37,11 @@ interface percentCounts {
 	[percent: string]: number;
 }
 
-export default function PostgameHostPage() {
+export interface PostGameHostProps {
+	players: PostGameEntry[];
+}
+
+export default function PostGameHost({ players }: PostGameHostProps) {
 	// Build array of % correct as whole numbers for all players
 	const percentCorrectArray = postgameData.map(
 		(p) => (100 * p.correct) / (p.correct + p.incorrect)
