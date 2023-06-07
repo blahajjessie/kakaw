@@ -3,5 +3,6 @@ export const prefs = {
 	corsOff: true,
 	frontEndUrl: 'http://localhost:3000',
 	backendPort: 8080,
-	debug: false
+	debug: false,
+	actionUpdateFrequency: 50,
 };

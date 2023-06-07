@@ -46,12 +46,12 @@ httpServer.on('upgrade', (request, socket, head) => {
 	const playerId = url.searchParams.get('playerId')!;
 	if (!gameExist(gameId)) {
 		if (prefs.debug)
-		console.log(
-			'Invalid game while trying to upgrade ws. PlayerId: ' +
-				playerId +
-				' GameId:' +
-				gameId
-		);
+			console.log(
+				'Invalid game while trying to upgrade ws. PlayerId: ' +
+					playerId +
+					' GameId:' +
+					gameId
+			);
 		socket.destroy();
 		return;
 	}
@@ -59,12 +59,12 @@ httpServer.on('upgrade', (request, socket, head) => {
 	const isValid = validateToken(gameId, playerId, token);
 	if (!isValid) {
 		if (prefs.debug)
-		console.log(
-			'Invalid token while trying to upgrade ws. PlayerId: ' +
-				playerId +
-				' GameId:' +
-				gameId
-		);
+			console.log(
+				'Invalid token while trying to upgrade ws. PlayerId: ' +
+					playerId +
+					' GameId:' +
+					gameId
+			);
 		socket.destroy();
 		return;
 	}
@@ -75,8 +75,7 @@ httpServer.on('upgrade', (request, socket, head) => {
 			handleConnection(client, game, playerId);
 		});
 	} catch (e) {
-		if (prefs.debug)
-		console.log(e);
+		if (prefs.debug) console.log(e);
 		socket.destroy();
 		return;
 	}

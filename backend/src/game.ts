@@ -49,15 +49,15 @@ export class Game {
 	startTime = -1;
 	timer: NodeJS.Timeout | undefined = undefined;
 	hostTimeout: NodeJS.Timeout | undefined = undefined;
-	actionArr:Array<User> = [];
-	actionTimer:NodeJS.Timeout |undefined;
+	actionArr: Array<User> = [];
+	actionTimer: NodeJS.Timeout | undefined;
 	constructor(quiz: any) {
-		this.actionTimer = setInterval(()=>{
-			if (this.actionArr.length >0){
+		this.actionTimer = setInterval(() => {
+			if (this.actionArr.length > 0) {
 				this.sendPlayerUpdates(this.actionArr);
 			}
-			this.actionArr = []}
-			 ,50)
+			this.actionArr = [];
+		}, prefs.actionUpdateFrequency);
 		this.id = gen(5, [...games.keys()]);
 		this.quizData = new Quiz(quiz);
 		this.host = new User([], this.quizData.meta.author);
@@ -111,10 +111,9 @@ export class Game {
 	// beginQuestion sends each player and host the current active question
 	beginQuestion() {
 		let question: startResp;
-		this.actionArr = []
+		this.actionArr = [];
 		this.activeQuestion++;
-		if (prefs.debug)
-		console.log(this.activeQuestion);
+		if (prefs.debug) console.log(this.activeQuestion);
 		const qn = this.activeQuestion;
 		const qt = this.quizData.getQuestionTime(qn);
 		const pts = this.quizData.getPoints(this.activeQuestion);
@@ -141,8 +140,7 @@ export class Game {
 		return [...this.players.values()];
 	}
 	getUser(id: UserId): User {
-		if (prefs.debug)
-		console.log(id);
+		if (prefs.debug) console.log(id);
 		if (id == this.hostId) return this.host;
 		if (!this.players.get(id)) throw new Error('Invalid user');
 		return this.players.get(id)!;
@@ -171,8 +169,7 @@ export class Game {
 			// if the question is active, they'll get a score twice, but wont hurt.
 			u.scorePlayer(i, this.quizData.getQuestionData(i));
 		}
-		if (prefs.debug)
-		console.log(u.id);
+		if (prefs.debug) console.log(u.id);
 		this.players.set(u.id, u);
 		if (this.activeQuestion < 0) this.actionArr.push(u);
 
@@ -244,20 +241,20 @@ export class Game {
 			prefs.hostDisconnectDelay
 		);
 		if (prefs.debug)
-		console.log(
-			'Host disconnected. Waiting ' +
-				prefs.hostDisconnectDelay +
-				' ms for reconnect, gameId ' +
-				this.id
-		);
+			console.log(
+				'Host disconnected. Waiting ' +
+					prefs.hostDisconnectDelay +
+					' ms for reconnect, gameId ' +
+					this.id
+			);
 	}
 	endHostTimeout() {
 		if (!this.hostTimeout) {
 			if (prefs.debug)
-			console.log(
-				'Host appears to be connected already (or connecting for the first time), gameId ' +
-					this.id
-			);
+				console.log(
+					'Host appears to be connected already (or connecting for the first time), gameId ' +
+						this.id
+				);
 			return;
 		}
 		clearTimeout(this.hostTimeout);
@@ -271,10 +268,10 @@ export class Game {
 	}
 	endGame() {
 		if (prefs.debug)
-		console.log(
-			'Host has been disconnected too long. Game should end now!, gameId ' +
-				this.id
-		);
+			console.log(
+				'Host has been disconnected too long. Game should end now!, gameId ' +
+					this.id
+			);
 		this.getUsers().forEach((u) => {
 			this.kickUser(u.id, 'The game is over');
 		});
@@ -318,8 +315,7 @@ export class Game {
 			!this.quizOpen
 		) {
 			this.sendLeaderboard(u);
-			if (prefs.debug)
-			console.log('Player should receive leaderboard');
+			if (prefs.debug) console.log('Player should receive leaderboard');
 		} else if (this.activeQuestion < 0) {
 		} else if (this.quizOpen) {
 			this.sendMidQuestionState(u);
@@ -327,7 +323,7 @@ export class Game {
 			this.sendEndQuestionState(u);
 		}
 		if (prefs.debug)
-		console.log('Player ' + u.name + ' has received its status update');
+			console.log('Player ' + u.name + ' has received its status update');
 	}
 	sendLeaderboard(u: User) {
 		const leaderboard = this.getLeaderboard();

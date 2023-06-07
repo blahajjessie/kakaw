@@ -135,8 +135,7 @@ export class User {
 	}
 	send(message: socketData) {
 		if (!this.connection) {
-			if (prefs.debug)
-			console.log('user not connected' + this.name);
+			if (prefs.debug) console.log('user not connected' + this.name);
 			return;
 		}
 		if (this.connection.readyState === WebSocket.OPEN) {

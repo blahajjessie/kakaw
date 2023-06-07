@@ -20,9 +20,9 @@ export function handleConnection(
 	playerId: UserId
 ) {
 	if (prefs.debug)
-	console.log(
-		`player ${playerId} attempting connection to game ${game.quizData.getName()}`
-	);
+		console.log(
+			`player ${playerId} attempting connection to game ${game.quizData.getName()}`
+		);
 	let user: User;
 	try {
 		user = game.getUser(playerId);
@@ -43,13 +43,11 @@ export function handleConnection(
 	user.addWs(connection);
 	game.updateUser(user.id);
 	connection.on('message', (data) => {
-		if (prefs.debug)
-		console.log(`player ${playerId} says: ${data}`);
+		if (prefs.debug) console.log(`player ${playerId} says: ${data}`);
 	});
 	// handle when the player leaves or we close the connection
 	connection.on('close', () => {
-		if (prefs.debug)
-		console.log(`player ${playerId} disconnected`);
+		if (prefs.debug) console.log(`player ${playerId} disconnected`);
 		if (game.hostId == playerId) {
 			console.warn('Host for ' + game.id + ' is leaving!');
 			game.setHostTimeout();

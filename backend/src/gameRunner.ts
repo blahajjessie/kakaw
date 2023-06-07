@@ -118,8 +118,7 @@ export default function registerGameRoutes(app: Express) {
 				hostId: freshGame.hostId,
 				token: hostToken,
 			};
-			if (prefs.debug)
-			console.log(response);
+			if (prefs.debug) console.log(response);
 			res.status(201).json(response);
 		} catch (e) {
 			// client upload error
@@ -139,8 +138,7 @@ export default function registerGameRoutes(app: Express) {
 		(req, res) => {
 			const index = parseInt(req.params.index);
 			const game = getGame(req.params.gameId)!;
-			if (prefs.debug)
-			console.log('start');
+			if (prefs.debug) console.log('start');
 			// start accepting answers for the question index
 
 			if (index != game.activeQuestion + 1) {
@@ -264,8 +262,7 @@ export default function registerGameRoutes(app: Express) {
 			}
 			// validate time
 			const ansTime: number = Date.now() - game.startTime;
-			if (prefs.debug)
-			console.log(ansTime);
+			if (prefs.debug) console.log(ansTime);
 			try {
 				game.getUser(userId).answer(game.activeQuestion, ansTime, answerChoice);
 			} catch {
