@@ -264,7 +264,7 @@
                 "dereferences",
                 "is the ternary operator"
             ],
-            "correctAnswers": [],
+            "correctAnswers": [0],
             "time": 20,
             "points": 1000
         },
@@ -276,7 +276,7 @@
                 "sizeof(x) / sizeof (char)",
                 "None of these"
             ],
-            "correctAnswers": [],
+            "correctAnswers": [3],
             "time": 20,
             "points": 1000
         },
@@ -317,7 +317,7 @@
                 "1000 1010"
             ],
             "correctAnswers": [
-                3
+                2
             ],
             "time": 40,
             "points": 1000
