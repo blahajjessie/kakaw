@@ -289,7 +289,7 @@
                 "x |= (1 << n)"
             ],
             "correctAnswers": [
-                2
+                3
             ],
             "time": 20,
             "points": 1000
