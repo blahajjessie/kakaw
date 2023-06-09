@@ -19,6 +19,7 @@ interface QuestionAnswersProps {
 	onAnswerClick?: (answerIndex: number) => void | Promise<void>;
 	playerAnswer?: number;
 	correctAnswers?: number[];
+	numAnswered?: number[];
 }
 
 export default function QuestionAnswers({
@@ -27,6 +28,7 @@ export default function QuestionAnswers({
 	onAnswerClick,
 	playerAnswer,
 	correctAnswers,
+	numAnswered,
 }: QuestionAnswersProps) {
 	// which answer the player clicked most recently -- could be their answer, or they could be
 	// viewing an explanation
@@ -75,6 +77,14 @@ export default function QuestionAnswers({
 		}
 	};
 
+	let totalAnswered = 0,
+		maxAnswers = 0;
+
+	if (numAnswered !== undefined) {
+		totalAnswered = numAnswered.reduce((a, b) => a + b);
+		maxAnswers = Math.max(...numAnswered);
+	}
+
 	return (
 		<div className="w-full flex flex-wrap items-center justify-center grow my-2 font-extrabold text-lg sm:text-2xl lg:text-3xl 2xl:text-4xl overflow-y-scroll">
 			{answers.map((answer, index) => (
@@ -94,13 +104,12 @@ export default function QuestionAnswers({
 					</div>
 
 					{/* Display Your Answer Rectangle if the current index matches selectedAnswerIndex */}
-					{index === firstClickedAnswer &&
-						selectedAnswer !== null &&
-						!isHovering && (
-							<div className="w-full h-1/4 bg-orange-200 absolute bottom-0 left-0 flex justify-center items-center rounded-xl text-white shadow-heavy py-0.5">
-								You Answered
-							</div>
-						)}
+					{((index === firstClickedAnswer && selectedAnswer !== null) ||
+						numAnswered?.[index] === maxAnswers) && (
+						<div className="w-full h-1/4 bg-orange-200 absolute bottom-0 left-0 flex justify-center items-center rounded-xl text-white shadow-heavy py-0.5">
+							{numAnswered === undefined ? 'You' : 'Most'} Answered
+						</div>
+					)}
 
 					{/* Display X or Y image if the current index matches selectedAnswerIndex */}
 					{correctAnswers && (
@@ -112,6 +121,12 @@ export default function QuestionAnswers({
 								alt="Selected Image"
 								className="w-full h-full"
 							/>
+						</div>
+					)}
+
+					{numAnswered && (
+						<div className="absolute top-8 left-8 text-xl">
+							{Math.round((numAnswered[index] / totalAnswered) * 100)}% answered
 						</div>
 					)}
 				</div>

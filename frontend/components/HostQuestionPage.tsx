@@ -16,6 +16,7 @@ export interface HostQuestionPageProps {
 	index: number;
 	postQuestion: boolean;
 	onContinue?: () => void;
+	numAnswered?: number[];
 }
 
 export default function HostQuestionPage(props: HostQuestionPageProps) {
@@ -42,6 +43,7 @@ export default function HostQuestionPage(props: HostQuestionPageProps) {
 				answers={props.question.answerTexts}
 				correctAnswers={props.question.correctAnswers}
 				explanations={props.question.explanations}
+				numAnswered={props.numAnswered}
 			></QuestionAnswers>
 			<HostQuestionBottom
 				numAnswered={currentPlayers.size}

@@ -58,6 +58,7 @@ const HostGameRouter: NextPage<{}> = () => {
 						index={game.questionIndex}
 						postQuestion={true}
 						onContinue={() => setViewingLeaderboard(true)}
+						numAnswered={game.numAnswered}
 					/>
 				);
 			}
