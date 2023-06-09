@@ -382,8 +382,8 @@
         {
             "questionText": "Which algorithm can easily be cracked by a human",
             "answerTexts": [
-                "Ceasar Cypher",
-                "Bill Cypher",
+                "Caesar Cipher",
+                "Bill Cipher",
                 "RSA",
                 "One Time pad"
             ],
@@ -396,8 +396,8 @@
         {
             "questionText": "Which algorithm has the longest keys",
             "answerTexts": [
-                "Ceasar Cypher",
-                "Bill Cypher",
+                "Caesar Cipher",
+                "Bill Cipher",
                 "RSA",
                 "One Time pad"
             ],
@@ -411,8 +411,8 @@
         {
             "questionText": "Which algorithm does not require private keys to be exchanged before hand",
             "answerTexts": [
-                "Ceasar Cypher",
-                "Bill Cypher",
+                "Caesar Cipher",
+                "Bill Cipher",
                 "RSA",
                 "One Time pad"
             ],
@@ -425,8 +425,8 @@
         {
             "questionText": "Which algorithm may create inter-dimensional rifts if not properly implemented",
             "answerTexts": [
-                "Ceasar Cypher",
-                "Bill Cypher",
+                "Caesar Cipher",
+                "Bill Cipher",
                 "RSA",
                 "One Time pad"
             ],
