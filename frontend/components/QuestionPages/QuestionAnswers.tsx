@@ -5,8 +5,8 @@ import CheckMarkImage from 'public/checkmark1.png';
 import styles from '@/styles/flip.module.css';
 
 const colors = [
-	'bg-red-200',
 	'bg-green-200',
+	'bg-red-200',
 	'bg-blue-200',
 	'bg-yellow-200',
 	'bg-purple-400',
