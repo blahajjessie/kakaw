@@ -37,7 +37,7 @@ export function handleConnection(
 	// }
 
 	if (user.getWs()) {
-		return killConnection(connection, 'You are already connected to this game');
+		return killConnection(connection, ' you are already connected to this game');
 	}
 
 	user.addWs(connection);

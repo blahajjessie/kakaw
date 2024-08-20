@@ -8,7 +8,7 @@ export default function Qr(gameId: string) {
 		<Canvas
 			text={`${FRONTEND_BASE_URL}/?code=${gameId}`}
 			options={{
-				level: 'M',
+				//level: 'M',
 				margin: 2,
 				scale: 4,
 				width: 180,

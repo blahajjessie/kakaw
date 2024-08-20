@@ -274,7 +274,7 @@ export class Game {
 					this.id
 			);
 		this.getUsers().forEach((u) => {
-			this.kickUser(u.id, 'The game is over');
+			this.kickUser(u.id, ' the game is over');
 		});
 		games.delete(this.id);
 	}
