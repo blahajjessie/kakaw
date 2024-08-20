@@ -87,7 +87,7 @@ export class User {
 		qn: number,
 		question: QuizQuestion,
 		totalQuestions: number,
-		totalPlayers: number
+		totalPlayers: number, pAns:number[]
 	): EndData {
 		return new EndData({
 			correctAnswers: question.correctAnswers,
@@ -110,6 +110,7 @@ export class User {
 			yourAnswer: this.answers[qn].answer,
 			totalQuestions: totalQuestions,
 			totalPlayers: totalPlayers,
+			numAnswered: pAns
 		});
 	}
 	addWs(sock: WebSocket) {

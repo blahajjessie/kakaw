@@ -88,7 +88,7 @@ export class Game {
 					this.activeQuestion,
 					qd,
 					totalQuestions,
-					this.players.size
+					this.players.size, this.getNumAnswered()
 				)
 			);
 		});
@@ -98,11 +98,20 @@ export class Game {
 				this.activeQuestion,
 				qd,
 				totalQuestions,
-				this.players.size
+				this.players.size, this.getNumAnswered()
 			)
 		);
 
 		return;
+	}
+	getNumAnswered(): number[] {
+		let a = new Array<number>(this.getQuestionData().answerTexts.length)
+		a.fill(0)
+		this.players.forEach((u)=>{
+			const ac = u.answers[this.activeQuestion].answer
+			a[ac] += ac>=0?1:0;
+		})
+		return a;
 	}
 	getQuestionData() {
 		return this.quizData.getQuestionData(this.activeQuestion);
@@ -361,7 +370,8 @@ export class Game {
 				this.activeQuestion,
 				qd,
 				totalQuestions,
-				this.players.size
+				this.players.size,
+				this.getNumAnswered()
 			)
 		);
 	}

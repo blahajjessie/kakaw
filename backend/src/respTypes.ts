@@ -123,6 +123,7 @@ export type EndResp = {
 	yourAnswer: number;
 	totalQuestions: number;
 	totalPlayers: number;
+	numAnswered: number[];
 };
 
 export type ActionResp = { players: object };

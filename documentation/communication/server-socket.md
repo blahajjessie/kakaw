@@ -65,6 +65,7 @@ The same message is sent to the host, but the information about the answer choic
 - `yourAnswer` (number) : The index of the player's answer, -1 if the user didn't answer
 - `totalQuestions` (number): the total number of questions in the quiz
 - `totalPlayers` (number): the total number of players in the game
+- `numAnswered` (number[]): The  number of players who gave each answer choice. This is as long as the number of answer choices. 
 
 
 ## `playerResults`

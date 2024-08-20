@@ -54,6 +54,7 @@ export type KakawGame =
 			playerAnswer: number;
 			leaderboard: LeaderboardEntry[];
 			totalQuestions: number;
+			numAnswered: number[];
 	  }
 	| {
 			stage: Stage.PostGameHost;
@@ -114,7 +115,7 @@ export default function useKakawGame(): {
 		},
 
 		onMessage(type, event) {
-			//console.log(`received message: ${type}, ${JSON.stringify(event)}`);
+			console.log(`received message: ${type}, ${JSON.stringify(event)}`);
 
 			switch (type) {
 				case 'startQuestion':
@@ -158,6 +159,7 @@ export default function useKakawGame(): {
 							isSelf: entry.name == username,
 						})),
 						totalQuestions: event.totalQuestions,
+						numAnswered: event.numAnswered,
 					});
 					setUsername(event.username);
 					setScore(event.score);
